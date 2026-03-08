@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1772861940395,
+      "tag": "0000_intial_db",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772862043245,
+      "tag": "0001_alter_bookmarks_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772904369389,
+      "tag": "0002_alter_domains_table",
+      "breakpoints": true
+    }
+  ]
+}
