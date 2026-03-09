@@ -48,3 +48,21 @@ export const signinWithOAuth = async (provider: OAuthProvider) => {
     throw new Error(error.message);
   }
 }
+
+// get current user
+export const getCurrentUser = async () => {
+  const { error, data } = await (await createClient()).auth.getUser();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const user = data.user;
+
+  return {
+    userId: user.id,
+    name: user.user_metadata.name || user.user_metadata.full_name,
+    email: user.email,
+    provider: user.app_metadata.provider,
+  }
+} 

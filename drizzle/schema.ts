@@ -3,7 +3,6 @@ import { pgTable, text, uuid, timestamp, index } from "drizzle-orm/pg-core";
 export const domainsTable = pgTable("domains", {
   id: uuid("id").defaultRandom().primaryKey(),
   domain: text("domain").notNull().unique(),
-  favicon: text("favicon"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => [
   index("idx_domain_domain").on(table.domain),
@@ -32,7 +31,7 @@ export const tagsTable = pgTable("tags", {
   index("idx_tags_tag").on(table.tag),
 ])
 
-export const bookmarkTagsTabls = pgTable("bookmarks_tag", {
+export const bookmarkTagsTable = pgTable("bookmarks_tag", {
   bookmarkId: uuid("bookmark_id").notNull().references(() => bookmarkTable.id),
   tagId: uuid("tag_id").notNull().references(() => tagsTable.id),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

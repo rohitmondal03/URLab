@@ -1,14 +1,15 @@
 "use client";
 
-import { Layers, Search, Plus, Bell, Link2, Star, Tag, Globe, Clock, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search, Plus, Link2, Star, Tag, Globe, Clock, Menu } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "../shared/logo";
+import { cn } from "@/lib/utils";
+import { AddBookmarkDialog } from "./add-bookmark-dialog";
 
 export default function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -24,25 +25,26 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
   ];
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-sidebar/50 backdrop-blur-sm border-r border-sidebar-border/60">
-      <div className="h-14 flex items-center px-4 md:px-6 border-b border-border/40">
-        <Link href="/dashboard" className="flex items-center gap-2 text-foreground">
-          <Layers className="h-5 w-5 text-primary" />
-          <span className="font-semibold tracking-tight">URLab</span>
+    <div className="flex flex-col h-full bg-sidebar/50 backdrop-blur-sm border-r border-zinc-400">
+      <div className="h-20 flex items-center px-4 md:px-6 border-b border-zinc-400">
+        <Link href="/" className="flex items-center gap-2 text-foreground">
+          <Logo variant="large" />
         </Link>
       </div>
-      <div className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+      <div className="flex-1 py-6 px-3 space-y-3 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.path;
           return (
-            <Link key={item.name} href={item.path}>
-              <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className={`w-full justify-start ${isActive ? "bg-secondary text-secondary-foreground font-medium shadow-sm" : "text-muted-foreground hover:bg-muted/50"}`}
-              >
-                {item.icon}
-                {item.name}
-              </Button>
+            <Link
+              key={item.name}
+              href={item.path}
+              className={cn(
+                buttonVariants({ variant: isActive ? "secondary" : "ghost" }),
+                `w-full justify-start ${isActive ? "bg-secondary text-secondary-foreground font-medium shadow-sm" : "text-muted-foreground hover:bg-muted/50"}`
+              )}
+            >
+              {item.icon}
+              {item.name}
             </Link>
           );
         })}
@@ -64,83 +66,66 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
   );
 
   return (
-    <div className="flex h-screen w-full bg-background overflow-hidden relative">
+    <div className="flex min-h-screen w-full bg-background relative">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:block w-64 h-full shrink-0 z-10 transition-all duration-300">
+      <aside className="hidden md:block sticky top-0 left-0 w-64 h-screen shrink-0 z-10 transition-all duration-300">
         <SidebarContent />
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-full min-w-0">
+      <div className="flex-1 flex flex-col min-h-screen min-w-0">
         {/* Top bar */}
-        <header className="h-14 flex items-center justify-between px-4 md:px-6 border-b border-border/40 bg-background/80 backdrop-blur-md z-10 shrink-0">
+        <header className="h-20 flex items-center justify-between px-4 md:px-6 border-b border-zinc-400 bg-background/80 backdrop-blur-md z-10 shrink-0">
           <div className="flex items-center gap-2 flex-1">
-            <Button variant="ghost" size="icon" className="md:hidden text-muted-foreground" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-              <Menu className="h-5 w-5" />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden text-muted-foreground"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Menu className="size-5" />
             </Button>
 
             <div className="relative w-full max-w-sm hidden sm:flex items-center">
-              <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-2.5 size-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search links, tags, or domains..."
-                className="w-full bg-secondary/30 border-transparent focus-visible:bg-background focus-visible:border-ring/50 pl-9 rounded-full h-9 shadow-none text-sm"
+                className="w-full bg-secondary/30 focus-visible:bg-background focus-visible:border-ring/50 pl-9 rounded-full h-9 shadow-none text-sm"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
-              <Bell className="h-4 w-4" />
-            </Button>
-
-            <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-              <DialogTrigger asChild>
-                <Button className=" shadow-sm ml-2 h-9">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Link
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] border-border/50 bg-card/95 backdrop-blur-md">
-                <DialogHeader>
-                  <DialogTitle>Save a new bookmark</DialogTitle>
-                  <DialogDescription>
-                    Paste a URL below. We&apos;ll automatically fetch the details.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="url">URL</Label>
-                    <Input id="url" placeholder="https://example.com" className="bg-background/50 h-10" />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="tags">Tags (optional)</Label>
-                    <Input id="tags" placeholder="design, inspiration, tools" className="bg-background/50 h-10" />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
-                  <Button onClick={() => setIsAddModalOpen(false)}>Save Link</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
+          <Button onClick={() => setIsAddModalOpen(true)} className="gap-x-2">
+            <Plus className="size-4" />
+            Add Link
+          </Button>
+          <AddBookmarkDialog
+            isAddModalOpen={isAddModalOpen}
+            setIsAddModalOpen={setIsAddModalOpen}
+          />
         </header>
 
         {/* Mobile menu overlay */}
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-50 md:hidden bg-background/80 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}>
-            <div className="w-64 h-full shadow-2xl relative" onClick={e => e.stopPropagation()}>
+          <div
+            className="fixed inset-0 z-50 md:hidden bg-background/80 backdrop-blur-sm"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <div
+              className="w-64 h-full shadow-2xl relative"
+              onClick={e => e.stopPropagation()}
+            >
               <SidebarContent />
             </div>
           </div>
         )}
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto bg-main p-4 md:p-8 relative">
+        <main className="flex-1 p-4 md:p-8 relative">
           {children}
         </main>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }

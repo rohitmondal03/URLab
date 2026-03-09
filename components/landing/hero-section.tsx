@@ -28,14 +28,14 @@ export function HeroSection() {
       </motion.p>
 
       <motion.div variants={fadeUpVariants} className="flex flex-col sm:flex-row gap-4 mt-8">
-        <Link href="/auth?tab=signup">
+        <Link href="/auth">
           <Button size="lg" className="shadow-md px-8 h-12 text-base">
             Start Saving Links
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
         <Link href="#preview">
-          <Button size="lg" variant="outline" className="px-8 h-12 text-base bg-background/50 backdrop-blur-sm">
+          <Button size="lg" variant="secondary" className="px-8 h-12">
             View Demo
           </Button>
         </Link>
