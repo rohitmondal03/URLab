@@ -1,11 +1,11 @@
 "use server"
 
-import OpenGraphScraper from "open-graph-scraper"
+import ogScraper from "open-graph-scraper";
 import { DEFAULT_METADATA_ERROR_MESSAGE, getDomainFromUrl } from "../helper"
 
 // For scraping the metadata/details of entered URL.
 export const getURLMetadata = async (url: string) => {
-  const { error, result } = await OpenGraphScraper({ url })
+  const { error, result } = await ogScraper({ url })
 
   if (error) {
     throw new Error("Data cannot be fetched");

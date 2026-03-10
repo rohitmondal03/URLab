@@ -1,5 +1,8 @@
-import DashboardPageClient from "@/components/dashboard/dashboard-page-client";
+import DashboardPageClient from "@/components/dashboard/(landing)/dashboard-page-client";
+import { getCurrentUsersBookmarks } from "@/lib/actions/bookmark.action";
 
-export default function DashboardPage() {
-  return <DashboardPageClient />;
+export default async function DashboardPage() {
+  const bookmarks = await getCurrentUsersBookmarks();
+
+  return <DashboardPageClient bookmarks={bookmarks} />;
 }

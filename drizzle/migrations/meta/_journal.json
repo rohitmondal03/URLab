@@ -29,6 +29,20 @@
       "when": 1772931884464,
       "tag": "0003_alter_domains_table",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773054578490,
+      "tag": "0004_alter_bookmark_tags_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1773107677822,
+      "tag": "0005_alter_bookmarks_table",
+      "breakpoints": true
     }
   ]
 }

@@ -3,9 +3,10 @@
 import { Bookmark } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion"
-import { Button, buttonVariants } from "../ui/button";
+import { buttonVariants } from "../ui/button";
 import { Logo } from "../shared/logo";
 import { cn } from "@/lib/utils";
+import { BookmarkFillIcon } from "../icons/static/bookmark-fill";
 
 export function Navbar() {
   return (
@@ -21,7 +22,7 @@ export function Navbar() {
           buttonVariants({ variant: "default" })
         )}>
           Your Bookmarks
-          <Bookmark />
+          <BookmarkFillIcon />
         </Link>
       </nav>
     </motion.header>

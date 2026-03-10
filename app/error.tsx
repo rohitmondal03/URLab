@@ -1,18 +1,21 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { AlertCircle, RefreshCcw } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { AlertCircle, Bookmark, Layers, RefreshCcw } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { BookmarkFillIcon } from "@/components/icons/static/bookmark-fill";
 
 type TErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
-export default function ErrorPage({ error, reset, }: TErrorPageProps) {
+export default function ErrorPage({ error, }: TErrorPageProps) {
+  const { refresh } = useRouter();
 
   useEffect(() => {
     // Optionally log the error to an error reporting service
@@ -38,7 +41,7 @@ export default function ErrorPage({ error, reset, }: TErrorPageProps) {
       <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
         <Button
           variant="outline"
-          onClick={() => reset()}
+          onClick={() => refresh()}
           className="gap-x-2"
         >
           <RefreshCcw className="size-4" />
@@ -52,7 +55,7 @@ export default function ErrorPage({ error, reset, }: TErrorPageProps) {
           )}
         >
           Back to Dashboard
-          <Bookmark />
+          <BookmarkFillIcon />
         </Link>
       </div>
     </motion.div>

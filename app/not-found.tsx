@@ -1,13 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Bookmark, Layers, MapPinOff } from "lucide-react";
+import { ArrowLeft, Bookmark } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
-import { MapPin } from "@/components/animate-ui/icons/map-pin";
+import { MapPinOff } from "@/components/animate-ui/icons/map-pin-off";
 
 export default function NotFound() {
   const router = useRouter();
@@ -19,11 +19,11 @@ export default function NotFound() {
       transition={{ duration: 0.4 }}
       className="flex flex-col items-center text-center justify-center gap-6 min-h-screen"
     >
-      <div className="size-16 rounded-2xl bg-secondary/50 flex items-center justify-center shadow-sm border border-border/50">
-        <AnimateIcon animateOnHover animate="wiggle">
-          <MapPin />
-        </AnimateIcon>
-      </div>
+      {/* <div className="rounded-2xl flex items-center justify-center shadow-lg border-2 border-zinc-300 p-4"> */}
+      <AnimateIcon animateOnHover animate="off" delay={1500}>
+        <MapPinOff className={"size-12"} />
+      </AnimateIcon>
+      {/* </div> */}
 
       <h1 className="text-6xl font-black tracking-tight text-foreground">404</h1>
       <h2 className="text-2xl font-semibold tracking-tight">Page not found</h2>

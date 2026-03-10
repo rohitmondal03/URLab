@@ -1,7 +1,7 @@
 import { type Provider as OAuthProvider } from "@supabase/supabase-js";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
-import { signinWithOAuth } from "@/lib/actions/auth";
+import { signinWithOAuth } from "@/lib/actions/auth.action";
 import { capitalizeFirstChar, DEFAULT_ERROR_MESSAGE } from "@/lib/helper";
 import { useState } from "react";
 import { GoogleFillIcon } from "../icons/static/google-fill";

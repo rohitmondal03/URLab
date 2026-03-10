@@ -10,26 +10,45 @@ import {
   type IconProps,
 } from '@/components/animate-ui/icons/icon';
 
-type HammerProps = IconProps<keyof typeof animations>;
+type MapPinOffProps = IconProps<keyof typeof animations>;
 
 const animations = {
   default: {
     group: {
       initial: {
-        rotate: 0,
+        x: 0,
       },
       animate: {
-        transformOrigin: 'bottom left',
-        rotate: [0, 30, -5, 0],
+        x: [0, '-7%', '7%', '-7%', '7%', 0],
+        transition: { duration: 0.6, ease: 'easeInOut' },
       },
     },
     path1: {},
     path2: {},
     path3: {},
+    path4: {},
+    path5: {},
+  } satisfies Record<string, Variants>,
+  off: {
+    path1: {},
+    path2: {},
+    path3: {
+      initial: {
+        opacity: 0,
+        pathLength: 0,
+      },
+      animate: {
+        opacity: 1,
+        pathLength: 1,
+        transition: { duration: 0.6, ease: 'easeInOut' },
+      },
+    },
+    path4: {},
+    path5: {},
   } satisfies Record<string, Variants>,
 } as const;
 
-function IconComponent({ size, ...props }: HammerProps) {
+function IconComponent({ size, ...props }: MapPinOffProps) {
   const { controls } = useAnimateIconContext();
   const variants = getVariants(animations);
 
@@ -50,20 +69,32 @@ function IconComponent({ size, ...props }: HammerProps) {
       {...props}
     >
       <motion.path
-        d="m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9"
+        d="M12.75 7.09a3 3 0 0 1 2.16 2.16"
         variants={variants.path1}
         initial="initial"
         animate={controls}
       />
       <motion.path
-        d="m18 15 4-4"
+        d="M17.072 17.072c-1.634 2.17-3.527 3.912-4.471 4.727a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 1.432-4.568"
         variants={variants.path2}
         initial="initial"
         animate={controls}
       />
       <motion.path
-        d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"
+        d="m2 2 20 20"
         variants={variants.path3}
+        initial="initial"
+        animate={controls}
+      />
+      <motion.path
+        d="M8.475 2.818A8 8 0 0 1 20 10c0 1.183-.31 2.377-.81 3.533"
+        variants={variants.path4}
+        initial="initial"
+        animate={controls}
+      />
+      <motion.path
+        d="M9.13 9.13a3 3 0 0 0 3.74 3.74"
+        variants={variants.path5}
         initial="initial"
         animate={controls}
       />
@@ -71,14 +102,14 @@ function IconComponent({ size, ...props }: HammerProps) {
   );
 }
 
-function Hammer(props: HammerProps) {
+function MapPinOff(props: MapPinOffProps) {
   return <IconWrapper icon={IconComponent} {...props} />;
 }
 
 export {
   animations,
-  Hammer,
-  Hammer as HammerIcon,
-  type HammerProps,
-  type HammerProps as HammerIconProps,
+  MapPinOff,
+  MapPinOff as MapPinOffIcon,
+  type MapPinOffProps,
+  type MapPinOffProps as MapPinOffIconProps,
 };

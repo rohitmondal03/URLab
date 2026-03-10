@@ -49,6 +49,17 @@ export const signinWithOAuth = async (provider: OAuthProvider) => {
   }
 }
 
+// Sign-out
+export const signout = async () => {
+  const { error } = await (await createClient()).auth.signOut();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  redirect("/");
+}
+
 // get current user
 export const getCurrentUser = async () => {
   const { error, data } = await (await createClient()).auth.getUser();

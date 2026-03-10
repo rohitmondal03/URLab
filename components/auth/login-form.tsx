@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { loginWithEmail } from "@/lib/actions/auth";
+import { loginWithEmail } from "@/lib/actions/auth.action";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/helper";

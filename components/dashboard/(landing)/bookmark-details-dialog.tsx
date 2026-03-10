@@ -1,35 +1,16 @@
+import type { TBookmarkWithTags } from "@/types";
+import Link from "next/link";
 import Image from "next/image";
-import {
-  Copy,
-  ArrowUpRight,
-  ExternalLink,
-  X,
-} from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogClose
-} from "@/components/ui/dialog";
+import { useMemo } from "react";
+import { Copy, ArrowUpRight, ExternalLink } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
-
-type Bookmark = {
-  id: number;
-  url: string;
-  title: string;
-  description: string;
-  domain: string;
-  tags: string[];
-  favicon: string;
-  previewImage: string;
-};
+import { getFaviconFromURL } from "@/lib/helper";
 
 type TBookmarkDetailDialogProps = {
-  bookmark: Bookmark | null;
+  bookmark: TBookmarkWithTags | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -37,17 +18,23 @@ type TBookmarkDetailDialogProps = {
 export function BookmarkDetailDialog({ bookmark, open, onOpenChange }: TBookmarkDetailDialogProps) {
   if (!bookmark) return null;
 
+  const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden border-border/50 bg-card">
+      <DialogContent
+        onWheel={e => e.stopPropagation()}
+        className="w-full max-w-lg p-0 overflow-hidden border-border/50 bg-card"
+      >
         {/* Preview image area */}
-        <div className="relative w-full h-56 bg-muted overflow-hidden">
+        <div className="relative w-full h-64 bg-muted overflow-hidden">
           <Image
             height={1000}
             width={1000}
-            src={bookmark.previewImage}
-            alt={bookmark.title}
+            src={bookmark.previewImage || ""}
+            alt={bookmark.title || ""}
             className="size-full object-cover"
+            loading="lazy"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = "none";
             }}
@@ -56,28 +43,29 @@ export function BookmarkDetailDialog({ bookmark, open, onOpenChange }: TBookmark
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-4">
-          <DialogHeader className="space-y-2">
+        <div className="p-6 space-y-4 min-w-0">
+          <DialogHeader className="space-y-2 min-w-0">
             {/* Favicon + Url row */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0 overflow-hidden">
               <Image
-                height={1000}
-                width={1000}
-                src={bookmark.favicon}
+                height={500}
+                width={500}
+                src={bookmarksFaviconURL}
                 alt={bookmark.url}
-                className="size-5 object-contain rounded-sm"
+                className="size-5 shrink-0 object-contain rounded-sm"
+                loading="lazy"
               />
               <Link
                 href={bookmark.url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 truncate"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 min-w-0 truncate"
               >
-                {bookmark.url}
+                <span className="truncate">{bookmark.url}</span>
                 <ExternalLink className="size-3 shrink-0" />
               </Link>
             </div>
-            <DialogTitle className="text-xl font-semibold leading-snug text-foreground">
+            <DialogTitle className="text-xl font-semibold leading-snug text-foreground wrap-break-word">
               {bookmark.title}
             </DialogTitle>
           </DialogHeader>

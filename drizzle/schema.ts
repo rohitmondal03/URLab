@@ -13,9 +13,9 @@ export const bookmarkTable = pgTable("bookmarks", {
   userId: uuid("user_id").notNull().references(() => usersTable.userId),
   domainId: uuid("domain_id").notNull().references(() => domainsTable.id),
   url: text("url").notNull(),
-  title: text("title"),
-  description: text("description"),
-  previewImage: text("preview_image"),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  previewImage: text("preview_image").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
   index("idx_bookmarks_user_id").on(table.userId),
@@ -31,7 +31,7 @@ export const tagsTable = pgTable("tags", {
   index("idx_tags_tag").on(table.tag),
 ])
 
-export const bookmarkTagsTable = pgTable("bookmarks_tag", {
+export const bookmarkTagsTable = pgTable("bookmark_tags", {
   bookmarkId: uuid("bookmark_id").notNull().references(() => bookmarkTable.id),
   tagId: uuid("tag_id").notNull().references(() => tagsTable.id),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

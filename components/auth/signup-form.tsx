@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { signupWithEmail } from "@/lib/actions/auth";
+import { signupWithEmail } from "@/lib/actions/auth.action";
 import { toast } from "sonner";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/helper";
 import { LoaderIcon } from "lucide-react";

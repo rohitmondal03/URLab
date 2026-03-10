@@ -1,4 +1,4 @@
-import DashboardLayoutWrapper from "@/components/dashboard/dashboard-layout-wrapper";
+import DashboardLayoutWrapper from "@/components/dashboard/(landing)/dashboard-layout-wrapper";
 import { Metadata } from "next";
 
 export const metadata: Metadata = ({
