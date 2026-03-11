@@ -10,7 +10,7 @@ type TTagCardProps = {
 export function TagCard({ tag, onClick }: TTagCardProps) {
   return (
     <Card
-      className="group flex flex-col gap-0 bg-card shadow-lg hover:shadow-xl border-zinc-300 transition-all duration-300 py-0 cursor-pointer overflow-hidden h-full hover:scale-[1.02]"
+      className="group flex flex-col gap-0 shadow-lg hover:shadow-xl border border-zinc-400 transition-all duration-300 py-0 cursor-pointer h-full hover:scale-[1.02]"
       onClick={() => onClick(tag.tag)}
     >
       <CardContent className="flex flex-col gap-3 p-5">
@@ -32,8 +32,10 @@ export function TagCard({ tag, onClick }: TTagCardProps) {
         {/* Last saved bookmark */}
         {tag.lastBookmarkTitle && (
           <div className="border-t border-border/40 pt-3">
-            <p className="text-[11px] text-muted-foreground leading-none mb-1.5">Last saved</p>
-            <p className="text-xs text-foreground/80 line-clamp-2 leading-snug">
+            <p className="text-[11px] text-muted-foreground leading-none mb-1.5">
+              Last saved -
+            </p>
+            <p className="text-xs line-clamp-2 leading-snug">
               &ldquo;{tag.lastBookmarkTitle}&rdquo;
             </p>
           </div>

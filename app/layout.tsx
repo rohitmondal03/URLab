@@ -4,6 +4,7 @@ import { Google_Sans } from "next/font/google";
 import { IRootLayout } from "@/types";
 import { Toaster } from "@/components/ui/sonner";
 import { SmootScroll } from "@/components/smooth-scroll";
+import { QueryProvider } from "@/providers/query-provider";
 
 const _googleSans = Google_Sans({
   variable: "--font-google-sans",
@@ -21,14 +22,16 @@ export default function RootLayout({ children }: IRootLayout) {
   return (
     <html lang="en">
       <body className={`${_googleSans.variable} font-sans antialiased`}>
-        <SmootScroll>
-          {children}
-          <Toaster
-            position="top-right"
-            richColors
-            duration={3000}
-          />
-        </SmootScroll>
+        <QueryProvider>
+          <SmootScroll>
+            {children}
+            <Toaster
+              position="top-right"
+              richColors
+              duration={3000}
+            />
+          </SmootScroll>
+        </QueryProvider>
       </body>
     </html>
   );

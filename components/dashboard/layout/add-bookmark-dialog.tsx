@@ -9,22 +9,19 @@ import { getURLMetadata } from "@/lib/actions/metadata.action";
 import { createBookmark } from "@/lib/actions/bookmark.action";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/helper";
 import { useDebounce } from "@/hooks/use-debounce";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AnimateIcon } from "@/components/animate-ui/icons/icon";
+import { CircleX } from "@/components/animate-ui/icons/circle-x";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Kbd } from "@/components/ui/kbd";
 
-const AnimateIcon = dynamic(() => import("@/components/animate-ui/icons/icon").then(mod => mod.AnimateIcon))
-const CircleX = dynamic(() => import("@/components/animate-ui/icons/circle-x").then(mod => mod.CircleX))
-const Button = dynamic(() => import("@/components/ui/button").then(mod => mod.Button))
-const Label = dynamic(() => import("@/components/ui/label").then(mod => mod.Label))
-const Input = dynamic(() => import("@/components/ui/input").then(mod => mod.Input))
-const Badge = dynamic(() => import("@/components/ui/badge").then(mod => mod.Badge))
-const Kbd = dynamic(() => import("@/components/ui/kbd").then(mod => mod.Kbd))
-const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog))
-const DialogContent = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogContent))
-const DialogDescription = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogDescription))
-const DialogFooter = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogFooter))
-const DialogHeader = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogHeader))
-const DialogTitle = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogTitle))
-const URLPreviewCard = dynamic(() => import("./url-preview-card").then(mod => mod.URLPreviewCard))
-const URLPreviewCardSkeleton = dynamic(() => import("./url-preview-card").then(mod => mod.URLPreviewCardSkeleton))
+const URLPreviewCard = dynamic(() => import("./url-preview-card")
+  .then(mod => mod.URLPreviewCard), { ssr: false })
+const URLPreviewCardSkeleton = dynamic(() => import("./url-preview-card")
+  .then(mod => mod.URLPreviewCardSkeleton), { ssr: false })
 
 type TAddBookmarkProps = {
   isAddModalOpen: boolean;
@@ -198,6 +195,6 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
           </form>
         </DialogContent>
       </Dialog>
-    </div >
+    </div>
   )
 }

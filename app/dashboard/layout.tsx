@@ -1,5 +1,5 @@
-import DashboardLayoutWrapper from "@/components/dashboard/(landing)/dashboard-layout-wrapper";
-import { Metadata } from "next";
+import { type Metadata } from "next";
+import DashboardLayoutWrapper from "@/components/dashboard/layout/dashboard-layout-wrapper";
 
 export const metadata: Metadata = ({
   title: "Dashboard"

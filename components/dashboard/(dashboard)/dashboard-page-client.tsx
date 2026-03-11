@@ -2,9 +2,12 @@
 
 import type { TBookmarkWithTags } from "@/types";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { motion, Variants } from "framer-motion";
 import { BookmarkCard } from "./bookmark-card";
 import { BookmarkDetailDialog } from "./bookmark-details-dialog";
+import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmark-grid-skeleton";
+import { bookmarkQuery } from "@/tanstack/queries";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -16,13 +19,11 @@ const itemVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-type TDashboardPageClientProps = {
-  bookmarks: TBookmarkWithTags[];
-}
-
-export default function DashboardPageClient({ bookmarks }: TDashboardPageClientProps) {
+export default function DashboardPageClient() {
   const [selectedBookmark, setSelectedBookmark] = useState<TBookmarkWithTags | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { data: bookmarks, isLoading } = useQuery(bookmarkQuery.all());
 
   const handleOpen = (bookmark: TBookmarkWithTags) => {
     setSelectedBookmark({ ...bookmark });
@@ -36,23 +37,26 @@ export default function DashboardPageClient({ bookmarks }: TDashboardPageClientP
         <div className="flex items-center justify-between pb-4 border-b border-border/40">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">All Links</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{bookmarks.length} saved items</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{bookmarks?.length} saved items</p>
           </div>
         </div>
 
         {/* Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {bookmarks.map((bookmark) => (
-            <motion.div key={bookmark.id} variants={itemVariants}>
-              <BookmarkCard bookmark={{ ...bookmark }} onOpen={handleOpen} />
-            </motion.div>
-          ))}
-        </motion.div>
+        {isLoading
+          ? <BookmarkGridSkeleton />
+          : <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {bookmarks?.map((bookmark) => (
+              <motion.div key={bookmark.id} variants={itemVariants}>
+                <BookmarkCard bookmark={{ ...bookmark }} onOpen={handleOpen} />
+              </motion.div>
+            ))}
+          </motion.div>
+        }
       </div>
 
       {/* Detail dialog */}

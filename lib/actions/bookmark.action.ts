@@ -1,7 +1,8 @@
 "use server"
 
-import type { TBookmarkWithTags, TDomainWithStats, TTagWithStats } from "@/types"
-import { eq } from "drizzle-orm"
+import type { TBookmarkWithTags, TTagWithStats } from "@/types"
+import { revalidatePath } from "next/cache"
+import { desc, eq } from "drizzle-orm"
 import { db } from "@/drizzle"
 import { bookmarkTable, bookmarkTagsTable, domainsTable, tagsTable } from "@/drizzle/schema"
 import { getCurrentUser } from "./auth.action"
@@ -81,11 +82,13 @@ export async function createBookmark(url: string, tags: string[]) {
     throw new Error(error.message)
   })
 
+  revalidatePath("/dasbhoard")
+  revalidatePath("/dasbhoard/recent")
   return insertedBookmark;
 }
 
-// To "Get user's bookmarks" with tags using Drizzle joins
-export const getCurrentUsersBookmarks = async (): Promise<TBookmarkWithTags[]> => {
+// To "Get user's bookmarks & ALSO recent bookmarks" with tags using joins
+export const getCurrentUsersBookmarks = async (limit?: number, isRecent?: boolean): Promise<TBookmarkWithTags[]> => {
   const { userId: currentUserId } = await getCurrentUser();
 
   // Single query: bookmarks ⟶ bookmark_tags ⟶ tags (left joins so bookmarks with no tags are still returned)
@@ -100,13 +103,13 @@ export const getCurrentUsersBookmarks = async (): Promise<TBookmarkWithTags[]> =
       description: bookmarkTable.description,
       previewImage: bookmarkTable.previewImage,
       createdAt: bookmarkTable.createdAt,
-      // Tag column (null when the bookmark has no tags)
       tag: tagsTable.tag,
     })
     .from(bookmarkTable)
     .leftJoin(bookmarkTagsTable, eq(bookmarkTagsTable.bookmarkId, bookmarkTable.id))
     .leftJoin(tagsTable, eq(tagsTable.id, bookmarkTagsTable.tagId))
-    .where(eq(bookmarkTable.userId, currentUserId));
+    .where(eq(bookmarkTable.userId, currentUserId))
+    .orderBy(isRecent ? desc(bookmarkTable.createdAt) : bookmarkTable.createdAt);
 
   // Group flat rows into { bookmark, tags[] } map
   const bookmarkMap = new Map<string, TBookmarkWithTags>();
@@ -131,7 +134,9 @@ export const getCurrentUsersBookmarks = async (): Promise<TBookmarkWithTags[]> =
     }
   }
 
-  return Array.from(bookmarkMap.values());
+  return limit
+    ? Array.from(bookmarkMap.values()).slice(0, limit)
+    : Array.from(bookmarkMap.values());
 }
 
 // To "Get domains with bookmark counts" for the current user
@@ -173,8 +178,7 @@ export const getDomainsWithBookmarkCounts = async () => {
 export const getTagsWithBookmarkCounts = async (): Promise<TTagWithStats[]> => {
   const { userId: currentUserId } = await getCurrentUser();
 
-  // Join bookmark_tags → tags → bookmarks, filtered to the current user
-  // Ordered oldest-first so each overwrite of lastTitle/lastAt is always more recent
+  // join bookmark_tags → tags → bookmarks, filtered to the current user
   const rows = await db
     .select({
       tag: tagsTable.tag,
@@ -187,7 +191,7 @@ export const getTagsWithBookmarkCounts = async (): Promise<TTagWithStats[]> => {
     .where(eq(bookmarkTable.userId, currentUserId))
     .orderBy(bookmarkTable.createdAt);
 
-  // Single pass: accumulate count + track latest bookmark per tag
+  // single pass- accumulate count + track latest bookmark per tag
   const tagMap = new Map<string, { count: number; lastTitle: string; lastAt: Date }>();
 
   for (const row of rows) {

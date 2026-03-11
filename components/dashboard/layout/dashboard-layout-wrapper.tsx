@@ -1,13 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { Search, Plus, Menu, User, LogOutIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AddBookmarkDialog } from "./add-bookmark-dialog";
 import { DashboardSidebarContent } from "./dashboard-sidebar-content";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { signout } from "@/lib/actions/auth.action";
+
+const AddBookmarkDialog = dynamic(() => import("./add-bookmark-dialog").then(mod => mod.AddBookmarkDialog))
 
 export default function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -44,7 +46,7 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <Button onClick={() => setIsAddModalOpen(true)} className="gap-x-2">
               <Plus className="size-4" />
               New Bookmark
@@ -94,7 +96,7 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
         <main className="flex-1 p-4 md:p-8 relative">
           {children}
         </main>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }

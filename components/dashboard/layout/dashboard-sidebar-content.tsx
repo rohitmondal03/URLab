@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Star, Tag, Globe, Clock, StarsIcon, TrendingUp, ChevronDown } from "lucide-react";
+import { Star, Tag, Globe, Clock, StarsIcon, TrendingUp } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Logo } from "../../shared/logo";
-import { BookmarkFillIcon } from "../../icons/static/bookmark-fill";
+import { Logo } from "@/components/shared/logo";
+import { BookmarkFillIcon } from "@/components/icons/static/bookmark-fill";
 
 export function DashboardSidebarContent() {
   const pathname = usePathname();

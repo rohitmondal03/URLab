@@ -2,6 +2,7 @@ import type { TBookmarkWithTags } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo } from "react";
+import { format } from "date-fns"
 import { Copy, ArrowUpRight, ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -65,6 +66,9 @@ export function BookmarkDetailDialog({ bookmark, open, onOpenChange }: TBookmark
                 <ExternalLink className="size-3 shrink-0" />
               </Link>
             </div>
+
+            <p className="text-muted-foreground text-sm">Uploaded at - {format(new Date(bookmark.createdAt), "MMM dd, yyyy 'at' hh:mm a")}</p>
+
             <DialogTitle className="text-xl font-semibold leading-snug text-foreground wrap-break-word">
               {bookmark.title}
             </DialogTitle>

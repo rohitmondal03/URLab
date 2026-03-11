@@ -1,21 +1,18 @@
-import { Suspense } from "react";
 import { Metadata } from "next";
-import { getTagsWithBookmarkCounts } from "@/lib/actions/bookmark.action";
-import TagsPageClient, { TagsPageSkeleton } from "@/components/dashboard/tags/tags-page-client";
+import { QueryClient } from "@tanstack/react-query";
+import { tagsQuery } from "@/tanstack/queries";
+import TagsPageClient from "@/components/dashboard/tags/tags-page-client";
 
 export const metadata: Metadata = {
   title: "Tags",
 };
 
-async function TagsContent() {
-  const tags = await getTagsWithBookmarkCounts();
-  return <TagsPageClient tags={tags} />;
-}
+export default async function TagsPage() {
+  const query = new QueryClient();
 
-export default function TagsPage() {
+  await query.prefetchQuery(tagsQuery.default())
+
   return (
-    <Suspense fallback={<TagsPageSkeleton />}>
-      <TagsContent />
-    </Suspense>
+    <TagsPageClient />
   );
 }
