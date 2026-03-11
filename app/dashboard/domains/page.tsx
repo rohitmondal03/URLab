@@ -5,6 +5,9 @@ import DomainsPageClient from "@/components/dashboard/domains/domains-page-clien
 
 export const metadata: Metadata = {
   title: "Domains",
+  description:
+    "See all the domains you have bookmarked. Group and explore your saved links by their source domain.",
+  robots: { index: false, follow: false },
 };
 
 export default async function DomainsPage() {
