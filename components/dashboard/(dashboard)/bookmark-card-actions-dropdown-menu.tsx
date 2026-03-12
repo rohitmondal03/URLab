@@ -1,5 +1,7 @@
-import { type Dispatch, type SetStateAction } from "react";
-import { Copy, Edit2, Trash2, ExternalLink, MoreVertical } from "lucide-react";
+"use client"
+
+import { type ReactNode } from "react";
+import { Copy, Edit2, Trash2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -8,48 +10,73 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { deleteBookmarkMutation } from "@/tanstack/mutations";
 
 type TBookmarkCardActionsDropwdownMenuProps = {
   url: string;
   id: string;
-  isOpen: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>
+  children: ReactNode;
 }
 
-export function BookmarkCardActionsDropwdownMenu({ url, id, isOpen, setOpen }: TBookmarkCardActionsDropwdownMenuProps) {
+export function BookmarkCardActionsDropwdownMenu({ url, id, children }: TBookmarkCardActionsDropwdownMenuProps) {
+
+  const mutation = deleteBookmarkMutation();
+
+  // For deleting bookmark
+  const handleDeleteBookmark = () => {
+    mutation.mutate({ bookmarkId: id }, {
+      onSuccess: () => {
+        toast.success("Bookmark deleted successfully !!");
+      },
+      onError: (error) => {
+        toast.error("Error deleting Bookmark !!", {
+          description: error.message,
+        })
+      }
+    })
+  }
+
   return (
-    <div onClick={(e) => e.stopPropagation()}>
-      <DropdownMenu open={isOpen} onOpenChange={setOpen}>
-        <DropdownMenuContent align="end" className="w-40 bg-card/95 backdrop-blur-md font-semibold shadow-xl border-2 border-zinc-300">
-          <DropdownMenuItem
-            className="text-sm cursor-pointer gap-2"
-            onClick={() => window.open(url, "_blank")}
-          >
-            <ExternalLink className="size-4" /> Open link
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="text-sm cursor-pointer gap-2"
-            onClick={() => {
-              try {
-                navigator.clipboard.writeText(url)
-                toast.success("Link copied !!")
-              } catch (err: unknown) {
-                toast((err as Error).message)
-              }
-            }}
-          >
-            <Copy className="size-4" /> Copy link
-          </DropdownMenuItem>
-          <DropdownMenuItem className="text-sm cursor-pointer gap-2">
-            <Edit2 className="size-4" /> Edit
-          </DropdownMenuItem>
-          <DropdownMenuSeparator className="bg-border/50" />
-          <DropdownMenuItem variant="destructive" className="text-sm cursor-pointer gap-2">
-            <Trash2 className="size-4" /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+        {children}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        className="w-40 bg-card/95 backdrop-blur-md font-semibold shadow-xl border-2 border-zinc-300"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <DropdownMenuItem
+          className="text-sm cursor-pointer gap-2"
+          onClick={() => window.open(url, "_blank")}
+        >
+          <ExternalLink className="size-4" /> Open link
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="text-sm cursor-pointer gap-2"
+          onClick={() => {
+            try {
+              navigator.clipboard.writeText(url)
+              toast.success("Link copied !!")
+            } catch (err: unknown) {
+              toast((err as Error).message)
+            }
+          }}
+        >
+          <Copy className="size-4" /> Copy link
+        </DropdownMenuItem>
+        <DropdownMenuItem className="text-sm cursor-pointer gap-2">
+          <Edit2 className="size-4" /> Edit
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="bg-border/50" />
+        <DropdownMenuItem
+          variant="destructive"
+          className="text-sm cursor-pointer gap-2"
+          onClick={handleDeleteBookmark}
+        >
+          <Trash2 className="size-4" /> Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

@@ -2,7 +2,7 @@
 
 import type { TBookmarkWithTags } from "@/types";
 import { useState } from "react";
-import { motion, Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { bookmarkQuery } from "@/tanstack/queries";
@@ -10,7 +10,7 @@ import { BookmarkCard } from "@/components/dashboard/(dashboard)/bookmark-card";
 import { BookmarkDetailDialog } from "@/components/dashboard/(dashboard)/bookmark-details-dialog";
 import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmark-grid-skeleton";
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
 };
@@ -24,36 +24,36 @@ export function RecentlyAddedPageClient() {
   const [selectedBookmark, setSelectedBookmark] = useState<TBookmarkWithTags | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { data: recentBookmarks, isLoading } = useQuery(bookmarkQuery.recent(6));
+  const { data: recentBookmarks = [], isLoading } = useQuery(bookmarkQuery.recent({ limit: 6 }));
 
   const handleOpen = (bookmark: TBookmarkWithTags) => {
     setSelectedBookmark({ ...bookmark });
     setDialogOpen(true);
   };
 
-  return (
-    <>
-      <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-border/40">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              Recently Added
-            </h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {recentBookmarks?.length} recent {recentBookmarks?.length === 1 ? "item" : "items"}
-            </p>
+  return isLoading
+    ? <BookmarkGridSkeleton />
+    : (
+      <>
+        <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-4 border-b border-border/40">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Recently Added
+              </h1>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {recentBookmarks?.length} recent {recentBookmarks?.length === 1 ? "item" : "items"}
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-secondary/40 border border-border/40 rounded-full px-3 py-1.5">
+              <Clock className="size-3.5" />
+              Newest first
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-secondary/40 border border-border/40 rounded-full px-3 py-1.5">
-            <Clock className="size-3.5" />
-            Newest first
-          </div>
-        </div>
 
-        {/* Grid or empty state */}
-        {isLoading
-          ? <BookmarkGridSkeleton />
-          : recentBookmarks?.length === 0 ? (
+          {/* Grid or empty state */}
+          {recentBookmarks.length === 0 ? (
             <EmptyState />
           ) : (
             <motion.div
@@ -68,18 +68,17 @@ export function RecentlyAddedPageClient() {
                 </motion.div>
               ))}
             </motion.div>
-          )
-        }
-      </div>
+          )}
+        </div>
 
-      {/* Detail dialog */}
-      <BookmarkDetailDialog
-        bookmark={selectedBookmark}
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-      />
-    </>
-  );
+        {/* Detail dialog */}
+        <BookmarkDetailDialog
+          bookmark={selectedBookmark}
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+        />
+      </>
+    );
 }
 
 function EmptyState() {

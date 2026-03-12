@@ -21,6 +21,7 @@ export const bookmarkTable = pgTable("bookmarks", {
   index("idx_bookmarks_user_id").on(table.userId),
   index("idx_bookmarks_domain_id").on(table.domainId),
   index("idx_bookmarks_url").on(table.url),
+
 ])
 
 export const tagsTable = pgTable("tags", {
@@ -32,7 +33,7 @@ export const tagsTable = pgTable("tags", {
 ])
 
 export const bookmarkTagsTable = pgTable("bookmark_tags", {
-  bookmarkId: uuid("bookmark_id").notNull().references(() => bookmarkTable.id),
+  bookmarkId: uuid("bookmark_id").notNull().references(() => bookmarkTable.id, { onDelete: "cascade" }),
   tagId: uuid("tag_id").notNull().references(() => tagsTable.id),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [

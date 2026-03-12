@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { getFaviconFromURL } from "@/lib/helper";
+import { formattedDateWithTime, getFaviconFromURL } from "@/lib/helper";
 
 type TBookmarkDetailDialogProps = {
   bookmark: TBookmarkWithTags | null;
@@ -67,7 +67,9 @@ export function BookmarkDetailDialog({ bookmark, open, onOpenChange }: TBookmark
               </Link>
             </div>
 
-            <p className="text-muted-foreground text-sm">Uploaded at - {format(new Date(bookmark.createdAt), "MMM dd, yyyy 'at' hh:mm a")}</p>
+            <p className="text-muted-foreground text-sm">
+              Uploaded at - {formattedDateWithTime(bookmark.createdAt)}
+            </p>
 
             <DialogTitle className="text-xl font-semibold leading-snug text-foreground wrap-break-word">
               {bookmark.title}

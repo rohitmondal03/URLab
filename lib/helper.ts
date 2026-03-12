@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { getDomain } from "tldts"
 
 export const BASE_URL = process.env.NODE_ENV === "development"
@@ -22,5 +23,9 @@ export function getDomainFromUrl(url: string) {
 }
 
 export const getFaviconFromURL = (url: string) => {
-  return `https://www.google.com/s2/favicons?domain=${getDomainFromUrl(url)}`
+  return `https://www.google.com/s2/favicons?domain=${getDomainFromUrl(url)}&sz=64`
+}
+
+export const formattedDateWithTime = (date: string | Date) => {
+  return format(new Date(date), "MMM dd, yyyy 'at' hh:mm a")
 }

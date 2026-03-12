@@ -1,5 +1,5 @@
 import type { TBookmarkWithTags } from "@/types";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { MoreVertical, } from "lucide-react";
@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
+import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
 
 const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu").then(mod => mod.BookmarkCardActionsDropwdownMenu))
 
@@ -17,11 +17,6 @@ type TBookmarkCardProps = {
 }
 
 export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedBookmark, setSelectedBookmark] = useState<{ url: string, id: string }>(
-    { url: "", id: "" }
-  )
-
   const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
 
   const trimmedDescription = useMemo(() =>
@@ -68,24 +63,29 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
                 className="size-4 object-contain rounded-sm"
                 loading="lazy"
               />
-              <span className="text-sm text-muted-foreground truncate">
+              <span className="text-sm truncate">
                 {getDomainFromUrl(bookmark.url)}
               </span>
             </div>
 
             {/* Actions dropdown — stops card click propagation */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-7 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
-              onClick={() => {
-                setSelectedBookmark({ url: bookmark.url, id: bookmark.id })
-                setDropdownOpen(true)
-              }}
+            <BookmarkCardActionsDropwdownMenu
+              url={bookmark.url}
+              id={bookmark.id}
             >
-              <MoreVertical className="size-4" />
-            </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-7 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
+              >
+                <MoreVertical className="size-4" />
+              </Button>
+            </BookmarkCardActionsDropwdownMenu>
           </div>
+
+          <p className="text-xs text-muted-foreground">
+            {formattedDateWithTime(bookmark.createdAt)}
+          </p>
 
           {/* Title */}
           <h3 className="font-semibold text-lg text-foreground line-clamp-2 leading-snug">
@@ -123,13 +123,6 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
           )}
         </CardContent>
       </Card>
-
-      {/* Bookmark options dropdown */}
-      <BookmarkCardActionsDropwdownMenu
-        {...selectedBookmark}
-        isOpen={isDropdownOpen}
-        setOpen={setDropdownOpen}
-      />
     </>
   );
 }

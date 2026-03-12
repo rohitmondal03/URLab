@@ -8,18 +8,24 @@ import { queryKeys } from "./query-keys";
 export const bookmarkQuery = {
   all: () => ({
     queryKey: queryKeys.bookmarks,
-    queryFn: () => getCurrentUsersBookmarks()
+    queryFn: () => getCurrentUsersBookmarks(),
+    refetchOnWindowFocus: true,
+    staleTime: Infinity
   }),
-  recent: (limit?: number) => ({
+  recent: ({ limit }: { limit?: number }) => ({
     queryKey: queryKeys.recentBookmarks,
-    queryFn: () => getCurrentUsersBookmarks(limit, true)
+    queryFn: () => getCurrentUsersBookmarks(limit, true),
+    refetchOnWindowFocus: true,
+    staleTime: Infinity
   })
 }
 
 export const tagsQuery = {
   default: () => ({
     queryKey: queryKeys.tags,
-    queryFn: () => getTagsWithBookmarkCounts()
+    queryFn: () => getTagsWithBookmarkCounts(),
+    refetchOnWindowFocus: true,
+    staleTime: Infinity,
   })
 }
 
@@ -27,5 +33,7 @@ export const domainsQuery = {
   default: () => ({
     queryKey: queryKeys.domains,
     queryFn: () => getDomainsWithBookmarkCounts(),
+    refetchOnWindowFocus: true,
+    staleTime: Infinity,
   })
 }

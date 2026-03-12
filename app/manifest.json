@@ -1,0 +1,16 @@
+{
+  "name": "URLab – Your Personal Lab for Organizing the Internet",
+  "short_name": "URLab",
+  "description": "URLab is your personal lab for saving, tagging, and organizing URLs from across the internet.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

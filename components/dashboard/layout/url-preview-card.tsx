@@ -27,7 +27,7 @@ export function URLPreviewCard({ description, previewImageUrl, title, url }: TUr
           width={100}
           className="h-20 w-52 rounded-md"
         />
-        <p className="text-sm">{title}</p>
+        <p className="font-medium">{title}</p>
       </div>
       <Separator className="bg-zinc-400" />
       <div className="space-y-2">

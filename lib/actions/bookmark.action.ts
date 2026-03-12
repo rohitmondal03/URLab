@@ -1,7 +1,6 @@
 "use server"
 
 import type { TBookmarkWithTags, TTagWithStats } from "@/types"
-import { revalidatePath } from "next/cache"
 import { desc, eq } from "drizzle-orm"
 import { db } from "@/drizzle"
 import { bookmarkTable, bookmarkTagsTable, domainsTable, tagsTable } from "@/drizzle/schema"
@@ -82,9 +81,26 @@ export async function createBookmark(url: string, tags: string[]) {
     throw new Error(error.message)
   })
 
-  revalidatePath("/dasbhoard")
-  revalidatePath("/dasbhoard/recent")
   return insertedBookmark;
+}
+
+// To "delete a bookmark"
+export const deleteBookmark = async (bookmarkId: string) => {
+  const { userId: currentUserId } = await getCurrentUser();
+
+  const [{ userId }] = await db
+    .select({ userId: bookmarkTable.userId })
+    .from(bookmarkTable)
+    .where(eq(bookmarkTable.id, bookmarkId))
+    .limit(1);
+
+  if (currentUserId !== userId) {
+    throw new Error("Only users uploaded this bookmark can DELETE it !!")
+  }
+
+  await db
+    .delete(bookmarkTable)
+    .where(eq(bookmarkTable.id, bookmarkId))
 }
 
 // To "Get user's bookmarks & ALSO recent bookmarks" with tags using joins

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function RecentlyAddedPage() {
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery(bookmarkQuery.recent(6));
+  await queryClient.prefetchQuery(bookmarkQuery.recent({ limit: 6 }));
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -9,8 +9,9 @@ export function QueryProvider({ children }: IRootLayout) {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60 * 5,
-        refetchOnWindowFocus: false,
+        // staleTime: 1000 * 60 * 5,
+        refetchOnWindowFocus: true,
+        staleTime: Infinity
       }
     }
   }))

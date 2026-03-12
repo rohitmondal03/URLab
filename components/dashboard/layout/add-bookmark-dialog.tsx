@@ -1,15 +1,13 @@
 "use client"
 
 import type { TUrlMetadata } from "@/types";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Info, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
+import { Dispatch, SetStateAction, useEffect, useState, type SubmitEvent } from "react";
+import { Info, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { getURLMetadata } from "@/lib/actions/metadata.action";
-import { createBookmark } from "@/lib/actions/bookmark.action";
-import { DEFAULT_ERROR_MESSAGE } from "@/lib/helper";
 import { useDebounce } from "@/hooks/use-debounce";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { createBookmarkMutation } from "@/tanstack/mutations";
 import { AnimateIcon } from "@/components/animate-ui/icons/icon";
 import { CircleX } from "@/components/animate-ui/icons/circle-x";
 import { Button } from "@/components/ui/button";
@@ -17,6 +15,15 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import Image from "next/image";
 
 const URLPreviewCard = dynamic(() => import("./url-preview-card")
   .then(mod => mod.URLPreviewCard), { ssr: false })
@@ -34,8 +41,11 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
   const [isLoading, setLoading] = useState(false);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [metadata, setMetadata] = useState<TUrlMetadata | null>(null)
+  const [metadata, setMetadata] = useState<TUrlMetadata | null>(null);
+
   const debouncedUrl = useDebounce(url, 300);
+
+  const mutation = createBookmarkMutation();
 
   // for getting preview of the entered URl
   useEffect(() => {
@@ -58,26 +68,37 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
   }, [debouncedUrl])
 
   // handler to add bookmark
-  const handleBookmark = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCreateBookmark = async (e: SubmitEvent) => {
     e.preventDefault();
 
     setLoading(true);
 
-    try {
-      await createBookmark(url.trim(), tags);
-      toast.success("Bookmark added successfully !!");
-    } catch (error: any) {
-      toast.error(error.message || DEFAULT_ERROR_MESSAGE);
-    } finally {
-      setLoading(false);
-    }
+    mutation.mutate({ url: url.trim(), tags }, {
+      onSuccess: () => {
+        setIsAddModalOpen(false);
+        setUrl("");
+        setTags([]);
+        setMetadata(null);
+        toast.success("Bookmark added successfully !!")
+      },
+      onError: (err) => {
+        toast.error(err.message);
+      },
+      onSettled: () => {
+        setError(null);
+        setLoading(false);
+      },
+    })
   }
 
   return (
     <div onClick={e => e.stopPropagation()}>
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="border-border/50 bg-card/95 backdrop-blur-md w-full max-h-[90vh] flex flex-col">
-          <form onSubmit={handleBookmark} className="flex flex-col gap-2 min-h-0 flex-1">
+          <form
+            onSubmit={handleCreateBookmark}
+            className="flex flex-col gap-2 min-h-0 flex-1"
+          >
             <DialogHeader>
               <DialogTitle>Save a new bookmark</DialogTitle>
               <DialogDescription>
