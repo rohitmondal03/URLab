@@ -2,7 +2,6 @@ import type { TBookmarkWithTags } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo } from "react";
-import { format } from "date-fns"
 import { Copy, ArrowUpRight, ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -57,7 +56,10 @@ export function BookmarkDetailDialog({ bookmark, open, onOpenChange }: TBookmark
                 loading="lazy"
               />
               <Link
-                href={bookmark.url}
+                href={!bookmark.url.startsWith("https://")
+                  ? `https://${bookmark.url}`
+                  : bookmark.url
+                }
                 target="_blank"
                 rel="noreferrer"
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 min-w-0 truncate"

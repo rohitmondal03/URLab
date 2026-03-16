@@ -1,15 +1,7 @@
-import type { Metadata } from "next";
 import type { IRootLayout } from "@/types";
+import { AUTH_PAGE_METADATA } from "@/lib/metadata/auth";
 
-export const metadata: Metadata = {
-  title: "Sign In",
-  description:
-    "Sign in or create a new URLab account to start saving, tagging, and organizing your links.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+export const metadata = AUTH_PAGE_METADATA;
 
 export default function AuthLayout({ children }: IRootLayout) {
   return <>{children}</>;

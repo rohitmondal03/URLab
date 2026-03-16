@@ -23,7 +23,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Image from "next/image";
 
 const URLPreviewCard = dynamic(() => import("./url-preview-card")
   .then(mod => mod.URLPreviewCard), { ssr: false })
@@ -32,7 +31,7 @@ const URLPreviewCardSkeleton = dynamic(() => import("./url-preview-card")
 
 type TAddBookmarkProps = {
   isAddModalOpen: boolean;
-  setIsAddModalOpen: Dispatch<SetStateAction<boolean>>
+  setIsAddModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBookmarkProps) {
@@ -154,7 +153,7 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
                         <Badge
                           key={idx}
                           className="text-[10px] hover:scale-[1.03] transition duration-150 cursor-pointer"
-                          onClick={(e) => {
+                          onClick={() => {
                             const currentIdx = idx;
                             setTags((prev) => prev
                               .splice(0, currentIdx)
@@ -197,7 +196,7 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
               }
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>
                 Cancel
               </Button>
               <Button

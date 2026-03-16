@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { AlertCircle, RefreshCcw } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { BookmarkFillIcon } from "@/components/icons/static/bookmark-fill";
 
 type TErrorPageProps = {
   error: Error & { digest?: string };
@@ -55,7 +55,7 @@ export default function ErrorPage({ error, }: TErrorPageProps) {
           )}
         >
           Back to Dashboard
-          <BookmarkFillIcon />
+          <Bookmark fill="#fff" />
         </Link>
       </div>
     </motion.div>

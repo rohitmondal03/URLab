@@ -1,11 +1,10 @@
 import { type Provider as OAuthProvider } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import { RiGithubFill, RiGoogleFill } from "@remixicon/react"
 import { Button } from "../ui/button";
 import { signinWithOAuth } from "@/lib/actions/auth.action";
 import { capitalizeFirstChar, DEFAULT_ERROR_MESSAGE } from "@/lib/helper";
 import { useState } from "react";
-import { GoogleFillIcon } from "../icons/static/google-fill";
-import { GithubFillIcon } from "../icons/static/github-fill";
 
 export function OAuthButtonGroup() {
   const [isLoading, setLoading] = useState(false);
@@ -32,7 +31,7 @@ export function OAuthButtonGroup() {
         onClick={() => handleOAuthSignin("github")}
         disabled={isLoading}
       >
-        <GithubFillIcon />
+        <RiGithubFill />
         Continue with GitHub
       </Button>
       <Button
@@ -42,7 +41,7 @@ export function OAuthButtonGroup() {
         onClick={() => handleOAuthSignin("google")}
         disabled={isLoading}
       >
-        <GoogleFillIcon />
+        <RiGoogleFill />
         Continue with Google
       </Button>
     </div>

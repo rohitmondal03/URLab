@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Star, Tag, Globe, Clock, StarsIcon, TrendingUp } from "lucide-react";
+import { Star, Tag, Globe, Clock, StarsIcon, TrendingUp, Bookmark } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/shared/logo";
-import { BookmarkFillIcon } from "@/components/icons/static/bookmark-fill";
 
 export function DashboardSidebarContent() {
   const pathname = usePathname();
@@ -13,7 +12,7 @@ export function DashboardSidebarContent() {
     {
       title: "Navigation",
       items: [
-        { name: "Your Bookmarks", icon: <BookmarkFillIcon />, path: "/dashboard" },
+        { name: "Your Bookmarks", icon: <Bookmark />, path: "/dashboard" },
         { name: "Favorites", icon: <Star />, path: "/dashboard/favorites" },
         { name: "Recently Added", icon: <Clock />, path: "/dashboard/recent" },
       ]

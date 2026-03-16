@@ -3,7 +3,17 @@
 import { Layers, Layout, Zap } from "lucide-react";
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { fadeUpVariants, staggerContainer } from "@/lib/animation-variants";
+
+export const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
+};
+
+
+export const fadeUpVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
 
 export function FeaturesSection() {
   return (

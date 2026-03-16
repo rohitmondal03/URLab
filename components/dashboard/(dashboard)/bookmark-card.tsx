@@ -1,5 +1,5 @@
-import type { TBookmarkWithTags } from "@/types";
-import { useMemo } from "react";
+import type { TBookmark, TBookmarkWithTags } from "@/types";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { MoreVertical, } from "lucide-react";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
 
-const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu").then(mod => mod.BookmarkCardActionsDropwdownMenu))
+const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu").then(mod => mod.BookmarkCardActionsDropdownMenu))
 
 type TBookmarkCardProps = {
   bookmark: TBookmarkWithTags;
@@ -17,6 +17,18 @@ type TBookmarkCardProps = {
 }
 
 export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
+  const [bookmarkToBeEdited, setBookmarkToBeEdited] = useState<{
+    bookmarkId: TBookmark["id"],
+    bookmarkTitle: TBookmark["title"],
+    bookmarkDescription: TBookmark["description"],
+    bookmarkUrl: TBookmark["url"]
+  }>({
+    bookmarkDescription: "",
+    bookmarkId: "",
+    bookmarkTitle: "",
+    bookmarkUrl: "",
+  });
+
   const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
 
   const trimmedDescription = useMemo(() =>
@@ -69,14 +81,17 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
             </div>
 
             {/* Actions dropdown — stops card click propagation */}
-            <BookmarkCardActionsDropwdownMenu
-              url={bookmark.url}
-              id={bookmark.id}
-            >
+            <BookmarkCardActionsDropwdownMenu {...bookmarkToBeEdited}>
               <Button
                 variant="ghost"
                 size="icon"
                 className="size-7 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
+                onClick={() => setBookmarkToBeEdited({
+                  bookmarkId: bookmark.id,
+                  bookmarkDescription: bookmark.description,
+                  bookmarkTitle: bookmark.title,
+                  bookmarkUrl: bookmark.url,
+                })}
               >
                 <MoreVertical className="size-4" />
               </Button>
@@ -123,6 +138,8 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
           )}
         </CardContent>
       </Card>
+
+      {/* <EditBookmarkDialog /> */}
     </>
   );
 }

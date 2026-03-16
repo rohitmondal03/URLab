@@ -6,7 +6,6 @@ import { motion } from "framer-motion"
 import { buttonVariants } from "../ui/button";
 import { Logo } from "../shared/logo";
 import { cn } from "@/lib/utils";
-import { BookmarkFillIcon } from "../icons/static/bookmark-fill";
 
 export function Navbar() {
   return (
@@ -22,7 +21,7 @@ export function Navbar() {
           buttonVariants({ variant: "default" })
         )}>
           Your Bookmarks
-          <BookmarkFillIcon />
+          <Bookmark size={"#fff"} />
         </Link>
       </nav>
     </motion.header>
