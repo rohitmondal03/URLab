@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Bookmark } from "lucide-react";
+import { ArrowLeftIcon, BookmarkIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -31,24 +31,24 @@ export default function NotFound() {
         The link you followed may be broken, <br /> or the page may have been removed.
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+      <div className="flex flex-col items-center justify-center sm:flex-row gap-3 w-full sm:w-auto">
         <Button
-          variant={"outline"}
-          className="gap-x-2"
+          variant={"secondary"}
+          className="gap-x-2 w-3/4 sm:w-fit"
           onClick={() => router.back()}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeftIcon className="mr-2 h-4 w-4" />
           Go back
         </Button>
         <Link
           href="/dashboard"
           className={cn(
             buttonVariants({ variant: "default" }),
-            "w-full sm:w-auto gap-x-2"
+            "w-3/4 sm:w-fit gap-x-2"
           )}
         >
           Back to Dashboard
-          <Bookmark />
+          <BookmarkIcon fill="#fff" />
         </Link>
       </div>
     </motion.div>

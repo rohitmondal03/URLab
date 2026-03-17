@@ -5,8 +5,8 @@ import { useState } from "react";
 import { Search, Plus, Menu, User, LogOutIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DashboardSidebarContent } from "./dashboard-sidebar-content";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { signout } from "@/lib/actions/auth.action";
 
 const AddBookmarkDialog = dynamic(() => import("./add-bookmark-dialog").then(mod => mod.AddBookmarkDialog))
@@ -31,7 +31,7 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
               variant="ghost"
               size="icon"
               className="md:hidden text-muted-foreground"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={() => setIsMobileMenuOpen(prev => !prev)}
             >
               <Menu className="size-5" />
             </Button>
@@ -51,8 +51,8 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
               <Plus className="size-4" />
               New Bookmark
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+            <Popover>
+              <PopoverTrigger asChild>
                 <Button
                   size={"icon-lg"}
                   variant={"secondary"}
@@ -60,16 +60,18 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
                 >
                   <User />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="font-semibold">
-                <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={signout} variant="destructive">
-                    <LogOutIcon />
-                    Sign out
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </PopoverTrigger>
+              <PopoverContent className="font-semibold w-52">
+                <Button
+                  onClick={signout}
+                  variant="destructive"
+                  className="w-full"
+                >
+                  <LogOutIcon />
+                  Sign out
+                </Button>
+              </PopoverContent>
+            </Popover>
           </div>
           <AddBookmarkDialog
             isAddModalOpen={isAddModalOpen}

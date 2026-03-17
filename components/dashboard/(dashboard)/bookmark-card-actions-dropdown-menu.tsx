@@ -2,19 +2,17 @@
 
 import type { TBookmark } from "@/types";
 import dynamic from "next/dynamic";
-import { type ReactNode } from "react";
-import { Copy, Edit2, Trash2, ExternalLink } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { ExternalLink, Edit2Icon, Trash2Icon, CopyIcon } from "lucide-react";
 import { toast } from "sonner";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { deleteBookmarkMutation } from "@/tanstack/mutations";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
-const EditBookmarkDialog = dynamic(() => import("./edit-bookmark-dialog").then(mod => mod.EditBookmarkDialog))
+const EditBookmarkDialog = dynamic(() => import("./edit-bookmark-dialog").then(mod => mod.EditBookmarkDialog), { ssr: false })
 
 type TBookmarkCardActionsDropwdownMenuProps = {
   bookmarkId: TBookmark["id"],
@@ -25,12 +23,13 @@ type TBookmarkCardActionsDropwdownMenuProps = {
 }
 
 export function BookmarkCardActionsDropdownMenu({
-  children,
   bookmarkId,
   bookmarkDescription,
   bookmarkTitle,
-  bookmarkUrl
+  bookmarkUrl,
+  children
 }: TBookmarkCardActionsDropwdownMenuProps) {
+  const [isEditBookmarkDialogOpen, setEditBookmarkDialogOpen] = useState(false);
 
   const mutation = deleteBookmarkMutation();
 
@@ -49,24 +48,31 @@ export function BookmarkCardActionsDropdownMenu({
   }
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+    <div>
+      <Popover>
+        <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
           {children}
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
+        </PopoverTrigger>
+        <PopoverContent
           align="end"
-          className="w-40 bg-card/95 backdrop-blur-md font-semibold shadow-xl border-2 border-zinc-300"
+          className="w-40 bg-card/95 backdrop-blur-md font-semibold shadow-2xl border-2 border-zinc-300 space-y-2 p-3"
           onClick={(e) => e.stopPropagation()}
         >
-          <DropdownMenuItem
-            className="text-sm cursor-pointer gap-2"
-            onClick={() => window.open(bookmarkUrl, "_blank")}
+          <Link
+            href={bookmarkUrl.startsWith("https://")
+              ? bookmarkUrl
+              : `https://${bookmarkUrl}`}
+            className={cn(
+              "text-sm cursor-pointer gap-2 w-full",
+              buttonVariants({ variant: "secondary" })
+            )}
+            target="_blank"
           >
             <ExternalLink className="size-4" /> Open link
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="text-sm cursor-pointer gap-2"
+          </Link>
+          <Button
+            variant={"secondary"}
+            className="text-sm cursor-pointer gap-2 w-full"
             onClick={() => {
               try {
                 navigator.clipboard.writeText(bookmarkUrl)
@@ -76,28 +82,33 @@ export function BookmarkCardActionsDropdownMenu({
               }
             }}
           >
-            <Copy className="size-4" /> Copy link
-          </DropdownMenuItem>
-          <DropdownMenuItem className="text-sm cursor-pointer gap-2">
-            <Edit2 className="size-4" /> Edit
-          </DropdownMenuItem>
-          <DropdownMenuSeparator className="bg-border/50" />
-          <DropdownMenuItem
+            <CopyIcon className="size-4" /> Copy link
+          </Button>
+          <Button
+            variant={"secondary"}
+            className="text-sm cursor-pointer gap-2 w-full"
+            onClick={() => setEditBookmarkDialogOpen(true)}
+          >
+            <Edit2Icon className="size-4" /> Edit
+          </Button>
+          <Separator orientation="horizontal" />
+          <Button
             variant="destructive"
-            className="text-sm cursor-pointer gap-2"
+            className="text-sm cursor-pointer gap-2 w-full"
             onClick={handleDeleteBookmark}
           >
-            <Trash2 className="size-4" /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <Trash2Icon className="size-4" /> Delete
+          </Button>
+        </PopoverContent>
+      </Popover>
 
-      {/* Edit Bookmark Dialog */}
       <EditBookmarkDialog
-        bookmarkId={bookmarkId}
-        bookmarkTitle={bookmarkTitle}
+        isOpen={isEditBookmarkDialogOpen}
+        setOpen={setEditBookmarkDialogOpen}
         bookmarkDescription={bookmarkDescription}
+        bookmarkTitle={bookmarkTitle}
+        bookmarkId={bookmarkId}
       />
-    </>
+    </div>
   )
 }

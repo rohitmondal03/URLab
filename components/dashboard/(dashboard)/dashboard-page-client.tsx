@@ -32,32 +32,38 @@ export default function DashboardPageClient() {
 
   return (
     <>
-      <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-border/40">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">All Links</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{bookmarks?.length} saved items</p>
-          </div>
-        </div>
+      {isLoading
+        ? <BookmarkGridSkeleton />
+        : (
+          <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-border/40">
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                  All Links
+                </h1>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {bookmarks?.length} saved items
+                </p>
+              </div>
+            </div>
 
-        {/* Grid */}
-        {isLoading
-          ? <BookmarkGridSkeleton />
-          : <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {bookmarks?.map((bookmark) => (
-              <motion.div key={bookmark.id} variants={itemVariants}>
-                <BookmarkCard bookmark={{ ...bookmark }} onOpen={handleOpen} />
-              </motion.div>
-            ))}
-          </motion.div>
-        }
-      </div>
+            {/* Grid */}
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {bookmarks?.map((bookmark) => (
+                <motion.div key={bookmark.id} variants={itemVariants}>
+                  <BookmarkCard bookmark={{ ...bookmark }} onOpen={handleOpen} />
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        )
+      }
 
       {/* Detail dialog */}
       <BookmarkDetailDialog

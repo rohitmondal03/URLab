@@ -1,12 +1,13 @@
 "use server"
 
 import type { TBookmarkWithTags, TTagWithStats } from "@/types"
-import { desc, eq } from "drizzle-orm"
+import { and, desc, eq } from "drizzle-orm"
 import { db } from "@/drizzle"
 import { bookmarkTable, bookmarkTagsTable, domainsTable, tagsTable } from "@/drizzle/schema"
 import { getCurrentUser } from "./auth.action"
 import { getURLMetadata } from "./metadata.action"
 import "dotenv/config"
+import { DEFAULT_ERROR_MESSAGE } from "../helper"
 
 // To "Create a New Bookmark", with edge function and imp few checks
 export async function createBookmark(url: string, tags: string[]) {
@@ -101,6 +102,26 @@ export const deleteBookmark = async (bookmarkId: string) => {
   await db
     .delete(bookmarkTable)
     .where(eq(bookmarkTable.id, bookmarkId))
+}
+
+// To edit a bookmark (title and description onyl, for now)
+export const editBookmark = async (bookmarkId: string, bookmarkTitle: string, bookmarkDescription: string) => {
+  const { userId } = await getCurrentUser();
+
+  try {
+    await db
+      .update(bookmarkTable)
+      .set({
+        title: bookmarkTitle,
+        description: bookmarkDescription,
+      })
+      .where(and(
+        eq(bookmarkTable.id, bookmarkId),
+        eq(bookmarkTable.userId, userId),
+      ))
+  } catch (error: any) {
+    throw new Error(error.message || DEFAULT_ERROR_MESSAGE);
+  }
 }
 
 // To "Get user's bookmarks & ALSO recent bookmarks" with tags using joins

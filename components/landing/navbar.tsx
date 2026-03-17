@@ -21,7 +21,7 @@ export function Navbar() {
           buttonVariants({ variant: "default" })
         )}>
           Your Bookmarks
-          <Bookmark size={"#fff"} />
+          <Bookmark fill={"#fff"} />
         </Link>
       </nav>
     </motion.header>

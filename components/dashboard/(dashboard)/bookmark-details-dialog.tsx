@@ -2,12 +2,14 @@ import type { TBookmarkWithTags } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo } from "react";
-import { Copy, ArrowUpRight, ExternalLink } from "lucide-react";
+import { CopyIcon, ArrowUpRightIcon, ExternalLinkIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formattedDateWithTime, getFaviconFromURL } from "@/lib/helper";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 type TBookmarkDetailDialogProps = {
   bookmark: TBookmarkWithTags | null;
@@ -15,7 +17,11 @@ type TBookmarkDetailDialogProps = {
   onOpenChange: (open: boolean) => void;
 }
 
-export function BookmarkDetailDialog({ bookmark, open, onOpenChange }: TBookmarkDetailDialogProps) {
+export function BookmarkDetailDialog({
+  bookmark,
+  open,
+  onOpenChange,
+}: TBookmarkDetailDialogProps) {
   if (!bookmark) return null;
 
   const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
@@ -62,10 +68,10 @@ export function BookmarkDetailDialog({ bookmark, open, onOpenChange }: TBookmark
                 }
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 min-w-0 truncate"
+                className="text-sm hover:text-foreground transition-colors flex items-center gap-1 min-w-0 truncate"
               >
                 <span className="truncate">{bookmark.url}</span>
-                <ExternalLink className="size-3 shrink-0" />
+                <ExternalLinkIcon className="size-3 shrink-0" />
               </Link>
             </div>
 
@@ -97,23 +103,36 @@ export function BookmarkDetailDialog({ bookmark, open, onOpenChange }: TBookmark
 
           {/* Action buttons */}
           <div className="flex items-center gap-2 pt-1">
-            <Button asChild className="flex-1 shadow-sm gap-2">
-              <a href={bookmark.url} target="_blank" rel="noreferrer">
-                <ArrowUpRight className="size-4" />
-                Open Link
-              </a>
-            </Button>
+            <Link
+              href={bookmark.url}
+              target="_blank"
+              rel="noreferrer"
+              className={cn(
+                "flex-1 shadow-sm gap-2",
+                buttonVariants({ variant: "secondary" })
+              )}
+            >
+              <ArrowUpRightIcon className="size-4" />
+              Open Link
+            </Link>
             <Button
-              variant="outline"
+              variant="default"
               size="icon"
               className="shadow-sm"
-              onClick={() => navigator.clipboard.writeText(bookmark.url)}
+              onClick={() => {
+                try {
+                  navigator.clipboard.writeText(bookmark.url)
+                  toast.success("Link copied !!")
+                } catch (error) {
+                  toast.error("Link cannot be copied !!")
+                }
+              }}
             >
-              <Copy className="size-4" />
+              <CopyIcon className="size-4" />
             </Button>
           </div>
         </div>
       </DialogContent>
-    </Dialog>
+    </Dialog >
   );
 }

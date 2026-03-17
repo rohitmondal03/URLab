@@ -1,8 +1,15 @@
+import type { TSearchParams } from "@/types";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { bookmarkQuery } from "@/tanstack/queries";
 import DashboardPageClient from "@/components/dashboard/(dashboard)/dashboard-page-client";
 
-export default async function DashboardPage() {
+type TDashboardPageProps = {
+  searchParams: TSearchParams
+}
+
+export default async function DashboardPage({ searchParams }: TDashboardPageProps) {
+  const tags = (await searchParams).tags;
+
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery(bookmarkQuery.all())

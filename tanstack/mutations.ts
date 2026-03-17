@@ -1,7 +1,7 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createBookmark, deleteBookmark } from "@/lib/actions/bookmark.action";
+import { createBookmark, deleteBookmark, editBookmark } from "@/lib/actions/bookmark.action";
 import { queryKeys } from "./query-keys";
 
 export const createBookmarkMutation = () => {
@@ -30,6 +30,20 @@ export const deleteBookmarkMutation = () => {
         queryClient.invalidateQueries({ queryKey: queryKeys.domains }),
         queryClient.invalidateQueries({ queryKey: queryKeys.tags })
       ]);
+    }
+  })
+}
+
+export const editBookmarkMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ bookmarkId, bookmarkTitle, bookmarkDescription }: { bookmarkId: string, bookmarkTitle: string, bookmarkDescription: string }) => editBookmark(bookmarkId, bookmarkTitle, bookmarkDescription),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.recentBookmarks })
+      ])
     }
   })
 }

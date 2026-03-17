@@ -36,6 +36,8 @@ export type TTagWithStats = {
   lastBookmarkCreatedAt: Date | null;
 };
 
+export type TSearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
 export type TBookmarksTags = InferSelectModel<typeof bookmarkTagsTable>;
 export interface TBookmarkWithTags extends TBookmark { tags: string[] };
 export type TInsertBookmarksTags = InferInsertModel<typeof bookmarkTagsTable>;

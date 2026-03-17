@@ -21,7 +21,6 @@ export const bookmarkTable = pgTable("bookmarks", {
   index("idx_bookmarks_user_id").on(table.userId),
   index("idx_bookmarks_domain_id").on(table.domainId),
   index("idx_bookmarks_url").on(table.url),
-
 ])
 
 export const tagsTable = pgTable("tags", {
