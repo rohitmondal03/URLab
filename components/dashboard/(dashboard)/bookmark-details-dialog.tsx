@@ -2,14 +2,15 @@ import type { TBookmarkWithTags } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo } from "react";
-import { CopyIcon, ArrowUpRightIcon, ExternalLinkIcon } from "lucide-react";
+import { CopyIcon, ArrowUpRightIcon, ExternalLinkIcon, MoreVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { formattedDateWithTime, getFaviconFromURL } from "@/lib/helper";
+import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { BookmarkCardActionsDropdownMenu } from "./bookmark-card-actions-dropdown-menu";
 
 type TBookmarkDetailDialogProps = {
   bookmark: TBookmarkWithTags | null;
@@ -50,33 +51,45 @@ export function BookmarkDetailDialog({
 
         {/* Content */}
         <div className="p-6 space-y-4 min-w-0">
-          <DialogHeader className="space-y-2 min-w-0">
-            {/* Favicon + Url row */}
-            <div className="flex items-center gap-2 min-w-0 overflow-hidden">
-              <Image
-                height={500}
-                width={500}
-                src={bookmarksFaviconURL}
-                alt={bookmark.url}
-                className="size-5 shrink-0 object-contain rounded-sm"
-                loading="lazy"
-              />
-              <Link
-                href={!bookmark.url.startsWith("https://")
-                  ? `https://${bookmark.url}`
-                  : bookmark.url
-                }
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm hover:text-foreground transition-colors flex items-center gap-1 min-w-0 truncate"
-              >
-                <span className="truncate">{bookmark.url}</span>
-                <ExternalLinkIcon className="size-3 shrink-0" />
-              </Link>
+          <DialogHeader className="space-y-3 min-w-0">
+            <div className="flex items-center justify-between">
+              {/* Favicon + Url row */}
+              <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+                <Image
+                  height={500}
+                  width={500}
+                  src={bookmarksFaviconURL}
+                  alt={bookmark.url}
+                  className="size-5 shrink-0 object-contain rounded-sm"
+                  loading="lazy"
+                />
+                <Link
+                  href={!bookmark.url.startsWith("https://")
+                    ? `https://${bookmark.url}`
+                    : bookmark.url
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm hover:text-foreground transition-colors flex items-center gap-1 w-52 md:w-64 lg:w-80 truncate"
+                >
+                  <span className="truncate">{bookmark.url}</span>
+                  <ExternalLinkIcon className="size-3 shrink-0" />
+                </Link>
+              </div>
+
+              <BookmarkCardActionsDropdownMenu bookmark={bookmark}>
+                <Button
+                  variant={"default"}
+                  size={"icon-lg"}
+                >
+                  <MoreVertical />
+                </Button>
+              </BookmarkCardActionsDropdownMenu>
             </div>
 
-            <p className="text-muted-foreground text-sm">
-              Uploaded at - {formattedDateWithTime(bookmark.createdAt)}
+            <p className="text-sm">
+              <span className="text-muted-foreground">Uploaded at -</span> {" "}
+              {formattedDateWithTime(bookmark.createdAt)}
             </p>
 
             <DialogTitle className="text-xl font-semibold leading-snug text-foreground wrap-break-word">

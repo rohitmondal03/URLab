@@ -19,7 +19,7 @@ import { DomainCard } from "./domain-card";
 import { EmptyState } from "./domains-empty-state";
 import { NoResults } from "./empty-query-results";
 import { DomainsPageSkeleton } from "./domains-page-skeleton";
-import { StatChip } from "../tags/tag-stat-chip";
+import { StatChip } from "../../shared/tag-stat-chip";
 
 const PAGE_SIZE = 12;
 

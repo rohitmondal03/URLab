@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TagCard } from "./tag-card";
-import { StatChip } from "./tag-stat-chip";
+import { StatChip } from "../../shared/tag-stat-chip";
 import { TagsPageSkeleton } from "./tags-page-skeleton";
 import { EmptyState } from "./empty-tags-state";
 import { NoResults } from "./empty-query-results";

@@ -14,6 +14,7 @@ export const capitalizeFirstChar = (string: string) => {
 
 export function getDomainFromUrl(url: string) {
   const domain = getDomain(url);
+  console.log(domain)
 
   if (!domain) {
     throw new Error("URL")
@@ -27,5 +28,5 @@ export const getFaviconFromURL = (url: string) => {
 }
 
 export const formattedDateWithTime = (date: string | Date) => {
-  return format(new Date(date), "MMM dd, yyyy 'at' hh:mm a")
+  return format(new Date(date), "MMM dd, yyyy',' hh:mm a")
 }

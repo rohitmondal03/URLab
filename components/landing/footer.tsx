@@ -32,7 +32,7 @@ export function Footer() {
             href={link.href}
             key={link.href}
             className={cn(
-              buttonVariants({ variant: "link" }),
+              buttonVariants({ variant: "secondary" }),
               "hover:text-foreground transition-colors"
             )}
           >

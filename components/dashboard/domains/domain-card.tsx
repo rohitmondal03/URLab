@@ -11,7 +11,7 @@ type TDomainCardProps = {
 export function DomainCard({ domain, onClick }: TDomainCardProps) {
   return (
     <Card
-      className="group flex flex-col gap-0 bg-card shadow-lg hover:shadow-xl border-zinc-300 transition-all duration-300 py-0 cursor-pointer overflow-hidden h-full hover:scale-[1.02]"
+      className="group flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[5px_5px_10px] hover:shadow-[10px_10px_20px] border-zinc-300 transition-all duration-300 py-0 cursor-pointer overflow-hidden h-full hover:scale-[1.02]"
       onClick={() => onClick(domain.domain)}
     >
       <CardContent className="flex flex-col gap-3 p-5">

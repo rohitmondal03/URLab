@@ -3,7 +3,6 @@
 import type { TBookmarkWithTags } from "@/types";
 import { useMemo, useState } from "react";
 import { motion, type Variants } from "framer-motion";
-import { ClockIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { bookmarkQuery } from "@/tanstack/queries";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -65,11 +64,9 @@ export function RecentlyAddedPageClient() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="newest-first">
-                  <ClockIcon />
                   Newest First
                 </SelectItem>
                 <SelectItem value="oldest-first">
-                  <ClockIcon />
                   Oldest First
                 </SelectItem>
               </SelectContent>

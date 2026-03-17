@@ -1,7 +1,8 @@
 "use client";
 
 import type { TBookmarkWithTags } from "@/types";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion, type Variants } from "framer-motion";
 import { BookmarkCard } from "./bookmark-card";
@@ -21,10 +22,29 @@ const itemVariants: Variants = {
 };
 
 export default function DashboardPageClient() {
+  const searchParams = useSearchParams();
+  const tagParams = searchParams.get("tag");
+  const domainParams = searchParams.get("domain");
+
   const [selectedBookmark, setSelectedBookmark] = useState<TBookmarkWithTags | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data: bookmarks = [], isLoading } = useQuery(bookmarkQuery.all());
+
+  // filtering based on "tag" and "domain" query
+  const filteredBookmarks = useMemo(() => {
+    let result = bookmarks;
+
+    if (tagParams) {
+      result = result.filter(bookmark => bookmark.tags.includes(tagParams));
+    }
+
+    if (domainParams) {
+      result = result.filter(bookmark => bookmark.url.includes(domainParams));
+    }
+
+    return result;
+  }, [tagParams, domainParams])
 
   const handleOpen = (bookmark: TBookmarkWithTags) => {
     setSelectedBookmark({ ...bookmark });
@@ -44,13 +64,13 @@ export default function DashboardPageClient() {
                   All Links
                 </h1>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  {bookmarks?.length} saved items
+                  {filteredBookmarks.length} items
                 </p>
               </div>
             </div>
 
             {/* Grid */}
-            {bookmarks.length === 0 ? (
+            {filteredBookmarks.length === 0 ? (
               <EmptyState />
             ) : (
               <motion.div
@@ -59,7 +79,7 @@ export default function DashboardPageClient() {
                 animate="visible"
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
               >
-                {bookmarks?.map((bookmark) => (
+                {filteredBookmarks.map((bookmark) => (
                   <motion.div key={bookmark.id} variants={itemVariants}>
                     <BookmarkCard bookmark={{ ...bookmark }} onOpen={handleOpen} />
                   </motion.div>

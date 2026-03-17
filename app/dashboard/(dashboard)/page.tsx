@@ -8,8 +8,6 @@ type TDashboardPageProps = {
 }
 
 export default async function DashboardPage({ searchParams }: TDashboardPageProps) {
-  const tags = (await searchParams).tags;
-
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery(bookmarkQuery.all())

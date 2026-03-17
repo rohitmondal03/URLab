@@ -12,6 +12,7 @@ export const createBookmarkMutation = () => {
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.recentBookmarks }),
         queryClient.invalidateQueries({ queryKey: queryKeys.domains }),
         queryClient.invalidateQueries({ queryKey: queryKeys.tags })
       ]);
@@ -27,6 +28,7 @@ export const deleteBookmarkMutation = () => {
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.recentBookmarks }),
         queryClient.invalidateQueries({ queryKey: queryKeys.domains }),
         queryClient.invalidateQueries({ queryKey: queryKeys.tags })
       ]);
