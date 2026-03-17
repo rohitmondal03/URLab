@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { DashboardSidebarContent } from "./dashboard-sidebar-content";
 import { signout } from "@/lib/actions/auth.action";
 
-const AddBookmarkDialog = dynamic(() => import("./add-bookmark-dialog").then(mod => mod.AddBookmarkDialog))
+const AddBookmarkDialog = dynamic(() => import("../shared/add-bookmark-dialog").then(mod => mod.AddBookmarkDialog))
 
 export default function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

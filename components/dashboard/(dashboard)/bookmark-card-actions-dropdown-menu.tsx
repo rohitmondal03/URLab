@@ -1,34 +1,35 @@
 "use client"
 
-import type { TBookmark } from "@/types";
+import type { TBookmarkWithTags } from "@/types";
+import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useState, type ReactNode } from "react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { ExternalLink, Edit2Icon, Trash2Icon, CopyIcon } from "lucide-react";
+import { ExternalLinkIcon, Edit2Icon, Trash2Icon, CopyIcon } from "lucide-react";
 import { toast } from "sonner";
 import { deleteBookmarkMutation } from "@/tanstack/mutations";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 const EditBookmarkDialog = dynamic(() => import("./edit-bookmark-dialog").then(mod => mod.EditBookmarkDialog), { ssr: false })
 
 type TBookmarkCardActionsDropwdownMenuProps = {
-  bookmarkId: TBookmark["id"],
-  bookmarkTitle: TBookmark["title"],
-  bookmarkDescription: TBookmark["description"],
-  bookmarkUrl: TBookmark["url"]
+  bookmark: TBookmarkWithTags
   children: ReactNode;
 }
 
 export function BookmarkCardActionsDropdownMenu({
-  bookmarkId,
-  bookmarkDescription,
-  bookmarkTitle,
-  bookmarkUrl,
+  bookmark,
   children
 }: TBookmarkCardActionsDropwdownMenuProps) {
+  const {
+    id: bookmarkId,
+    title: bookmarkTitle,
+    description: bookmarkDescription,
+    url: bookmarkUrl,
+  } = bookmark;
+
   const [isEditBookmarkDialogOpen, setEditBookmarkDialogOpen] = useState(false);
 
   const mutation = deleteBookmarkMutation();
@@ -68,14 +69,14 @@ export function BookmarkCardActionsDropdownMenu({
             )}
             target="_blank"
           >
-            <ExternalLink className="size-4" /> Open link
+            <ExternalLinkIcon className="size-4" /> Open link
           </Link>
           <Button
             variant={"secondary"}
             className="text-sm cursor-pointer gap-2 w-full"
             onClick={() => {
               try {
-                navigator.clipboard.writeText(bookmarkUrl)
+                navigator.clipboard.writeText(bookmark.url)
                 toast.success("Link copied !!")
               } catch (err: unknown) {
                 toast((err as Error).message)

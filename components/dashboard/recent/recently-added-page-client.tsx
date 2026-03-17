@@ -1,14 +1,16 @@
 "use client";
 
 import type { TBookmarkWithTags } from "@/types";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, type Variants } from "framer-motion";
-import { Clock } from "lucide-react";
+import { ClockIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { bookmarkQuery } from "@/tanstack/queries";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BookmarkCard } from "@/components/dashboard/(dashboard)/bookmark-card";
 import { BookmarkDetailDialog } from "@/components/dashboard/(dashboard)/bookmark-details-dialog";
 import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmark-grid-skeleton";
+import { EmptyState } from "./recenly-added-empty-state";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -20,11 +22,19 @@ const itemVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
+type SortKey = "newest-first" | "oldest-first";
+
 export function RecentlyAddedPageClient() {
   const [selectedBookmark, setSelectedBookmark] = useState<TBookmarkWithTags | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [sort, setSort] = useState<SortKey>("newest-first");
 
   const { data: recentBookmarks = [], isLoading } = useQuery(bookmarkQuery.recent({ limit: 6 }));
+
+  // based on if oldest first or newest first, default - newest first
+  const sortedBookmarks = useMemo(() => sort === "newest-first" ? recentBookmarks : [...recentBookmarks].reverse(),
+    [sort, recentBookmarks]
+  )
 
   const handleOpen = (bookmark: TBookmarkWithTags) => {
     setSelectedBookmark({ ...bookmark });
@@ -46,14 +56,28 @@ export function RecentlyAddedPageClient() {
                 {recentBookmarks?.length} recent {recentBookmarks?.length === 1 ? "item" : "items"}
               </p>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-secondary/40 border border-border/40 rounded-full px-3 py-1.5">
-              <Clock className="size-3.5" />
-              Newest first
-            </div>
+            <Select
+              value={sort}
+              onValueChange={v => setSort(v as SortKey)}
+            >
+              <SelectTrigger className="h-9 w-44 text-sm rounded-full bg-secondary/30 shadow-none focus:ring-0 focus:ring-offset-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest-first">
+                  <ClockIcon />
+                  Newest First
+                </SelectItem>
+                <SelectItem value="oldest-first">
+                  <ClockIcon />
+                  Oldest First
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Grid or empty state */}
-          {recentBookmarks.length === 0 ? (
+          {sortedBookmarks.length === 0 ? (
             <EmptyState />
           ) : (
             <motion.div
@@ -62,7 +86,7 @@ export function RecentlyAddedPageClient() {
               animate="visible"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {recentBookmarks?.map((bookmark) => (
+              {sortedBookmarks?.map((bookmark) => (
                 <motion.div key={bookmark.id} variants={itemVariants}>
                   <BookmarkCard bookmark={{ ...bookmark }} onOpen={handleOpen} />
                 </motion.div>
@@ -79,20 +103,4 @@ export function RecentlyAddedPageClient() {
         />
       </>
     );
-}
-
-function EmptyState() {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-      <div className="size-14 rounded-2xl bg-muted flex items-center justify-center">
-        <Clock className="size-7 text-muted-foreground" />
-      </div>
-      <div>
-        <p className="font-semibold text-foreground">No bookmarks yet</p>
-        <p className="text-sm text-muted-foreground mt-1 max-w-xs">
-          Start saving links to see your most recent bookmarks here.
-        </p>
-      </div>
-    </div>
-  );
 }

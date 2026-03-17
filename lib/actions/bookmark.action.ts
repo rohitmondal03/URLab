@@ -112,8 +112,8 @@ export const editBookmark = async (bookmarkId: string, bookmarkTitle: string, bo
     await db
       .update(bookmarkTable)
       .set({
-        title: bookmarkTitle,
-        description: bookmarkDescription,
+        title: bookmarkTitle.trim(),
+        description: bookmarkDescription.trim(),
       })
       .where(and(
         eq(bookmarkTable.id, bookmarkId),

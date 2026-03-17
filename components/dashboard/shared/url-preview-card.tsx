@@ -1,24 +1,11 @@
 import Image from "next/image"
-import Link from "next/link"
 import type { TUrlMetadata } from "@/types"
 import { Skeleton } from "../../ui/skeleton"
 import { Separator } from "../../ui/separator"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "../../ui/button"
 
 export function URLPreviewCard({ description, previewImageUrl, title, url }: TUrlMetadata) {
   return (
-    <div className="space-y-3 w-full">
-      <Link
-        href={url.startsWith("http") ? url : `https://${url}`}
-        target="_blank"
-        className={cn(
-          buttonVariants({ variant: "outline", size: "xs" }),
-          "flex w-full text-xs border-zinc-300"
-        )}
-      >
-        {url.length > 50 ? url.slice(0, 50) + "......" : url}
-      </Link>
+    <div className="space-y-4 w-full">
       <div className="flex items-center justify-around gap-4 ">
         <Image
           src={previewImageUrl}
@@ -27,7 +14,7 @@ export function URLPreviewCard({ description, previewImageUrl, title, url }: TUr
           width={100}
           className="h-20 w-52 rounded-md"
         />
-        <p className="font-medium">{title}</p>
+        <p className="font-semibold text-sm">{title}</p>
       </div>
       <Separator className="bg-zinc-400" />
       <div className="space-y-2">

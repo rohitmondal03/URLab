@@ -8,7 +8,7 @@ export const createBookmarkMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ url, tags }: { url: string, tags: string[] }) => createBookmark(url, tags),
+    mutationFn: ({ url, tags }: { url: string, tags: string[] }) => createBookmark(url.trim(), tags),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks }),

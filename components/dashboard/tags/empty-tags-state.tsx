@@ -1,8 +1,11 @@
-import { Hash } from "lucide-react";
+import Link from "next/link";
+import { Hash, MoveLeftIcon } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
+    <div className="flex flex-col items-center justify-center gap-6 py-24 text-center">
       <div className="size-14 rounded-2xl bg-muted flex items-center justify-center">
         <Hash className="size-7 text-muted-foreground" />
       </div>
@@ -12,6 +15,14 @@ export function EmptyState() {
           Start tagging bookmarks to organise them better.
         </p>
       </div>
-    </div>
+      <Link
+        href={"/dashboard"}
+        className={cn(
+          buttonVariants({ variant: "default", size: "lg" })
+        )}
+      >
+        <MoveLeftIcon /> Start adding Bookmark
+      </Link>
+    </div >
   );
 }

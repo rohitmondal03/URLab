@@ -1,5 +1,5 @@
 import type { TBookmarkWithTags } from "@/types";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { MoreVertical } from "lucide-react";
@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
 
-const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu").then(mod => mod.BookmarkCardActionsDropdownMenu))
+const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu")
+  .then(mod => mod.BookmarkCardActionsDropdownMenu))
 
 type TBookmarkCardProps = {
   bookmark: TBookmarkWithTags;
@@ -17,7 +18,6 @@ type TBookmarkCardProps = {
 }
 
 export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
-  const [isActionsDialogOpen, setActionsDialogOpen] = useState(false);
 
   const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
 
@@ -30,7 +30,7 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
 
   return (
     <Card
-      className="group flex flex-col gap-0 bg-card shadow-lg hover:shadow-xl border-zinc-300 transition-all duration-300 py-0 cursor-pointer overflow-hidden h-full hover:scale-[1.02]"
+      className="group flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[10px_10px_10px] hover:shadow-[20px_20px_20px] border-zinc-300 transition-all duration-300 py-0 cursor-pointer overflow-hidden h-full hover:scale-[1.03]"
       onClick={() => onOpen(bookmark)}
     >
       {/* Preview image */}
@@ -69,12 +69,7 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
             </span>
           </div>
 
-          <BookmarkCardActionsDropwdownMenu
-            bookmarkId={bookmark.id}
-            bookmarkUrl={bookmark.url}
-            bookmarkDescription={bookmark.description}
-            bookmarkTitle={bookmark.title}
-          >
+          <BookmarkCardActionsDropwdownMenu bookmark={bookmark}>
             <Button
               variant="ghost"
               size="icon"

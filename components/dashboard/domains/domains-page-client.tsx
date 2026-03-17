@@ -2,7 +2,7 @@
 
 import { useDeferredValue, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { domainsQuery } from "@/tanstack/queries";
@@ -19,6 +19,7 @@ import { DomainCard } from "./domain-card";
 import { EmptyState } from "./domains-empty-state";
 import { NoResults } from "./empty-query-results";
 import { DomainsPageSkeleton } from "./domains-page-skeleton";
+import { StatChip } from "../tags/tag-stat-chip";
 
 const PAGE_SIZE = 12;
 
@@ -79,16 +80,15 @@ export default function DomainsPageClient() {
     : (
       <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
         {/* Header */}
-        <div className="flex items-start justify-between pb-4 border-b border-border/40">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Domains</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              Browse your bookmarks by website
-            </p>
-          </div>
-          <span className="text-sm text-muted-foreground self-center">
-            {processed.length} {processed.length === 1 ? "domain" : "domains"}
-          </span>
+        <div className="flex flex-col items-start justify-between pb-4 border-b border-border/40">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Domains</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Browse your bookmarks by website
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <StatChip label="Total Domains" value={String(processed.length)} />
         </div>
 
         {/* Controls */}
@@ -113,7 +113,7 @@ export default function DomainsPageClient() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="h-9 w-44 text-sm rounded-full bg-secondary/30 border-border/50 shadow-none focus:ring-0 focus:ring-offset-0">
+            <SelectTrigger className="h-9 w-44 text-sm rounded-full bg-secondary/30 shadow-none focus:ring-0 focus:ring-offset-0">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

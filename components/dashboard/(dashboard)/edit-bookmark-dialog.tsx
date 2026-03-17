@@ -32,17 +32,22 @@ export function EditBookmarkDialog({ bookmarkId, bookmarkDescription, bookmarkTi
 
     setLoading(true);
 
-    mutation.mutate({ bookmarkId, bookmarkDescription, bookmarkTitle }, {
+    mutation.mutate({
+      bookmarkId,
+      bookmarkDescription: bookmarkDetail.description.trim(),
+      bookmarkTitle: bookmarkDetail.title.trim(),
+    }, {
       onSuccess: () => {
         toast.success("Bookmark edited successfully !!");
       },
       onError: (error) => {
-        toast.error("Error editing Bookmark !!", {
+        toast.error("Error while editing Bookmark !!", {
           description: error.message,
         })
       },
       onSettled: () => {
         setLoading(false);
+        setOpen(false);
       }
     })
   }

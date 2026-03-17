@@ -3,7 +3,7 @@
 import type { TTagWithStats } from "@/types";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { tagsQuery } from "@/tanstack/queries";
@@ -21,6 +21,7 @@ import { StatChip } from "./tag-stat-chip";
 import { TagsPageSkeleton } from "./tags-page-skeleton";
 import { EmptyState } from "./empty-tags-state";
 import { NoResults } from "./empty-query-results";
+import { Badge } from "@/components/ui/badge";
 
 const PAGE_SIZE = 12;
 
@@ -84,16 +85,11 @@ export default function TagsPageClient() {
     : (
       <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
         {/* Header */}
-        <div className="flex items-start justify-between pb-4 border-b border-border/40">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Tags</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              Organize and explore bookmarks by tags
-            </p>
-          </div>
-          <span className="text-sm text-muted-foreground self-center">
-            {processed.length} {processed.length === 1 ? "tag" : "tags"}
-          </span>
+        <div className="flex flex-col items-start justify-between pb-4 border-b border-border/40">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Tags</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Organize and explore bookmarks by tags
+          </p>
         </div>
 
         {/* Statistics chips */}
@@ -129,7 +125,7 @@ export default function TagsPageClient() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="h-9 w-44 text-sm rounded-full bg-secondary/30 border-border/50 shadow-none focus:ring-0 focus:ring-offset-0">
+            <SelectTrigger className="h-9 w-44 text-sm rounded-full bg-secondary/30 shadow-none focus:ring-0 focus:ring-offset-0">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

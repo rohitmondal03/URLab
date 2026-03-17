@@ -1,6 +1,6 @@
-import { useState } from "react";
 import dynamic from "next/dynamic";
-import { Globe, PlusIcon } from "lucide-react";
+import { useState } from "react";
+import { BookmarkIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const AddBookmarkDialog = dynamic(() => import("../shared/add-bookmark-dialog")
@@ -13,12 +13,14 @@ export function EmptyState() {
     <>
       <div className="flex flex-col items-center justify-center gap-6 py-24 text-center">
         <div className="size-14 rounded-2xl bg-muted flex items-center justify-center">
-          <Globe className="size-7 text-muted-foreground" />
+          <BookmarkIcon className="size-7 text-muted-foreground" />
         </div>
         <div>
-          <p className="font-semibold text-foreground">No domains yet</p>
+          <p className="font-semibold text-foreground">
+            No bookmarks yet
+          </p>
           <p className="text-sm text-muted-foreground mt-1 max-w-xs">
-            Start saving bookmarks to see them organised by website.
+            Start saving links to see and manage your bookmarks here.
           </p>
         </div>
         <Button size={"lg"} onClick={() => setDialogOpen(true)}>
