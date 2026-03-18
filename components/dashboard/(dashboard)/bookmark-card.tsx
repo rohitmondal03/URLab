@@ -20,7 +20,6 @@ type TBookmarkCardProps = {
 export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
 
   const bookmarksDomain = useMemo(() => {
-    console.log(getDomainFromUrl(bookmark.url))
     return getDomainFromUrl(bookmark.url);
   }, [bookmark])
 

@@ -1,9 +1,9 @@
 "use server"
 
+import { redirect } from "next/navigation";
 import { Provider as OAuthProvider } from "@supabase/supabase-js";
 import { createClient } from "../supabase/server"
 import { BASE_URL } from "../helper";
-import { redirect } from "next/navigation";
 
 // signup user with email
 export const signupWithEmail = async (name: string, email: string, password: string) => {
@@ -72,8 +72,8 @@ export const getCurrentUser = async () => {
 
   return {
     userId: user.id,
-    name: user.user_metadata.name || user.user_metadata.full_name,
-    email: user.email,
-    provider: user.app_metadata.provider,
+    name: String(user.user_metadata.name || user.user_metadata.full_name),
+    email: String(user.email),
+    provider: String(user.app_metadata.provider),
   }
 } 

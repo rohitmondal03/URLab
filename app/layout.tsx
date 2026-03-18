@@ -18,7 +18,7 @@ export const metadata = LANDING_PAGE_METADATA;
 export default function RootLayout({ children }: IRootLayout) {
   return (
     <html lang="en">
-      <body className={`${_googleSans.variable} font-sans antialiased`}>
+      <body className={`${_googleSans.className} font-sans antialiased`}>
         <QueryProvider>
           <SmootScroll>
             {children}

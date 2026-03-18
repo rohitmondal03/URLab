@@ -45,7 +45,7 @@ export const editBookmarkMutation = () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks }),
         queryClient.invalidateQueries({ queryKey: queryKeys.recentBookmarks })
-      ])
+      ]);
     }
   })
 }

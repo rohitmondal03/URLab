@@ -6,13 +6,15 @@ import dynamic from "next/dynamic";
 import { useState, type ReactNode } from "react";
 import { ExternalLinkIcon, Edit2Icon, Trash2Icon, CopyIcon } from "lucide-react";
 import { toast } from "sonner";
-import { deleteBookmarkMutation } from "@/tanstack/mutations";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
-const EditBookmarkDialog = dynamic(() => import("./edit-bookmark-dialog").then(mod => mod.EditBookmarkDialog), { ssr: false })
+const EditBookmarkDialog = dynamic(() => import("./edit-bookmark-dialog")
+  .then(mod => mod.EditBookmarkDialog), { ssr: false })
+const DeleteBookmarkConfirmationDialog = dynamic(() => import("./delete-bookmark-confirmation-dialog")
+  .then(mod => mod.DeleteBookmarkConfirmationDialog), { ssr: false })
 
 type TBookmarkCardActionsDropwdownMenuProps = {
   bookmark: TBookmarkWithTags
@@ -31,22 +33,7 @@ export function BookmarkCardActionsDropdownMenu({
   } = bookmark;
 
   const [isEditBookmarkDialogOpen, setEditBookmarkDialogOpen] = useState(false);
-
-  const mutation = deleteBookmarkMutation();
-
-  // For deleting bookmark
-  const handleDeleteBookmark = () => {
-    mutation.mutate({ bookmarkId }, {
-      onSuccess: () => {
-        toast.success("Bookmark deleted successfully !!");
-      },
-      onError: (error) => {
-        toast.error("Error deleting Bookmark !!", {
-          description: error.message,
-        })
-      }
-    })
-  }
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   return (
     <div>
@@ -96,7 +83,7 @@ export function BookmarkCardActionsDropdownMenu({
           <Button
             variant="destructive"
             className="text-sm cursor-pointer gap-2 w-full"
-            onClick={handleDeleteBookmark}
+            onClick={() => setDeleteDialogOpen(true)}
           >
             <Trash2Icon className="size-4" /> Delete
           </Button>
@@ -108,6 +95,12 @@ export function BookmarkCardActionsDropdownMenu({
         setOpen={setEditBookmarkDialogOpen}
         bookmarkDescription={bookmarkDescription}
         bookmarkTitle={bookmarkTitle}
+        bookmarkId={bookmarkId}
+      />
+
+      <DeleteBookmarkConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        setOpen={setDeleteDialogOpen}
         bookmarkId={bookmarkId}
       />
     </div>

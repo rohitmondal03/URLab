@@ -14,7 +14,6 @@ export const capitalizeFirstChar = (string: string) => {
 
 export function getDomainFromUrl(url: string) {
   const domain = getDomain(url);
-  console.log(domain)
 
   if (!domain) {
     throw new Error("URL")

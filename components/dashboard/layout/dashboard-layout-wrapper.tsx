@@ -1,19 +1,28 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
-import { Search, Plus, Menu, User, LogOutIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { SearchIcon, PlusIcon, MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { DashboardSidebarContent } from "./dashboard-sidebar-content";
-import { signout } from "@/lib/actions/auth.action";
 
 const AddBookmarkDialog = dynamic(() => import("../shared/add-bookmark-dialog").then(mod => mod.AddBookmarkDialog))
 
 export default function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  useEffect(() => {
+    window.onkeyup = (e) => {
+      e.stopPropagation();
+
+      if (e.ctrlKey && e.key === 'q') {
+        setIsAddModalOpen(prev => prev ? false : true);
+      }
+    }
+  }, [])
 
   return (
     <div className="flex min-h-screen w-full bg-background relative">
@@ -33,11 +42,11 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
               className="md:hidden text-muted-foreground"
               onClick={() => setIsMobileMenuOpen(prev => !prev)}
             >
-              <Menu className="size-5" />
+              <MenuIcon className="size-5" />
             </Button>
 
             <div className="relative w-full max-w-sm hidden sm:flex items-center">
-              <Search className="absolute left-2.5 size-4 text-muted-foreground" />
+              <SearchIcon className="absolute left-2.5 size-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search links, tags, or domains..."
@@ -46,33 +55,10 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
             </div>
           </div>
 
-          <div className="flex items-center gap-8">
-            <Button onClick={() => setIsAddModalOpen(true)} className="gap-x-2">
-              <Plus className="size-4" />
-              New Bookmark
-            </Button>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  size={"icon-lg"}
-                  variant={"secondary"}
-                  className="rounded-full border border-zinc-400"
-                >
-                  <User />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="font-semibold w-52">
-                <Button
-                  onClick={signout}
-                  variant="destructive"
-                  className="w-full"
-                >
-                  <LogOutIcon />
-                  Sign out
-                </Button>
-              </PopoverContent>
-            </Popover>
-          </div>
+          <Button onClick={() => setIsAddModalOpen(true)} className="gap-x-2">
+            <PlusIcon className="size-4" />
+            Bookmark
+          </Button>
           <AddBookmarkDialog
             isAddModalOpen={isAddModalOpen}
             setIsAddModalOpen={setIsAddModalOpen}
@@ -98,7 +84,7 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
         <main className="flex-1 p-4 md:p-8 relative">
           {children}
         </main>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
