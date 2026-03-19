@@ -1,8 +1,13 @@
+import dynamic from "next/dynamic";
 import { Navbar } from "@/components/landing/navbar";
 import { HeroSection } from "@/components/landing/hero-section";
-import { ProductPreviewSection } from "@/components/landing/product-preview-section";
-import { Footer } from "@/components/landing/footer";
-import { FeaturesSection } from "@/components/landing/features-section";
+
+const ProductPreviewSection = dynamic(() => import("@/components/landing/product-preview-section")
+  .then(mod => mod.ProductPreviewSection));
+const FeaturesSection = dynamic(() => import("@/components/landing/features-section")
+  .then(mod => mod.FeaturesSection));
+const Footer = dynamic(() => import("@/components/landing/footer")
+  .then(mod => mod.Footer));
 
 export default function LandingPage() {
   return (

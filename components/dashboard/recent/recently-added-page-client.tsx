@@ -1,15 +1,18 @@
 "use client";
 
 import type { TBookmarkWithTags } from "@/types";
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { bookmarkQuery } from "@/tanstack/queries";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BookmarkCard } from "@/components/dashboard/(dashboard)/bookmark-card";
-import { BookmarkDetailDialog } from "@/components/dashboard/(dashboard)/bookmark-details-dialog";
 import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmark-grid-skeleton";
-import { EmptyState } from "./recenly-added-empty-state";
+
+const BookmarkDetailDialog = dynamic(() => import("@/components/dashboard/(dashboard)/bookmark-details-dialog")
+  .then(mod => mod.BookmarkDetailDialog), { ssr: false });
+const EmptyState = dynamic(() => import("./recenly-added-empty-state").then(mod => mod.EmptyState), { ssr: false });
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -83,9 +86,9 @@ export function RecentlyAddedPageClient() {
               animate="visible"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {sortedBookmarks?.map((bookmark) => (
+              {sortedBookmarks?.map((bookmark, idx) => (
                 <motion.div key={bookmark.id} variants={itemVariants}>
-                  <BookmarkCard bookmark={{ ...bookmark }} onOpen={handleOpen} />
+                  <BookmarkCard cardIndex={idx} bookmark={{ ...bookmark }} onOpen={handleOpen} />
                 </motion.div>
               ))}
             </motion.div>

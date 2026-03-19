@@ -15,16 +15,13 @@ const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-a
 type TBookmarkCardProps = {
   bookmark: TBookmarkWithTags;
   onOpen: (b: TBookmarkWithTags) => void;
+  cardIndex: number
 }
 
-export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
-
-  const bookmarksDomain = useMemo(() => {
-    return getDomainFromUrl(bookmark.url);
-  }, [bookmark])
-
+export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps) {
+  const imagePreviewUrl = useMemo(() => bookmark.previewImage, [])
   const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
-
+  const bookmarksDomain = useMemo(() => getDomainFromUrl(bookmark.url), [bookmark])
   const trimmedDescription = useMemo(() =>
     bookmark.description.length > 100
       ? bookmark.description?.slice(0, 100) + "...."
@@ -40,11 +37,14 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
       {/* Preview image */}
       <div className="relative w-full aspect-auto bg-muted overflow-hidden shrink-0 border-b-2">
         <Image
-          height={1000}
-          width={1000}
-          src={bookmark.previewImage || ""}
+          height={500}
+          width={300}
+          sizes="(max-width: 786px) 100vw, 451px"
+          src={imagePreviewUrl ?? "/file.svg"}
           alt={bookmark.url}
-          loading="lazy"
+          // loading={cardIndex < 3 ? "eager" : "lazy"}
+          fetchPriority={cardIndex < 3 ? "high" : "low"}
+          priority={cardIndex < 3}
           className="w-fit h-full object-fill group-hover:scale-105 transition-transform duration-500"
           placeholder="blur"
           blurDataURL={bookmark.previewImage || ""}
@@ -66,7 +66,6 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
               src={bookmarksFaviconURL}
               alt={bookmark.url}
               className="size-4 object-contain rounded-sm"
-              loading="lazy"
             />
             <span className="text-sm truncate">
               {bookmarksDomain}
@@ -77,7 +76,9 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="size-10 opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"            >
+              className="size-10 opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
+              aria-label="options-dropdown"
+            >
               <MoreVertical className="size-4" />
             </Button>
           </BookmarkCardActionsDropwdownMenu>
@@ -88,9 +89,9 @@ export function BookmarkCard({ bookmark, onOpen }: TBookmarkCardProps) {
         </p>
 
         {/* Title */}
-        <h3 className="font-semibold text-lg text-foreground line-clamp-2 leading-snug">
+        <h1 className="font-semibold text-lg text-foreground line-clamp-2 leading-snug">
           {bookmark.title}
-        </h3>
+        </h1>
 
         {/* Description */}
         <p className="wrap-break-word text-sm text-muted-foreground line-clamp-2 leading-relaxed flex-1">

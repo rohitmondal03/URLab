@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    qualities: [75, 50, 25],
+    qualities: [75, 50, 25, 10],
     remotePatterns: [
       {
         protocol: "https",
@@ -14,4 +14,6 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default nextConfig;
+const withBundleAnalyzer = require('@next/bundle-analyzer')();
+
+module.exports = withBundleAnalyzer(nextConfig)

@@ -13,8 +13,8 @@ export default async function DashboardPage({ searchParams }: TDashboardPageProp
   await queryClient.prefetchQuery(bookmarkQuery.all())
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardPageClient />;
-    </HydrationBoundary>
+    // <HydrationBoundary state={dehydrate(queryClient)}>
+    <DashboardPageClient />
+    // {/* </HydrationBoundary> */ }
   );
 }

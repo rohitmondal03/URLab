@@ -1,7 +1,7 @@
 "use server"
 
 import type { TBookmarkWithTags, TTagWithStats } from "@/types"
-import { and, desc, eq } from "drizzle-orm"
+import { and, desc, eq, inArray } from "drizzle-orm"
 import { db } from "@/drizzle"
 import { bookmarkTable, bookmarkTagsTable, domainsTable, tagsTable } from "@/drizzle/schema"
 import { getCurrentUser } from "./auth.action"
@@ -125,13 +125,15 @@ export const editBookmark = async (bookmarkId: string, bookmarkTitle: string, bo
 }
 
 // To "Get user's bookmarks & ALSO recent bookmarks" with tags using joins
-export const getCurrentUsersBookmarks = async (limit?: number, isRecent?: boolean): Promise<TBookmarkWithTags[]> => {
+export const getCurrentUsersBookmarks = async (
+  limit?: number,
+  isRecent?: boolean
+): Promise<TBookmarkWithTags[]> => {
   const { userId: currentUserId } = await getCurrentUser();
 
-  // Single query: bookmarks ⟶ bookmark_tags ⟶ tags (left joins so bookmarks with no tags are still returned)
-  const rows = await db
+  // 1. Fetch only required bookmarks (NO JOINS here)
+  const bookmarks = await db
     .select({
-      // Bookmark columns
       id: bookmarkTable.id,
       userId: bookmarkTable.userId,
       domainId: bookmarkTable.domainId,
@@ -140,41 +142,52 @@ export const getCurrentUsersBookmarks = async (limit?: number, isRecent?: boolea
       description: bookmarkTable.description,
       previewImage: bookmarkTable.previewImage,
       createdAt: bookmarkTable.createdAt,
-      tag: tagsTable.tag,
     })
     .from(bookmarkTable)
-    .leftJoin(bookmarkTagsTable, eq(bookmarkTagsTable.bookmarkId, bookmarkTable.id))
-    .leftJoin(tagsTable, eq(tagsTable.id, bookmarkTagsTable.tagId))
     .where(eq(bookmarkTable.userId, currentUserId))
-    .orderBy(isRecent ? desc(bookmarkTable.createdAt) : bookmarkTable.createdAt);
+    .orderBy(
+      isRecent
+        ? desc(bookmarkTable.createdAt)
+        : bookmarkTable.createdAt
+    )
+    .limit(limit ?? 20); // 🔥 LIMIT at DB level
 
-  // Group flat rows into { bookmark, tags[] } map
-  const bookmarkMap = new Map<string, TBookmarkWithTags>();
+  // Early return (no bookmarks)
+  if (bookmarks.length === 0) return [];
 
-  for (const row of rows) {
-    if (!bookmarkMap.has(row.id)) {
-      bookmarkMap.set(row.id, {
-        id: row.id,
-        userId: row.userId,
-        domainId: row.domainId,
-        url: row.url,
-        title: row.title,
-        description: row.description,
-        previewImage: row.previewImage,
-        createdAt: row.createdAt,
-        tags: [],
-      });
+  // Fetch tags separately (only for selected bookmarks)
+  const bookmarkIds = bookmarks.map((b) => b.id);
+
+  const tagRows = await db
+    .select({
+      bookmarkId: bookmarkTagsTable.bookmarkId,
+      tag: tagsTable.tag,
+    })
+    .from(bookmarkTagsTable)
+    .leftJoin(tagsTable, eq(tagsTable.id, bookmarkTagsTable.tagId))
+    .where(inArray(bookmarkTagsTable.bookmarkId, bookmarkIds));
+
+  // Map tags → bookmarkId
+  const tagMap = new Map<string, string[]>();
+
+  for (const row of tagRows) {
+    if (!row.tag) continue;
+
+    if (!tagMap.has(row.bookmarkId)) {
+      tagMap.set(row.bookmarkId, []);
     }
 
-    if (row.tag) {
-      bookmarkMap.get(row.id)!.tags.push(row.tag);
-    }
+    tagMap.get(row.bookmarkId)!.push(row.tag);
   }
 
-  return limit
-    ? Array.from(bookmarkMap.values()).slice(0, limit)
-    : Array.from(bookmarkMap.values());
-}
+  // Merge bookmarks + tags (final shape)
+  const result: TBookmarkWithTags[] = bookmarks.map((bookmark) => ({
+    ...bookmark,
+    tags: tagMap.get(bookmark.id) ?? [],
+  }));
+
+  return result;
+};
 
 // To "Get domains with bookmark counts" for the current user
 export const getDomainsWithBookmarkCounts = async () => {

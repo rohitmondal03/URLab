@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -115,7 +117,7 @@ export function DashboardSidebarContent() {
                 <p className="text-base font-medium">
                   {user?.name}
                 </p>
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="text-xs text-black/70 truncate">
                   {user?.email}
                 </p>
               </>
