@@ -2,14 +2,17 @@
 
 import type { TBookmarkWithTags } from "@/types";
 import { useSearchParams } from "next/navigation";
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion, type Variants } from "framer-motion";
 import { BookmarkCard } from "./bookmark-card";
-import { BookmarkDetailDialog } from "./bookmark-details-dialog";
 import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmark-grid-skeleton";
 import { bookmarkQuery } from "@/tanstack/queries";
 import { EmptyState } from "./dashboard-empty-state";
+
+const BookmarkDetailDialog = dynamic(() => import("./bookmark-details-dialog")
+  .then(mod => mod.BookmarkDetailDialog), { ssr: false });
 
 const containerVariants = {
   hidden: { opacity: 0 },

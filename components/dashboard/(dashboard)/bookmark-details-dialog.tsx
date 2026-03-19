@@ -1,16 +1,19 @@
 import type { TBookmarkWithTags } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import { toast } from "sonner";
 import { useMemo } from "react";
 import { CopyIcon, ArrowUpRightIcon, ExternalLinkIcon, MoreVertical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
-import { toast } from "sonner";
+import { formattedDateWithTime, getFaviconFromURL } from "@/lib/helper";
 import { cn } from "@/lib/utils";
-import { BookmarkCardActionsDropdownMenu } from "./bookmark-card-actions-dropdown-menu";
+
+const BookmarkCardActionsDropdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu")
+  .then(mod => mod.BookmarkCardActionsDropdownMenu), { ssr: false });
 
 type TBookmarkDetailDialogProps = {
   bookmark: TBookmarkWithTags | null;

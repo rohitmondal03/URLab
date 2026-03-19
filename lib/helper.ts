@@ -8,6 +8,11 @@ export const BASE_URL = process.env.NODE_ENV === "development"
 export const DEFAULT_ERROR_MESSAGE = "Something went wrong. Please try again later.";
 export const DEFAULT_METADATA_ERROR_MESSAGE = "Error fetching data from URL or you might've entered wrong URL"
 
+export const KEYBOARD_SHORTCUT_LIST = [
+  { key: "a", label: "Add Bookmark" },
+  { key: "/", label: "Search" },
+]
+
 export const capitalizeFirstChar = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }

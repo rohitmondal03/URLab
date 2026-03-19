@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import {
   StarIcon,
@@ -13,9 +14,11 @@ import {
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Logo } from "@/components/shared/logo";
-import { UserDropdownMenu } from "./user-dropdown-menu";
 import { cn } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/actions/auth.action";
+
+const UserDropdownMenu = dynamic(() => import("./user-dropdown-menu")
+  .then(mod => mod.UserDropdownMenu), { ssr: false });
 
 export function DashboardSidebarContent() {
   const pathname = usePathname();
@@ -29,7 +32,7 @@ export function DashboardSidebarContent() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { name, email, provider } = await getCurrentUser();
+      const { name, email } = await getCurrentUser();
       setUser({ name, email });
       setLoading(false);
     })()
@@ -103,6 +106,7 @@ export function DashboardSidebarContent() {
           size={"lg"}
           variant={"secondary"}
           className="w-7/8 h-fit mx-auto mb-4 py-3 justify-start border border-zinc-400 flex flex-col items-center gap-0"
+          disabled={isLoading}
         >
           {isLoading
             ? <LoaderIcon className="animate-spin" />

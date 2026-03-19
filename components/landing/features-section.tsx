@@ -48,13 +48,13 @@ export function FeaturesSection() {
           }
         ].map((feature, i) => (
           <motion.div key={i} variants={fadeUpVariants}>
-            <Card className="h-full border-border/50 shadow-sm hover:shadow-md transition-shadow bg-card/50 backdrop-blur-sm">
+            <Card className="h-full border border-zinc-600 shadow-zinc-400 shadow-xl">
               <CardHeader>
                 {feature.icon}
                 <CardTitle className="text-xl">{feature.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base leading-relaxed">
+                <CardDescription className="text-base text-zinc-500 leading-relaxed">
                   {feature.desc}
                 </CardDescription>
               </CardContent>

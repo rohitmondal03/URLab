@@ -2,24 +2,34 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { SearchIcon, PlusIcon, MenuIcon } from "lucide-react";
+import { SearchIcon, PlusIcon, MenuIcon, KeyboardIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { DashboardSidebarContent } from "./dashboard-sidebar-content";
 
-const AddBookmarkDialog = dynamic(() => import("../shared/add-bookmark-dialog").then(mod => mod.AddBookmarkDialog))
+const SearchDialog = dynamic(() => import("./search-dialog")
+  .then(mod => mod.SearchDialog), { ssr: false });
+const AddBookmarkDialog = dynamic(() => import("../shared/add-bookmark-dialog")
+  .then(mod => mod.AddBookmarkDialog), { ssr: false })
+const ViewShortcutDialog = dynamic(() => import("./view-shortcut-dialog")
+  .then(mod => mod.ViewShortcutDialog), { ssr: false });
 
 export default function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [isSearchModalOpen, setSearchModalOpen] = useState(false);
+  const [isShortcutDialogOpen, setShorcutDialogOpen] = useState(false);
 
   useEffect(() => {
     window.onkeyup = (e) => {
       e.stopPropagation();
 
-      if (e.ctrlKey && e.key === 'q') {
-        setIsAddModalOpen(prev => prev ? false : true);
+      if (e.key === 'a') {
+        e.preventDefault();
+        setAddModalOpen(true);
+      }
+      if (e.key === "/") {
+        e.preventDefault();
+        setSearchModalOpen(true)
       }
     }
   }, [])
@@ -40,36 +50,56 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
               variant="ghost"
               size="icon"
               className="md:hidden text-muted-foreground"
-              onClick={() => setIsMobileMenuOpen(prev => !prev)}
+              onClick={() => setMobileMenuOpen(prev => !prev)}
             >
               <MenuIcon className="size-5" />
             </Button>
 
-            <div className="relative w-full max-w-sm hidden sm:flex items-center">
-              <SearchIcon className="absolute left-2.5 size-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search links, tags, or domains..."
-                className="w-full bg-secondary/30 focus-visible:bg-background focus-visible:border-ring/50 pl-9 rounded-full h-9 shadow-none text-sm"
-              />
+            <div
+              className="relative outline-1 outline-zinc-400 w-full max-w-sm hidden sm:flex items-center gap-3 py-2 px-4 rounded-3xl transition-all hover:outline-2 cursor-text"
+              onClick={() => setSearchModalOpen(true)}
+            >
+              <SearchIcon className="size-4 text-muted-foreground" />
+              <div className="text-sm text-muted-foreground">
+                Search bookmarks, tags, domains...
+              </div>
             </div>
+
+            {/* Search Dialog */}
+            <SearchDialog
+              isOpen={isSearchModalOpen}
+              setOpen={setSearchModalOpen}
+            />
           </div>
 
-          <Button onClick={() => setIsAddModalOpen(true)} className="gap-x-2">
-            <PlusIcon className="size-4" />
-            Bookmark
-          </Button>
-          <AddBookmarkDialog
-            isAddModalOpen={isAddModalOpen}
-            setIsAddModalOpen={setIsAddModalOpen}
-          />
+          <div className="flex items-center gap-5">
+            <Button onClick={() => setAddModalOpen(true)} className="gap-x-2">
+              <PlusIcon className="size-4" />
+              Bookmark
+            </Button>
+            <Button
+              variant={"secondary"}
+              onClick={() => setShorcutDialogOpen(true)}
+            >
+              <KeyboardIcon />
+              View Shortcuts
+            </Button>
+            <AddBookmarkDialog
+              isAddModalOpen={isAddModalOpen}
+              setIsAddModalOpen={setAddModalOpen}
+            />
+            <ViewShortcutDialog
+              isOpen={isShortcutDialogOpen}
+              setOpen={setShorcutDialogOpen}
+            />
+          </div>
         </header>
 
         {/* Mobile menu overlay */}
         {isMobileMenuOpen && (
           <div
             className="fixed inset-0 z-50 md:hidden bg-background/80 backdrop-blur-sm"
-            onClick={() => setIsMobileMenuOpen(false)}
+            onClick={() => setMobileMenuOpen(false)}
           >
             <div
               className="w-64 h-full shadow-2xl relative"
@@ -84,7 +114,7 @@ export default function DashboardLayoutWrapper({ children }: { children: React.R
         <main className="flex-1 p-4 md:p-8 relative">
           {children}
         </main>
-      </div >
+      </div>
     </div >
   );
 }

@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
 
 const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu")
-  .then(mod => mod.BookmarkCardActionsDropdownMenu))
+  .then(mod => mod.BookmarkCardActionsDropdownMenu));
 
 type TBookmarkCardProps = {
   bookmark: TBookmarkWithTags;
