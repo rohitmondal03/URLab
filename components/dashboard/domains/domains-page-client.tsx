@@ -113,7 +113,10 @@ export default function DomainsPageClient() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="h-9 w-44 text-sm rounded-full bg-secondary/30 shadow-none focus:ring-0 focus:ring-offset-0">
+            <SelectTrigger
+              aria-label="domains-filter-dropdown"
+              className="h-9 w-44 text-sm rounded-full bg-secondary/30 shadow-none focus:ring-0 focus:ring-offset-0"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

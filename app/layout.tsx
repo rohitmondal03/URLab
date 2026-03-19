@@ -10,8 +10,9 @@ const _googleSans = Google_Sans({
   variable: "--font-google-sans",
   subsets: ["latin"],
   fallback: ["montserrat"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
   preload: true,
+  display: "swap",
 });
 
 export const metadata = LANDING_PAGE_METADATA;

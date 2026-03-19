@@ -1,20 +1,25 @@
-import type { TSearchParams } from "@/types";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { bookmarkQuery } from "@/tanstack/queries";
 import DashboardPageClient from "@/components/dashboard/(dashboard)/dashboard-page-client";
+import { Suspense } from "react";
+import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmark-grid-skeleton";
 
-type TDashboardPageProps = {
-  searchParams: TSearchParams
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<BookmarkGridSkeleton title="All Links" />}>
+      <DashboardDataLoader />
+    </Suspense>
+  );
 }
 
-export default async function DashboardPage({ searchParams }: TDashboardPageProps) {
+async function DashboardDataLoader() {
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery(bookmarkQuery.all())
+  await queryClient.prefetchQuery(bookmarkQuery.all());
 
   return (
-    // <HydrationBoundary state={dehydrate(queryClient)}>
-    <DashboardPageClient />
-    // {/* </HydrationBoundary> */ }
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <DashboardPageClient />
+    </HydrationBoundary>
   );
 }

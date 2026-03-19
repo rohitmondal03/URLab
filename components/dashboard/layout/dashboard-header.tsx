@@ -22,13 +22,12 @@ export function DashboardHeader() {
   useEffect(() => {
     window.onkeyup = (e) => {
       e.stopPropagation();
+      e.preventDefault();
 
       if (e.key === 'a') {
-        e.preventDefault();
         setAddModalOpen(true);
       }
       if (e.key === "/") {
-        e.preventDefault();
         setSearchModalOpen(true)
       }
     }

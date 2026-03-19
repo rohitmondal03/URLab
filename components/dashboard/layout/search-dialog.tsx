@@ -60,7 +60,7 @@ export function SearchDialog({ isOpen, setOpen }: TSearchDialogProps) {
         <div className="flex flex-col gap-y-4">
           {SEARCH_BUTTON_ITEMS.map(item => (
             <Link
-              href={item.href + debouncedSearchInput}
+              href={item.href + encodeURIComponent(debouncedSearchInput)}
               className={cn(
                 buttonVariants({ variant: "secondary", size: "lg" }),
                 "w-full justify-start border font-normal",

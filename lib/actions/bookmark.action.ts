@@ -1,7 +1,7 @@
 "use server"
 
 import type { TBookmarkWithTags, TTagWithStats } from "@/types"
-import { and, desc, eq, inArray } from "drizzle-orm"
+import { and, desc, eq, inArray, sql } from "drizzle-orm"
 import { db } from "@/drizzle"
 import { bookmarkTable, bookmarkTagsTable, domainsTable, tagsTable } from "@/drizzle/schema"
 import { getCurrentUser } from "./auth.action"
@@ -131,7 +131,7 @@ export const getCurrentUsersBookmarks = async (
 ): Promise<TBookmarkWithTags[]> => {
   const { userId: currentUserId } = await getCurrentUser();
 
-  // 1. Fetch only required bookmarks (NO JOINS here)
+  // Fetch only required bookmarks (NO JOINS here)
   const bookmarks = await db
     .select({
       id: bookmarkTable.id,
@@ -150,7 +150,7 @@ export const getCurrentUsersBookmarks = async (
         ? desc(bookmarkTable.createdAt)
         : bookmarkTable.createdAt
     )
-    .limit(limit ?? 20); // 🔥 LIMIT at DB level
+    .limit(limit ?? 20); // LIMIT at DB level
 
   // Early return (no bookmarks)
   if (bookmarks.length === 0) return [];
@@ -228,8 +228,23 @@ export const getDomainsWithBookmarkCounts = async () => {
 export const getTagsWithBookmarkCounts = async (): Promise<TTagWithStats[]> => {
   const { userId: currentUserId } = await getCurrentUser();
 
-  // join bookmark_tags → tags → bookmarks, filtered to the current user
-  const rows = await db
+  // 1. Aggregate in DB (COUNT + MAX date)
+  const aggregated = await db
+    .select({
+      tag: tagsTable.tag,
+      bookmarkCount: sql<number>`count(*)`,
+      lastBookmarkCreatedAt: sql<Date>`max(${bookmarkTable.createdAt})`,
+    })
+    .from(bookmarkTagsTable)
+    .innerJoin(tagsTable, eq(tagsTable.id, bookmarkTagsTable.tagId))
+    .innerJoin(bookmarkTable, eq(bookmarkTable.id, bookmarkTagsTable.bookmarkId))
+    .where(eq(bookmarkTable.userId, currentUserId))
+    .groupBy(tagsTable.tag);
+
+  if (aggregated.length === 0) return [];
+
+  // 2. Get titles for latest bookmarks (only for needed rows)
+  const latestRows = await db
     .select({
       tag: tagsTable.tag,
       title: bookmarkTable.title,
@@ -238,25 +253,25 @@ export const getTagsWithBookmarkCounts = async (): Promise<TTagWithStats[]> => {
     .from(bookmarkTagsTable)
     .innerJoin(tagsTable, eq(tagsTable.id, bookmarkTagsTable.tagId))
     .innerJoin(bookmarkTable, eq(bookmarkTable.id, bookmarkTagsTable.bookmarkId))
-    .where(eq(bookmarkTable.userId, currentUserId))
-    .orderBy(bookmarkTable.createdAt);
+    .where(eq(bookmarkTable.userId, currentUserId));
 
-  // single pass- accumulate count + track latest bookmark per tag
-  const tagMap = new Map<string, { count: number; lastTitle: string; lastAt: Date }>();
+  // 3. Map latest title per tag
+  const latestMap = new Map<string, string>();
 
-  for (const row of rows) {
-    const existing = tagMap.get(row.tag);
-    tagMap.set(row.tag, {
-      count: (existing?.count ?? 0) + 1,
-      lastTitle: row.title,
-      lastAt: row.createdAt,
-    });
+  for (const row of latestRows) {
+    const existing = latestMap.get(row.tag);
+
+    // keep only latest
+    if (!existing || row.createdAt > (aggregated.find(a => a.tag === row.tag)?.lastBookmarkCreatedAt ?? new Date(0))) {
+      latestMap.set(row.tag, row.title);
+    }
   }
 
-  return Array.from(tagMap.entries()).map(([tag, stats]) => ({
-    tag,
-    bookmarkCount: stats.count,
-    lastBookmarkTitle: stats.lastTitle,
-    lastBookmarkCreatedAt: stats.lastAt,
+  // 4. Final merge
+  return aggregated.map((item) => ({
+    tag: item.tag,
+    bookmarkCount: Number(item.bookmarkCount),
+    lastBookmarkTitle: latestMap.get(item.tag) ?? "",
+    lastBookmarkCreatedAt: item.lastBookmarkCreatedAt,
   }));
-}
+};

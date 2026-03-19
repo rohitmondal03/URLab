@@ -10,13 +10,13 @@ export const bookmarkQuery = {
     queryKey: queryKeys.bookmarks,
     queryFn: () => getCurrentUsersBookmarks(),
     refetchOnWindowFocus: true,
-    staleTime: Infinity
+    staleTime: 1000 * 60 * 5
   }),
   recent: ({ limit }: { limit?: number }) => ({
     queryKey: queryKeys.recentBookmarks,
-    queryFn: () => getCurrentUsersBookmarks(limit, true),
+    queryFn: () => getCurrentUsersBookmarks(limit ?? 5, true),
     refetchOnWindowFocus: true,
-    staleTime: Infinity
+    staleTime: 1000 * 60 * 5
   })
 }
 
@@ -25,7 +25,7 @@ export const tagsQuery = {
     queryKey: queryKeys.tags,
     queryFn: () => getTagsWithBookmarkCounts(),
     refetchOnWindowFocus: true,
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 5,
   })
 }
 
@@ -34,6 +34,6 @@ export const domainsQuery = {
     queryKey: queryKeys.domains,
     queryFn: () => getDomainsWithBookmarkCounts(),
     refetchOnWindowFocus: true,
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 5,
   })
 }

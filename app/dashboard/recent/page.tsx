@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { getCurrentUsersBookmarks } from "@/lib/actions/bookmark.action";
-import { RecentlyAddedPageClient } from "@/components/dashboard/recent/recently-added-page-client";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { bookmarkQuery } from "@/tanstack/queries";
+import { RecentlyAddedPageClient } from "@/components/dashboard/recent/recently-added-page-client";
+import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmark-grid-skeleton";
 
 export const metadata: Metadata = {
   title: "Recently Added",
@@ -12,7 +12,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function RecentlyAddedPage() {
+export default function RecentlyAddedPage() {
+  return (
+    <Suspense fallback={<BookmarkGridSkeleton title="Recently Added" />}>
+      <RecentlyAddedDataLoader />
+    </Suspense>
+  );
+}
+
+async function RecentlyAddedDataLoader() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery(bookmarkQuery.recent({ limit: 6 }));

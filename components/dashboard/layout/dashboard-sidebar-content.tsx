@@ -109,6 +109,7 @@ export function DashboardSidebarContent() {
           variant={"secondary"}
           className="w-7/8 h-fit mx-auto mb-4 py-3 justify-start border border-zinc-400 flex flex-col items-center gap-0"
           disabled={isLoading}
+          aria-label="user-dropdown-menu"
         >
           {isLoading
             ? <LoaderIcon className="animate-spin" />

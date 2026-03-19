@@ -83,15 +83,7 @@ export default function TagsPageClient() {
   return isLoading
     ? <TagsPageSkeleton />
     : (
-      <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
-        {/* Header */}
-        <div className="flex flex-col items-start justify-between pb-4 border-b border-border/40">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Tags</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Organize and explore bookmarks by tags
-          </p>
-        </div>
-
+      <>
         {/* Statistics chips */}
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-3">
@@ -125,7 +117,10 @@ export default function TagsPageClient() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="h-9 w-44 text-sm rounded-full bg-secondary/30 shadow-none focus:ring-0 focus:ring-offset-0">
+            <SelectTrigger
+              aria-label="tags-filter-dropdown"
+              className="h-9 w-44 text-sm rounded-full bg-secondary/30 shadow-none focus:ring-0 focus:ring-offset-0"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -170,7 +165,6 @@ export default function TagsPageClient() {
             )}
           </>
         )}
-      </div>
+      </>
     )
 }
-
