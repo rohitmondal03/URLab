@@ -4,8 +4,8 @@ import type { TBookmarkWithTags } from "@/types";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { motion, type Variants } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmark-grid-skeleton";
 import { bookmarkQuery } from "@/tanstack/queries";
 
@@ -16,7 +16,7 @@ const BookmarkDetailDialog = dynamic(() => import("./bookmark-details-dialog")
 const EmptyState = dynamic(() => import("./dashboard-empty-state")
   .then(mod => mod.EmptyState), { ssr: false });
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.07 } }
 };
@@ -49,7 +49,7 @@ export default function DashboardPageClient() {
     }
 
     return result;
-  }, [tagParams, domainParams])
+  }, [bookmarks, tagParams, domainParams])
 
   const handleOpen = (bookmark: TBookmarkWithTags) => {
     setSelectedBookmark({ ...bookmark });
@@ -82,7 +82,7 @@ export default function DashboardPageClient() {
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
               >
                 {filteredBookmarks.map((bookmark, idx) => (
                   <motion.div key={bookmark.id} variants={itemVariants}>

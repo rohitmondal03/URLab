@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { KEYBOARD_SHORTCUT_LIST } from "@/lib/helper";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
+import { cn } from "@/lib/utils";
 
 type TViewShortcutDialogProps = {
   isOpen: boolean;
@@ -17,8 +18,17 @@ export function ViewShortcutDialog({ isOpen, setOpen }: TViewShortcutDialogProps
           <DialogTitle>Keyboard Shortcut</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-4">
-          {KEYBOARD_SHORTCUT_LIST.map(item => (
-            <Button key={item.key} className="w-full">
+          {KEYBOARD_SHORTCUT_LIST.map((item, idx) => (
+            <Button
+              key={item.key}
+              className={cn(
+                "w-full",
+                idx === KEYBOARD_SHORTCUT_LIST.length - 1
+                  ? "col-span-2"
+                  : "col-span-1"
+              )}
+              onClick={(e) => e.stopPropagation()}
+            >
               {item.label}
               <Kbd>{item.key}</Kbd>
             </Button>

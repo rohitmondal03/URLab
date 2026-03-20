@@ -12,7 +12,7 @@ export const DASHBOARD_PAGE_METADATA: Metadata = {
   },
 
   alternates: {
-    canonical: BASE_URL,
+    canonical: BASE_URL + "/dashboard",
   },
 }
 
@@ -26,7 +26,7 @@ export const DOMAINS_PAGE_METADATA: Metadata = {
   },
 
   alternates: {
-    canonical: BASE_URL,
+    canonical: BASE_URL + "/dashboard/domains",
   },
 };
 
@@ -40,7 +40,7 @@ export const RECENTS_PAGE_METADATA: Metadata = {
   },
 
   alternates: {
-    canonical: BASE_URL,
+    canonical: BASE_URL + "/dashboard/recent",
   },
 }
 
@@ -54,6 +54,6 @@ export const TAGS_PAGE_METADATA: Metadata = {
   },
 
   alternates: {
-    canonical: BASE_URL,
+    canonical: BASE_URL + "/dashboard/tags",
   },
 };

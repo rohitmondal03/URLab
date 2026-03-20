@@ -11,6 +11,7 @@ export const DEFAULT_METADATA_ERROR_MESSAGE = "Error fetching data from URL or y
 export const KEYBOARD_SHORTCUT_LIST = [
   { key: "a", label: "Add Bookmark" },
   { key: "/", label: "Search" },
+  { key: "k", label: "View Shortcuts" },
 ]
 
 export const capitalizeFirstChar = (string: string) => {

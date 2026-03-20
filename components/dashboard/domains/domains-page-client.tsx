@@ -141,9 +141,9 @@ export default function DomainsPageClient() {
               animate="visible"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
             >
-              {paginated.map((domain) => (
+              {paginated.map((domain, index) => (
                 <motion.div key={domain.domain} variants={itemVariants}>
-                  <DomainCard domain={domain} onClick={handleCardClick} />
+                  <DomainCard cardIndex={index} domain={domain} onClick={handleCardClick} />
                 </motion.div>
               ))}
             </motion.div>

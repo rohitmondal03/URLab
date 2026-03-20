@@ -75,7 +75,10 @@ export function BookmarkCardActionsDropdownMenu({
           <Button
             variant={"secondary"}
             className="text-sm cursor-pointer gap-2 w-full"
-            onClick={() => setEditBookmarkDialogOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditBookmarkDialogOpen(true)
+            }}
           >
             <Edit2Icon className="size-4" /> Edit
           </Button>
@@ -83,7 +86,10 @@ export function BookmarkCardActionsDropdownMenu({
           <Button
             variant="destructive"
             className="text-sm cursor-pointer gap-2 w-full"
-            onClick={() => setDeleteDialogOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setDeleteDialogOpen(true)
+            }}
           >
             <Trash2Icon className="size-4" /> Delete
           </Button>

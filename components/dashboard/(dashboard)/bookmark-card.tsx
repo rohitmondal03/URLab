@@ -1,8 +1,8 @@
 import type { TBookmarkWithTags } from "@/types";
-import { useMemo } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { MoreVertical } from "lucide-react";
+import { useMemo } from "react";
+import { MoreVerticalIcon, FullscreenIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,22 +30,18 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
   );
 
   return (
-    <Card
-      className="group flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[10px_10px_10px] hover:shadow-[20px_20px_20px] border-zinc-500 transition-all duration-300 py-0 cursor-pointer overflow-hidden h-full hover:scale-[1.03]"
-      onClick={() => onOpen(bookmark)}
-    >
+    <Card className="group flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[10px_10px_10px] hover:shadow-[20px_20px_10px] hover:-translate-1 hover:border-black border-zinc-500 transition-all duration-300 py-0 overflow-hidden h-full">
       {/* Preview image */}
       <div className="relative w-full aspect-auto bg-muted overflow-hidden shrink-0 border-b-2">
         <Image
-          height={500}
-          width={300}
+          height={1000}
+          width={1000}
           sizes="(max-width: 786px) 100vw, 451px"
           src={imagePreviewUrl ?? "/file.svg"}
           alt={bookmark.url}
-          // loading={cardIndex < 3 ? "eager" : "lazy"}
           fetchPriority={cardIndex < 3 ? "high" : "low"}
           priority={cardIndex < 3}
-          className="w-fit h-full object-fill group-hover:scale-105 transition-transform duration-500"
+          className="w-fit h-full object-fill group-hover:scale-[1.03] transition-transform duration-500"
           placeholder="blur"
           blurDataURL={bookmark.previewImage || ""}
           onError={(e) => {
@@ -53,7 +49,6 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
             (e.currentTarget as HTMLImageElement).style.display = "none";
           }}
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
       <CardContent className="flex flex-col gap-3 p-4 flex-1">
@@ -72,16 +67,31 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
             </span>
           </div>
 
-          <BookmarkCardActionsDropwdownMenu bookmark={bookmark}>
+          <div className="flex items-center gap-2">
+            <BookmarkCardActionsDropwdownMenu bookmark={bookmark}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
+                aria-label="options-dropdown"
+                onClick={e => e.stopPropagation()}
+              >
+                <MoreVerticalIcon className="size-4" />
+              </Button>
+            </BookmarkCardActionsDropwdownMenu>
             <Button
               variant="ghost"
-              size="icon"
-              className="size-10 opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
-              aria-label="options-dropdown"
+              size="icon-lg"
+              className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
+              aria-label="open-bookmark"
+              onClick={e => {
+                e.stopPropagation();
+                onOpen(bookmark);
+              }}
             >
-              <MoreVertical className="size-4" />
+              <FullscreenIcon className="size-6" />
             </Button>
-          </BookmarkCardActionsDropwdownMenu>
+          </div>
         </div>
 
         <p className="text-xs text-muted-foreground">

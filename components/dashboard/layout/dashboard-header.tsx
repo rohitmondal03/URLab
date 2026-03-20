@@ -17,21 +17,37 @@ export function DashboardHeader() {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
-  const [isShortcutDialogOpen, setShorcutDialogOpen] = useState(false);
+  const [isShortcutDialogOpen, setShortcutDialogOpen] = useState(false);
 
   useEffect(() => {
-    window.onkeyup = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
 
-      if (e.key === 'a') {
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      if (e.key === "a") {
+        e.preventDefault();
         setAddModalOpen(true);
       }
       if (e.key === "/") {
-        setSearchModalOpen(true)
+        e.preventDefault();
+        setSearchModalOpen(true);
       }
-    }
-  }, [])
+      if (e.key === "k") {
+        e.preventDefault();
+        setShortcutDialogOpen(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <>
@@ -71,7 +87,7 @@ export function DashboardHeader() {
           </Button>
           <Button
             variant={"secondary"}
-            onClick={() => setShorcutDialogOpen(true)}
+            onClick={() => setShortcutDialogOpen(true)}
           >
             <KeyboardIcon />
             View Shortcuts
@@ -82,7 +98,7 @@ export function DashboardHeader() {
           />
           <ViewShortcutDialog
             isOpen={isShortcutDialogOpen}
-            setOpen={setShorcutDialogOpen}
+            setOpen={setShortcutDialogOpen}
           />
         </div>
       </header>

@@ -6,9 +6,10 @@ import { getFaviconFromURL } from "@/lib/helper";
 type TDomainCardProps = {
   domain: TDomainWithStats;
   onClick: (domain: string) => void;
+  cardIndex: number;
 };
 
-export function DomainCard({ domain, onClick }: TDomainCardProps) {
+export function DomainCard({ domain, onClick, cardIndex }: TDomainCardProps) {
   return (
     <Card
       className="group flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[5px_5px_10px] hover:shadow-[10px_10px_20px] border-zinc-300 transition-all duration-300 py-0 cursor-pointer overflow-hidden h-full hover:scale-[1.02]"
@@ -22,7 +23,8 @@ export function DomainCard({ domain, onClick }: TDomainCardProps) {
             alt={domain.domain}
             width={32}
             height={32}
-            // className="object-contain"
+            sizes="(max-width: 786px) 100vw, 32px"
+            fetchPriority={cardIndex < 3 ? "high" : "low"}
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.display = "none";
             }}
