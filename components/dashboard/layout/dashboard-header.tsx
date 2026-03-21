@@ -53,25 +53,34 @@ export function DashboardHeader() {
     <>
       {/* Top bar */}
       <header className="h-20 flex items-center justify-between px-4 md:px-6 border-b border-zinc-400 bg-background/80 backdrop-blur-md z-10 shrink-0">
-        <div className="flex items-center gap-2 flex-1">
+        <div className="flex items-center gap-2 sm:gap-4 flex-1">
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden text-muted-foreground"
+            className="lg:hidden text-muted-foreground shrink-0"
             onClick={() => setMobileMenuOpen(prev => !prev)}
           >
             <MenuIcon className="size-5" />
           </Button>
 
-          <div
-            className="relative outline-1 outline-zinc-400 w-full max-w-sm hidden sm:flex items-center gap-3 py-2 px-4 rounded-3xl transition-all hover:outline-2 cursor-text"
+          <Button
+            variant="secondary"
+            size="icon"
+            className="sm:hidden text-muted-foreground shrink-0"
+            onClick={() => setSearchModalOpen(true)}
+          >
+            <SearchIcon className="size-5" />
+          </Button>
+          <Button
+            variant={"ghost"}
+            className=" w-full max-w-sm hidden sm:flex items-center gap-3 py-2 px-4 rounded-3xl transition-all hover:outline-2 cursor-text border-2 border-zinc-400"
             onClick={() => setSearchModalOpen(true)}
           >
             <SearchIcon className="size-4 text-muted-foreground" />
-            <div className="text-sm text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               Search bookmarks, tags, domains...
-            </div>
-          </div>
+            </span>
+          </Button>
 
           {/* Search Dialog */}
           <SearchDialog
@@ -80,17 +89,18 @@ export function DashboardHeader() {
           />
         </div>
 
-        <div className="flex items-center gap-5">
-          <Button onClick={() => setAddModalOpen(true)} className="gap-x-2">
-            <PlusIcon className="size-4" />
-            Bookmark
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Button onClick={() => setAddModalOpen(true)} className="gap-x-2 px-3 sm:px-4 shrink-0">
+            <PlusIcon className="size-4 sm:size-5" />
+            <span className="hidden lg:inline">Bookmark</span>
           </Button>
           <Button
             variant={"secondary"}
             onClick={() => setShortcutDialogOpen(true)}
+            className="gap-x-2 px-3 sm:px-4 shrink-0"
           >
-            <KeyboardIcon />
-            View Shortcuts
+            <KeyboardIcon className="size-4 sm:size-5" />
+            <span className="hidden lg:inline">View Shortcuts</span>
           </Button>
           <AddBookmarkDialog
             isAddModalOpen={isAddModalOpen}

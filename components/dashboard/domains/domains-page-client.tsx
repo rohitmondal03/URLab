@@ -57,8 +57,8 @@ export default function DomainsPageClient() {
     const sorted = [...filtered].sort((a, b) => {
       if (sort === "bookmarks") return b.bookmarkCount - a.bookmarkCount;
       if (sort === "recent") {
-        const ta = a.lastBookmarkCreatedAt?.getTime() ?? 0;
-        const tb = b.lastBookmarkCreatedAt?.getTime() ?? 0;
+        const ta = a.lastBookmarkCreatedAt ? new Date(a.lastBookmarkCreatedAt).getTime() : 0;
+        const tb = b.lastBookmarkCreatedAt ? new Date(b.lastBookmarkCreatedAt).getTime() : 0;
         return tb - ta;
       }
       // alpha
@@ -79,14 +79,6 @@ export default function DomainsPageClient() {
     ? <DomainsPageSkeleton />
     : (
       <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
-        {/* Header */}
-        <div className="flex flex-col items-start justify-between pb-4 border-b border-border/40">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Domains</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Browse your bookmarks by website
-          </p>
-        </div>
-
         <div className="flex flex-wrap gap-3">
           <StatChip label="Total Domains" value={String(processed.length)} />
         </div>
@@ -139,7 +131,7 @@ export default function DomainsPageClient() {
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6"
             >
               {paginated.map((domain, index) => (
                 <motion.div key={domain.domain} variants={itemVariants}>

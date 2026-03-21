@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { SearchIcon, PlusIcon, KeyboardIcon, StarIcon, TagIcon, GlobeIcon, ClockIcon, BookmarkIcon, MoreVertical } from "lucide-react";
+import { SearchIcon, PlusIcon, KeyboardIcon, StarIcon, TagIcon, GlobeIcon, ClockIcon, BookmarkIcon, MoreVertical, StarsIcon, TrendingUpIcon, MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,6 +32,13 @@ const NAV_ITEMS = [
       { name: "Domains", icon: <GlobeIcon className="size-4" />, isActive: false },
     ]
   },
+  {
+    title: "Discovery",
+    items: [
+      { name: "Popular", icon: <StarsIcon className="size-4" />, path: "/dashboard/popular", isActive: false },
+      { name: "Trending", icon: <TrendingUpIcon className="size-4" />, path: "/dashboard/trending", isActive: false },
+    ]
+  }
 ];
 
 export function ProductPreviewSection() {
@@ -42,7 +49,7 @@ export function ProductPreviewSection() {
       viewport={{ once: true, margin: "-100px" }}
       variants={fadeUpVariants}
       id="preview"
-      className="w-full py-12 flex justify-center perspective-[2000px]"
+      className="w-full py-12 hidden md:flex justify-center perspective-[2000px]"
     >
       <div className="relative w-full max-w-6xl rounded-2xl border-2 border-zinc-500 bg-card/50 p-2 shadow-zinc-400 shadow-[0px_0px_50px_0px] overflow-hidden ring-1 ring-border/50 backdrop-blur-sm transform-gpu rotate-x-12 scale-[0.98] hover:rotate-x-0 hover:scale-100 transition-all duration-700 ease-out">
         <div className="absolute inset-0 bg-linear-to-tr from-primary/5 to-transparent opacity-50 z-0" />
@@ -50,7 +57,7 @@ export function ProductPreviewSection() {
         <div className="rounded-xl overflow-hidden border border-border/50 shadow-sm relative z-10 bg-background flex aspect-video">
 
           {/* Mock Sidebar */}
-          <div className="hidden md:flex w-60 flex-col bg-sidebar/50 backdrop-blur-sm border-r border-zinc-400">
+          <div className="hidden lg:flex w-60 flex-col bg-sidebar/50 backdrop-blur-sm border-r border-zinc-400">
             <div className="h-20 flex items-center px-4 md:px-6 border-b border-zinc-400 shrink-0">
               <Logo variant="large" />
             </div>
@@ -85,20 +92,23 @@ export function ProductPreviewSection() {
           <div className="flex-1 flex flex-col min-w-0">
             {/* Mock Header */}
             <div className="h-20 flex items-center justify-between px-4 md:px-6 border-b border-zinc-400 bg-background/80 backdrop-blur-md shrink-0 pointer-events-none">
-              <div className="flex items-center gap-2 flex-1">
+              <div className="flex items-center gap-5 flex-1">
+                <MenuIcon className="block lg:hidden size-4" />
+
                 <div className="relative outline-1 outline-zinc-400 w-full max-w-sm hidden sm:flex items-center gap-3 py-2 px-4 rounded-3xl bg-background text-muted-foreground">
-                  <SearchIcon className="size-4" />
-                  <div className="text-sm">Search bookmarks, tags, domains...</div>
+                  <SearchIcon className="size-3" />
+                  <div className="text-xs">Search bookmarks, tags, domains...</div>
                 </div>
               </div>
-              <div className="flex items-center gap-5">
-                <Button className="gap-x-2" size="sm">
+
+              <div className="flex items-center gap-3">
+                <Button className="gap-x-2 shrink-0" size="sm">
                   <PlusIcon className="size-4" />
-                  Bookmark
+                  <span className="hidden lg:inline">Bookmark</span>
                 </Button>
-                <Button variant="secondary" size="sm" className="hidden lg:flex gap-x-2">
+                <Button variant="secondary" size="sm" className="gap-x-2 shrink-0">
                   <KeyboardIcon className="size-4" />
-                  View Shortcuts
+                  <span className="hidden lg:inline">View Shortcuts</span>
                 </Button>
               </div>
             </div>

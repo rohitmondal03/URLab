@@ -44,23 +44,23 @@ export function DashboardSidebarContent() {
     {
       title: "Navigation",
       items: [
-        { name: "Your Bookmarks", icon: <BookmarkIcon />, path: "/dashboard" },
-        { name: "Favorites", icon: <StarIcon />, path: "/dashboard/favorites" },
-        { name: "Recently Added", icon: <ClockIcon />, path: "/dashboard/recent" },
+        { name: "Your Bookmarks", icon: <BookmarkIcon />, path: "/dashboard", disabled: false },
+        { name: "Recently Added", icon: <ClockIcon />, path: "/dashboard/recent", disabled: false },
+        { name: "Favorites", icon: <StarIcon />, path: "/dashboard/favorites", disabled: true },
       ]
     },
     {
       title: "Organization",
       items: [
-        { name: "Tags", icon: <TagIcon />, path: "/dashboard/tags" },
-        { name: "Domains", icon: <GlobeIcon />, path: "/dashboard/domains" },
+        { name: "Tags", icon: <TagIcon />, path: "/dashboard/tags", disabled: false },
+        { name: "Domains", icon: <GlobeIcon />, path: "/dashboard/domains", disabled: false },
       ]
     },
     {
       title: "Discovery",
       items: [
-        { name: "Popular", icon: <StarsIcon />, path: "/dashboard/popular" },
-        { name: "Trending", icon: <TrendingUpIcon />, path: "/dashboard/trending" },
+        { name: "Popular", icon: <StarsIcon />, path: "/dashboard/popular", disabled: true },
+        { name: "Trending", icon: <TrendingUpIcon />, path: "/dashboard/trending", disabled: true },
       ]
     }
   ]

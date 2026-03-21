@@ -5,7 +5,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen w-full bg-background relative">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:block sticky top-0 left-0 w-64 h-screen shrink-0 z-10 transition-all duration-300">
+      <aside className="hidden lg:block sticky top-0 left-0 w-64 h-screen shrink-0 z-10 transition-all duration-300">
         <DashboardSidebarContent />
       </aside>
 

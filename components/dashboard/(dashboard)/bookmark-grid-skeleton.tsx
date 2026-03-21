@@ -12,7 +12,7 @@ export function BookmarkGridSkeleton({
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
       {/* Header skeleton */}
-      <div className="flex items-center justify-between pb-4 border-b border-border/40">
+      {/* <div className="flex items-center justify-between pb-4 border-b border-border/40">
         <div className="space-y-2">
           {title ? (
             <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
@@ -25,7 +25,7 @@ export function BookmarkGridSkeleton({
             <Skeleton className="h-4 w-24" />
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* Card grid skeleton */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

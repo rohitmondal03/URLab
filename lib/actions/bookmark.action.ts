@@ -198,30 +198,51 @@ export const getCurrentUsersBookmarks = async (
 export const getDomainsWithBookmarkCounts = async () => {
   const { userId: currentUserId } = await getCurrentUser();
 
-  const query = sql`
-    SELECT
-      d.domain AS "domain",
-      COUNT(b.id)::int AS "bookmarkCount",
-      MAX(b.created_at) AS "lastBookmarkCreatedAt",
-      (
-        SELECT b2.title FROM bookmarks b2 
-        WHERE b2.domain_id = d.id AND b2.user_id = ${currentUserId} 
-        ORDER BY b2.created_at DESC LIMIT 1
-      ) AS "lastBookmarkTitle"
-    FROM domains d
-    INNER JOIN bookmarks b ON b.domain_id = d.id
-    WHERE b.user_id = ${currentUserId}
-    GROUP BY d.id, d.domain
-  `;
+  // 1. Aggregate in DB
+  const aggregated = await db
+    .select({
+      domain: domainsTable.domain,
+      bookmarkCount: sql<number>`count(*)`,
+      lastBookmarkCreatedAt: sql<Date>`max(${bookmarkTable.createdAt})`,
+    })
+    .from(bookmarkTable)
+    .innerJoin(domainsTable, eq(domainsTable.id, bookmarkTable.domainId))
+    .where(eq(bookmarkTable.userId, currentUserId))
+    .groupBy(domainsTable.domain);
 
-  const result = await db.execute(query);
-  const rows = result as any[];
+  if (aggregated.length === 0) return [];
 
-  return rows.map((row) => ({
-    domain: row.domain,
-    bookmarkCount: Number(row.bookmarkCount),
-    lastBookmarkTitle: row.lastBookmarkTitle ?? "",
-    lastBookmarkCreatedAt: new Date(row.lastBookmarkCreatedAt),
+  // 2. Fetch titles for latest bookmarks (only needed ones)
+  const latestRows = await db
+    .select({
+      domain: domainsTable.domain,
+      title: bookmarkTable.title,
+      createdAt: bookmarkTable.createdAt,
+    })
+    .from(bookmarkTable)
+    .innerJoin(domainsTable, eq(domainsTable.id, bookmarkTable.domainId))
+    .where(eq(bookmarkTable.userId, currentUserId));
+
+  // 3. Map latest title per domain
+  const latestMap = new Map<string, { title: string; createdAt: Date }>();
+
+  for (const row of latestRows) {
+    const existing = latestMap.get(row.domain);
+
+    if (!existing || row.createdAt > existing.createdAt) {
+      latestMap.set(row.domain, {
+        title: row.title,
+        createdAt: row.createdAt,
+      });
+    }
+  }
+
+  // 4. Final merge
+  return aggregated.map((item) => ({
+    domain: item.domain,
+    bookmarkCount: Number(item.bookmarkCount),
+    lastBookmarkTitle: latestMap.get(item.domain)?.title ?? "",
+    lastBookmarkCreatedAt: item.lastBookmarkCreatedAt,
   }));
 };
 
@@ -229,34 +250,50 @@ export const getDomainsWithBookmarkCounts = async () => {
 export const getTagsWithBookmarkCounts = async (): Promise<TTagWithStats[]> => {
   const { userId: currentUserId } = await getCurrentUser();
 
-  const query = sql`
-    SELECT 
-      t.tag AS "tag",
-      COUNT(b.id)::int AS "bookmarkCount",
-      MAX(b.created_at) AS "lastBookmarkCreatedAt",
-      (
-        SELECT b2.title 
-        FROM bookmarks b2
-        INNER JOIN bookmark_tags bt2 ON bt2.bookmark_id = b2.id
-        WHERE bt2.tag_id = t.id AND b2.user_id = ${currentUserId}
-        ORDER BY b2.created_at DESC LIMIT 1
-      ) AS "lastBookmarkTitle"
-    FROM tags t
-    INNER JOIN bookmark_tags bt ON bt.tag_id = t.id
-    INNER JOIN bookmarks b ON b.id = bt.bookmark_id
-    WHERE b.user_id = ${currentUserId}
-    GROUP BY t.id, t.tag
-  `;
+  // 1. Aggregate in DB (COUNT + MAX date)
+  const aggregated = await db
+    .select({
+      tag: tagsTable.tag,
+      bookmarkCount: sql<number>`count(*)`,
+      lastBookmarkCreatedAt: sql<Date>`max(${bookmarkTable.createdAt})`,
+    })
+    .from(bookmarkTagsTable)
+    .innerJoin(tagsTable, eq(tagsTable.id, bookmarkTagsTable.tagId))
+    .innerJoin(bookmarkTable, eq(bookmarkTable.id, bookmarkTagsTable.bookmarkId))
+    .where(eq(bookmarkTable.userId, currentUserId))
+    .groupBy(tagsTable.tag);
 
-  const result = await db.execute(query);
-  const rows = result as any[];
+  if (aggregated.length === 0) return [];
 
-  if (rows.length === 0) return [];
+  // 2. Get titles for latest bookmarks (only for needed rows)
+  const latestRows = await db
+    .select({
+      tag: tagsTable.tag,
+      title: bookmarkTable.title,
+      createdAt: bookmarkTable.createdAt,
+    })
+    .from(bookmarkTagsTable)
+    .innerJoin(tagsTable, eq(tagsTable.id, bookmarkTagsTable.tagId))
+    .innerJoin(bookmarkTable, eq(bookmarkTable.id, bookmarkTagsTable.bookmarkId))
+    .where(eq(bookmarkTable.userId, currentUserId));
 
-  return rows.map((item) => ({
+  // 3. Map latest title per tag
+  const latestMap = new Map<string, string>();
+
+  for (const row of latestRows) {
+    const existing = latestMap.get(row.tag);
+
+    // keep only latest
+    if (!existing || row.createdAt > (aggregated.find(a => a.tag === row.tag)?.lastBookmarkCreatedAt ?? new Date(0))) {
+      latestMap.set(row.tag, row.title);
+    }
+  }
+
+  // 4. Final merge
+  return aggregated.map((item) => ({
     tag: item.tag,
     bookmarkCount: Number(item.bookmarkCount),
-    lastBookmarkTitle: item.lastBookmarkTitle ?? "",
-    lastBookmarkCreatedAt: new Date(item.lastBookmarkCreatedAt),
+    lastBookmarkTitle: latestMap.get(item.tag) ?? "",
+    lastBookmarkCreatedAt: item.lastBookmarkCreatedAt,
   }));
 };

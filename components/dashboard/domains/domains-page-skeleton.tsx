@@ -3,12 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function DomainsPageSkeleton() {
   return (
     <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
-      <div className="flex items-start justify-between pb-4 border-b border-border/40">
-        <div className="space-y-2">
-          <Skeleton className="h-7 w-28" />
-          <Skeleton className="h-4 w-52" />
-        </div>
-      </div>
+      <Skeleton className="h-9 w-44 rounded-full" />
       <div className="flex items-center gap-3">
         <Skeleton className="h-9 flex-1 max-w-sm rounded-full" />
         <Skeleton className="h-9 w-44 rounded-full" />

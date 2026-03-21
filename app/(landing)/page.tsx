@@ -15,7 +15,7 @@ export default function LandingPage() {
       {/* Navbar */}
       <Navbar />
 
-      <main className="flex-1 w-full max-w-6xl px-6 md:px-12 flex flex-col items-center">
+      <main className="flex-1 w-full max-w-6xl px-4 sm:px-6 md:px-12 flex flex-col items-center">
         {/* Hero Section */}
         <HeroSection />
 

@@ -1,5 +1,5 @@
-import { RiGithubFill } from "@remixicon/react"
 import Link from "next/link";
+import { RiGithubFill } from "@remixicon/react"
 import { Logo } from "../shared/logo";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
@@ -24,9 +24,9 @@ const FOOTER_LINK = [
 
 export function Footer() {
   return (
-    <footer className="w-full max-w-6xl py-8 px-6 md:px-12 border-t border-zinc-500 mt-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <footer className="w-full max-w-6xl py-8 px-4 sm:px-6 md:px-12 border-t border-zinc-500 mt-auto flex flex-col sm:flex-row justify-between items-center gap-6">
       <Logo />
-      <div className="flex items-center gap-6 text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 sm:gap-6 text-sm text-muted-foreground">
         {FOOTER_LINK.map(link => (
           <Link
             href={link.href}

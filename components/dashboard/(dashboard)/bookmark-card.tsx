@@ -30,7 +30,7 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
   );
 
   return (
-    <Card className="group flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[10px_10px_10px] hover:shadow-[20px_20px_10px] hover:-translate-1 hover:border-black border-zinc-500 transition-all duration-300 py-0 overflow-hidden h-full">
+    <Card className="group flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[10px_10px_10px] hover:shadow-[20px_20px_10px] hover:border-black border-zinc-500 transition-all duration-300 py-0 overflow-hidden h-full">
       {/* Preview image */}
       <div className="relative w-full aspect-auto bg-muted overflow-hidden shrink-0 border-b-2">
         <Image
@@ -41,7 +41,7 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
           alt={bookmark.url}
           fetchPriority={cardIndex < 3 ? "high" : "low"}
           priority={cardIndex < 3}
-          className="w-fit h-full object-fill group-hover:scale-[1.03] transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
           placeholder="blur"
           blurDataURL={bookmark.previewImage || ""}
           onError={(e) => {

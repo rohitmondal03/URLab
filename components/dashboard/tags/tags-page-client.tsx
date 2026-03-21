@@ -21,7 +21,6 @@ import { StatChip } from "../../shared/tag-stat-chip";
 import { TagsPageSkeleton } from "./tags-page-skeleton";
 import { EmptyState } from "./empty-tags-state";
 import { NoResults } from "./empty-query-results";
-import { Badge } from "@/components/ui/badge";
 
 const PAGE_SIZE = 12;
 
@@ -65,8 +64,8 @@ export default function TagsPageClient() {
     return [...filtered as TTagWithStats[]].sort((a, b) => {
       if (sort === "bookmarks") return b.bookmarkCount - a.bookmarkCount;
       if (sort === "recent") {
-        const ta = a.lastBookmarkCreatedAt?.getTime() ?? 0;
-        const tb = b.lastBookmarkCreatedAt?.getTime() ?? 0;
+        const ta = a.lastBookmarkCreatedAt ? new Date(a.lastBookmarkCreatedAt).getTime() : 0;
+        const tb = b.lastBookmarkCreatedAt ? new Date(b.lastBookmarkCreatedAt).getTime() : 0;
         return tb - ta;
       }
       return a.tag.localeCompare(b.tag);
@@ -143,7 +142,7 @@ export default function TagsPageClient() {
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6"
             >
               {paginated.map((tag) => (
                 <motion.div key={tag.tag} variants={itemVariants}>
