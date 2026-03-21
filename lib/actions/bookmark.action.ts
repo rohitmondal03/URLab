@@ -7,7 +7,7 @@ import { bookmarkTable, bookmarkTagsTable, domainsTable, tagsTable } from "@/dri
 import { getCurrentUser } from "./auth.action"
 import { getURLMetadata } from "./metadata.action"
 import "dotenv/config"
-import { DEFAULT_ERROR_MESSAGE } from "../helper"
+import { DEFAULT_ERROR_MESSAGE } from "../constants"
 
 
 // To "Create a New Bookmark", with edge function and imp few checks

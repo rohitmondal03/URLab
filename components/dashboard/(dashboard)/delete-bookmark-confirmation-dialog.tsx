@@ -2,16 +2,17 @@ import { useState, type Dispatch, type SetStateAction } from "react";
 import { toast } from "sonner";
 import { LoaderIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { deleteBookmarkMutation } from "@/tanstack/mutations";
 
 type TDeleteBookmarkConfirmationDialogProps = {
   isOpen: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   bookmarkId: string;
+  bookmarkTitle: string;
 }
 
-export function DeleteBookmarkConfirmationDialog({ isOpen, setOpen, bookmarkId }: TDeleteBookmarkConfirmationDialogProps) {
+export function DeleteBookmarkConfirmationDialog({ isOpen, setOpen, bookmarkId, bookmarkTitle }: TDeleteBookmarkConfirmationDialogProps) {
   const [isLoading, setLoading] = useState(false);
 
   const mutation = deleteBookmarkMutation();
@@ -40,8 +41,11 @@ export function DeleteBookmarkConfirmationDialog({ isOpen, setOpen, bookmarkId }
       <DialogContent className="space-y-4">
         <DialogHeader>
           <DialogTitle>
-            Are you sure you want to <span className="text-rose-500">DELETE</span> this Bookmark ?
+            Are you sure you want to DELETE this Bookmark ?
           </DialogTitle>
+          <DialogDescription>
+            <span className="underline underline-offset-2">Bookmark TITLE</span> - {bookmarkTitle}
+          </DialogDescription>
         </DialogHeader>
         <div className="flex items-center justify-start gap-2">
           <Button

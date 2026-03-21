@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Konfig
 
-## Getting Started
+> A modern, high-performance bookmark management SaaS built with a focus on speed, organization, and developer-grade UX.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Konfig is a structured bookmarking platform that helps users organize, search, and manage links efficiently using domains, tags, and smart filtering.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Unlike traditional bookmark tools, Konfig is designed with a **productivity-first approach**, but optimized for **speed, scalability, and clean UX**.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ⚡ Features
 
-To learn more about Next.js, take a look at the following resources:
+### 📌 Core Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 🔖 Bookmark management (create, delete, organize)
+- 🧩 Tag-based filtering
+- 🌐 Domain-based grouping
+- 🕒 Recently added view
+- 🔍 Fast search and filtering
+- 🧱 Structured data model (domains + tags)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### 🎨 UX & Performance
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- ⚡ Optimistic UI updates (instant feedback)
+- 🧠 Smart caching with TanStack Query
+- 🔄 Real-time UI synchronization across views
+- 💀 Skeleton loaders for better perceived performance
+- 🚫 Empty states and error boundaries
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### 🧰 Developer Experience
+
+- 🧬 Type-safe database queries using Drizzle ORM
+- 🔐 Secure backend with Supabase (RLS policies)
+- 📡 Background processing via Edge Functions
+- 🧱 Clean architecture (separation of concerns)
+
+---
+
+## 🏗️ Tech Stack
+
+| Category       | Tech |
+|----------------|------|
+| Framework      | Next.js (App Router) |
+| Language       | TypeScript |
+| Styling        | Tailwind CSS + shadcn/ui |
+| State & Cache  | TanStack Query |
+| Database       | PostgreSQL (Supabase) |
+| ORM            | Drizzle ORM |
+
+---
+
+## 🧠 Architecture
+
+```text
+Client (Next.js)
+   ↓
+TanStack Query (cache layer)
+   ↓
+Server Actions
+   ↓
+Database (Supabase + Drizzle)

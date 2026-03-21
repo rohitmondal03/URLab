@@ -7,7 +7,7 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { signupWithEmail } from "@/lib/actions/auth.action";
 import { toast } from "sonner";
-import { DEFAULT_ERROR_MESSAGE } from "@/lib/helper";
+import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
 import { LoaderIcon } from "lucide-react";
 
 export function SignupForm() {

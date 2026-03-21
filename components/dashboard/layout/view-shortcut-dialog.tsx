@@ -1,6 +1,6 @@
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { KEYBOARD_SHORTCUT_LIST } from "@/lib/helper";
+import { KEYBOARD_SHORTCUT_LIST } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import { cn } from "@/lib/utils";
@@ -23,7 +23,8 @@ export function ViewShortcutDialog({ isOpen, setOpen }: TViewShortcutDialogProps
               key={item.key}
               className={cn(
                 "w-full",
-                idx === KEYBOARD_SHORTCUT_LIST.length - 1
+                KEYBOARD_SHORTCUT_LIST.length % 2 === 1
+                  && idx === KEYBOARD_SHORTCUT_LIST.length - 1
                   ? "col-span-2"
                   : "col-span-1"
               )}

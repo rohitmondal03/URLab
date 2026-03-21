@@ -1,7 +1,8 @@
 "use server"
 
 import ogScraper from "open-graph-scraper";
-import { DEFAULT_METADATA_ERROR_MESSAGE, getDomainFromUrl } from "../helper"
+import { DEFAULT_METADATA_ERROR_MESSAGE } from "../constants"
+import { getDomainFromUrl } from "../helper"
 
 // For scraping the metadata/details of entered URL.
 export const getURLMetadata = async (url: string) => {

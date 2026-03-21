@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { loginWithEmail } from "@/lib/actions/auth.action";
 import { useState } from "react";
 import { toast } from "sonner";
-import { DEFAULT_ERROR_MESSAGE } from "@/lib/helper";
+import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
 import { LoaderIcon } from "lucide-react";
 
 export function LoginForm() {

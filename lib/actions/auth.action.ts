@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { Provider as OAuthProvider } from "@supabase/supabase-js";
 import { createClient } from "../supabase/server"
-import { BASE_URL } from "../helper";
+import { BASE_URL } from "../constants";
 
 // signup user with email
 export const signupWithEmail = async (name: string, email: string, password: string) => {

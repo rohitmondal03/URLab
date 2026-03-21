@@ -1,10 +1,11 @@
 import { type Provider as OAuthProvider } from "@supabase/supabase-js";
+import { useState } from "react";
 import { toast } from "sonner";
 import { RiGithubFill, RiGoogleFill } from "@remixicon/react"
 import { Button } from "../ui/button";
 import { signinWithOAuth } from "@/lib/actions/auth.action";
-import { capitalizeFirstChar, DEFAULT_ERROR_MESSAGE } from "@/lib/helper";
-import { useState } from "react";
+import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
+import { capitalizeFirstChar } from "@/lib/helper";
 
 export function OAuthButtonGroup() {
   const [isLoading, setLoading] = useState(false);

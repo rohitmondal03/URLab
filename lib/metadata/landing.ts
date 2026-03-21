@@ -1,5 +1,5 @@
 import { type Metadata } from "next";
-import { BASE_URL } from "../helper";
+import { BASE_URL } from "../constants";
 
 
 export const LANDING_PAGE_METADATA: Metadata = {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BASE_URL } from "../helper";
+import { BASE_URL } from "../constants";
 
 export const DASHBOARD_PAGE_METADATA: Metadata = {
   title: "Dashboard",
