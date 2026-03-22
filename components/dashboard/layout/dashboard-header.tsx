@@ -102,7 +102,7 @@ export function DashboardHeader() {
           <Button
             variant={"secondary"}
             onClick={() => setShortcutDialogOpen(true)}
-            className="gap-x-2 px-3 sm:px-4 shrink-0"
+            className="gap-x-2 px-3 sm:px-4 shrink-0 hidden sm:flex"
           >
             <KeyboardIcon className="size-4 sm:size-5" />
             <span className="hidden lg:inline">View Shortcuts</span>

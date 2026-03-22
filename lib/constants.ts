@@ -2,6 +2,8 @@ export const BASE_URL = process.env.NODE_ENV === "development"
   ? "http://localhost:3000"
   : "https://urlab-live.vercel.app"
 
+export const GITHUB_LINK = "https://github.com/rohitmondal03/urlab"
+
 export const DEFAULT_ERROR_MESSAGE = "Something went wrong. Please try again later.";
 export const DEFAULT_METADATA_ERROR_MESSAGE = "Error fetching data from URL or you might've entered wrong URL"
 

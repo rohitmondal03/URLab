@@ -54,7 +54,7 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
       <CardContent className="flex flex-col gap-3 p-4 flex-1">
         <div className="flex items-center justify-between gap-2 w-full">
           {/* Favicon + Domain */}
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-1 sm:gap-3 min-w-0">
             <Image
               height={1000}
               width={1000}
@@ -62,34 +62,34 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
               alt={bookmark.url}
               className="size-4 object-contain rounded-sm"
             />
-            <span className="text-sm truncate">
+            <span className="text-xs sm:text-sm truncate">
               {bookmarksDomain}
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center md:gap-2">
             <BookmarkCardActionsDropwdownMenu bookmark={bookmark}>
               <Button
                 variant="ghost"
                 size="icon"
-                className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
+                className="md:opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground p-0"
                 aria-label="options-dropdown"
                 onClick={e => e.stopPropagation()}
               >
-                <MoreVerticalIcon className="size-4" />
+                <MoreVerticalIcon className="size-3 md:size-4" />
               </Button>
             </BookmarkCardActionsDropwdownMenu>
             <Button
               variant="ghost"
               size="icon-lg"
-              className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
+              className="md:opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
               aria-label="open-bookmark"
               onClick={e => {
                 e.stopPropagation();
                 onOpen(bookmark);
               }}
             >
-              <FullscreenIcon className="size-6" />
+              <FullscreenIcon className="size-4 md:size-6" />
             </Button>
           </div>
         </div>

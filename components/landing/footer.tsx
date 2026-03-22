@@ -3,21 +3,25 @@ import { RiGithubFill } from "@remixicon/react"
 import { Logo } from "../shared/logo";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
+import { GITHUB_LINK } from "@/lib/constants";
 
 
 const FOOTER_LINK = [
+  // {
+  //   title: "About",
+  //   href: "/about",
+  // target: "__self"
+  // },
+  // {
+  //   title: "Contact",
+  //   href: "/contact",
+  // target: "__self"
+  // },
   {
-    title: "About",
-    href: "/about",
-  },
-  {
-    title: "Contact",
-    href: "/contact",
-  },
-  {
+    icon: <RiGithubFill />,
     title: "Github",
-    href: "#",
-    icon: <RiGithubFill />
+    href: GITHUB_LINK,
+    target: "__blank"
   },
 ]
 
@@ -35,6 +39,7 @@ export function Footer() {
               buttonVariants({ variant: "secondary" }),
               "hover:text-foreground transition-colors"
             )}
+            target={link.target}
           >
             {link.icon} {link.title}
           </Link>
