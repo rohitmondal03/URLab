@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { Google_Sans } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { IRootLayout } from "@/types";
 import { Toaster } from "@/components/ui/sonner";
 import { SmootScroll } from "@/components/smooth-scroll";
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: IRootLayout) {
             <Toaster position="top-right" richColors duration={3000} />
           </SmootScroll>
         </QueryProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
