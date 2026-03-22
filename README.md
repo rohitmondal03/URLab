@@ -67,3 +67,4 @@ TanStack Query (cache layer)
 Server Actions
    ↓
 Database (Supabase + Drizzle)
+```

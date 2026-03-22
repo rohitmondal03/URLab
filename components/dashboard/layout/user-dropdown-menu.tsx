@@ -40,7 +40,7 @@ export function UserDropdownMenu({ children }: TUserDropdownMenupProps) {
           setOpen={setShortcutDialogOpen}
         />
         <Separator orientation="horizontal" />
-        <Button
+        {/* <Button
           variant={"secondary"}
           className="w-full"
           onClick={() => setDetailsDialogOpen(true)}
@@ -51,7 +51,7 @@ export function UserDropdownMenu({ children }: TUserDropdownMenupProps) {
         <DetailsDialog
           isOpen={isDetailsDialogOpen}
           setOpen={setDetailsDialogOpen}
-        />
+        /> */}
         <Button
           onClick={async () => {
             try {

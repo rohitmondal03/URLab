@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { SearchIcon, PlusIcon, MenuIcon, KeyboardIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import { DashboardSidebarContent } from "./dashboard-sidebar-content";
 
 const SearchDialog = dynamic(() => import("./search-dialog")
@@ -73,13 +74,16 @@ export function DashboardHeader() {
           </Button>
           <Button
             variant={"ghost"}
-            className=" w-full max-w-sm hidden sm:flex items-center gap-3 py-2 px-4 rounded-3xl transition-all hover:outline-2 cursor-text border-2 border-zinc-400"
+            className=" w-full max-w-sm hidden sm:flex items-center justify-between py-2 px-4 rounded-3xl transition-all hover:outline-2 cursor-text border-2 border-zinc-400"
             onClick={() => setSearchModalOpen(true)}
           >
-            <SearchIcon className="size-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
-              Search bookmarks, tags, domains...
-            </span>
+            <div className="flex items-center gap-3">
+              <SearchIcon className="size-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">
+                Search bookmarks, tags...
+              </span>
+            </div>
+            <Kbd className="hidden md:inline-flex bg-zinc-300 dark:bg-zinc-800">/</Kbd>
           </Button>
 
           {/* Search Dialog */}
@@ -93,6 +97,7 @@ export function DashboardHeader() {
           <Button onClick={() => setAddModalOpen(true)} className="gap-x-2 px-3 sm:px-4 shrink-0">
             <PlusIcon className="size-4 sm:size-5" />
             <span className="hidden lg:inline">Bookmark</span>
+            <Kbd className="hidden lg:inline-flex bg-white/20 text-white ml-2">A</Kbd>
           </Button>
           <Button
             variant={"secondary"}
@@ -101,6 +106,7 @@ export function DashboardHeader() {
           >
             <KeyboardIcon className="size-4 sm:size-5" />
             <span className="hidden lg:inline">View Shortcuts</span>
+            <Kbd className="hidden lg:inline-flex bg-zinc-300 dark:bg-zinc-800 ml-2">K</Kbd>
           </Button>
           <AddBookmarkDialog
             isAddModalOpen={isAddModalOpen}

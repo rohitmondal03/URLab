@@ -4,6 +4,10 @@ import { redirect } from "next/navigation";
 import { Provider as OAuthProvider } from "@supabase/supabase-js";
 import { createClient } from "../supabase/server"
 import { BASE_URL } from "../constants";
+import { db } from "@/drizzle";
+import { usersTable } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 // signup user with email
 export const signupWithEmail = async (name: string, email: string, password: string) => {
@@ -76,4 +80,20 @@ export const getCurrentUser = async () => {
     email: String(user.email),
     provider: String(user.app_metadata.provider),
   }
-} 
+}
+
+// update user's details
+export const updateUserDetails = async (name: string, email: string) => {
+  const { error, data } = await (await createClient()).auth.updateUser({
+    data: {
+      name: name.trim(),
+      email: email.trim(),
+    }
+  })
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/dashboard", "page");
+}

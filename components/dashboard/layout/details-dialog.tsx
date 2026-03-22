@@ -1,10 +1,20 @@
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { type Dispatch, type SetStateAction, SubmitEvent, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { LoaderIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getCurrentUser } from "@/lib/actions/auth.action";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { getCurrentUser } from "@/lib/actions/auth.action";
+import { updateUserDetails } from "@/lib/actions/auth.action";
 
 type TEditDetailsDialogProps = {
   isOpen: boolean;
@@ -12,6 +22,7 @@ type TEditDetailsDialogProps = {
 }
 
 export function DetailsDialog({ isOpen, setOpen }: TEditDetailsDialogProps) {
+  const [isFetching, setFetching] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [user, setUser] = useState<{
     name: string;
@@ -21,12 +32,34 @@ export function DetailsDialog({ isOpen, setOpen }: TEditDetailsDialogProps) {
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
+      setFetching(true);
       const { name, email, provider } = await getCurrentUser();
       setUser({ name, email, provider });
-      setLoading(false);
+      setFetching(false);
     })()
   }, [])
+
+  const editUser = async (e: SubmitEvent) => {
+    e.preventDefault();
+
+    if (!user || !user.email || !user.name) {
+      toast.error("User details not found !!");
+      return;
+    }
+
+    setLoading(true);
+
+    await updateUserDetails(user.name, user.email)
+      .then(() => {
+        toast.success("Updated successfully !!")
+      })
+      .catch((error: any) => {
+        toast.error((error as Error).message)
+      })
+      .finally(() => {
+        setLoading(false);
+      })
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
@@ -35,17 +68,35 @@ export function DetailsDialog({ isOpen, setOpen }: TEditDetailsDialogProps) {
           <DialogTitle>Your Details</DialogTitle>
           <DialogDescription>Manage your details from here</DialogDescription>
         </DialogHeader>
-        {isLoading ? (
+        {isFetching ? (
           <div className="space-y-2">
             <Skeleton className="w-full h-8" />
             <Skeleton className="w-full h-8" />
             <Skeleton className="w-1/5 h-6 ml-auto" />
           </div>
         ) : (
-          <form className="space-y-4">
+          <form onSubmit={editUser} className="space-y-4">
             <div className="space-y-1">
-              <Label>Email</Label>
+              <Label htmlFor="name">Name</Label>
               <Input
+                id="name"
+                value={user?.name}
+                onChange={(e) =>
+                  setUser(prev => {
+                    if (!prev) return;
+
+                    return {
+                      ...prev,
+                      name: e.target.value,
+                    }
+                  })
+                }
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
                 value={user?.email}
                 onChange={(e) =>
                   setUser(prev => {
@@ -60,7 +111,11 @@ export function DetailsDialog({ isOpen, setOpen }: TEditDetailsDialogProps) {
               />
             </div>
             <DialogFooter>
-              <Button type="submit">Save</Button>
+              <Button disabled={isLoading} type="submit">
+                {isLoading
+                  ? <LoaderIcon className="animate-spin" />
+                  : "Save"}
+              </Button>
             </DialogFooter>
           </form>
         )}
