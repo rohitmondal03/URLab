@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { SmootScroll } from "@/components/smooth-scroll";
 import { QueryProvider } from "@/providers/query-provider";
 import { LANDING_PAGE_METADATA } from "@/lib/metadata/landing";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const _googleSans = Google_Sans({
   variable: "--font-google-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: IRootLayout) {
             <Toaster position="top-right" richColors duration={3000} />
           </SmootScroll>
         </QueryProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
