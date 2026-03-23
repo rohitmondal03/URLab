@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import { Google_Sans } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from '@vercel/analytics/next';
 import type { IRootLayout } from "@/types";
 import { Toaster } from "@/components/ui/sonner";
 import { SmootScroll } from "@/components/smooth-scroll";
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: IRootLayout) {
           </SmootScroll>
         </QueryProvider>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
