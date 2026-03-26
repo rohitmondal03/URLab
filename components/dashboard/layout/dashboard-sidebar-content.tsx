@@ -96,8 +96,8 @@ export function DashboardSidebarContent() {
       title: "Navigation",
       items: [
         { name: "Your Bookmarks", icon: <BookmarkIcon />, path: "/dashboard", disabled: false, shortcut: "d" },
+        { name: "Favourites", icon: <StarIcon />, path: "/dashboard/favourites", disabled: true, shortcut: "f" },
         { name: "Recently Added", icon: <ClockIcon />, path: "/dashboard/recent", disabled: false, shortcut: "r" },
-        { name: "Favorites", icon: <StarIcon />, path: "/dashboard/favorites", disabled: true, shortcut: "f" },
       ]
     },
     {

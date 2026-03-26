@@ -120,7 +120,10 @@ export function BookmarkDetailDialog({
           {/* Action buttons */}
           <div className="flex items-center gap-2 pt-1">
             <Link
-              href={bookmark.url}
+              href={bookmark.url.startsWith("https://") 
+                ? bookmark.url 
+                : `https://${bookmark.url}`
+              }
               target="_blank"
               rel="noreferrer"
               className={cn(

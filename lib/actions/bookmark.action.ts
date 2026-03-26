@@ -6,12 +6,12 @@ import { db } from "@/drizzle"
 import { bookmarkTable, bookmarkTagsTable, domainsTable, tagsTable } from "@/drizzle/schema"
 import { getCurrentUser } from "./auth.action"
 import { getURLMetadata } from "./metadata.action"
-import "dotenv/config"
 import { DEFAULT_ERROR_MESSAGE } from "../constants"
+import "dotenv/config"
 
 
 // To "Create a New Bookmark", with edge function and imp few checks
-export async function createBookmark(url: string, tags: string[]) {
+export async function createBookmark(url: string, tags: string[], isFavourite: boolean) {
   const { userId: currentUserId } = await getCurrentUser();
 
   // Fetch URL's metadata
@@ -128,6 +128,31 @@ export const editBookmark = async (bookmarkId: string, bookmarkTitle: string, bo
 }
 
 
+// Add bookmark to favourites
+export const updateBookmarkToFavourites = async (bookmarkId: string, newFavouriteValue: boolean) => {
+  const { userId } = await getCurrentUser();
+
+  const [bookmark] = await db
+    .select({ userId: bookmarkTable.userId, isFavourite: bookmarkTable.isFavourite })
+    .from(bookmarkTable)
+    .where(eq(bookmarkTable.id, bookmarkId))
+    .limit(1);
+
+  if (!bookmark) {
+    throw new Error("Bookmark not found !!");
+  }
+
+  if (bookmark.userId !== userId) {
+    throw new Error("Only user who uploaded this bookmark can add it to favourites !!")
+  }
+
+  await db
+    .update(bookmarkTable)
+    .set({ isFavourite: newFavouriteValue })
+    .where(eq(bookmarkTable.id, bookmarkId))
+}
+
+
 // To "Get user's bookmarks & ALSO recent bookmarks" with tags using joins
 export const getCurrentUsersBookmarks = async (
   limit?: number,
@@ -135,18 +160,9 @@ export const getCurrentUsersBookmarks = async (
 ): Promise<TBookmarkWithTags[]> => {
   const { userId: currentUserId } = await getCurrentUser();
 
-  // Fetch only required bookmarks (NO JOINS here)
+  // Fetch bookmarks
   const bookmarks = await db
-    .select({
-      id: bookmarkTable.id,
-      userId: bookmarkTable.userId,
-      domainId: bookmarkTable.domainId,
-      url: bookmarkTable.url,
-      title: bookmarkTable.title,
-      description: bookmarkTable.description,
-      previewImage: bookmarkTable.previewImage,
-      createdAt: bookmarkTable.createdAt,
-    })
+    .select()
     .from(bookmarkTable)
     .where(eq(bookmarkTable.userId, currentUserId))
     .orderBy(
@@ -188,10 +204,63 @@ export const getCurrentUsersBookmarks = async (
   const result: TBookmarkWithTags[] = bookmarks.map((bookmark) => ({
     ...bookmark,
     tags: tagMap.get(bookmark.id) ?? [],
+    isFavourite: bookmark.isFavourite,
   }));
 
   return result;
 };
+
+
+// To get user's favourite bookmarks
+export const getCurrentUsersFavourites = async () => {
+  const { userId } = await getCurrentUser();
+
+  // Fetch bookmarks
+  const bookmarks = await db
+    .select()
+    .from(bookmarkTable)
+    .where(and(
+      eq(bookmarkTable.userId, userId),
+      eq(bookmarkTable.isFavourite, true)
+    ))
+
+  // Early return (no bookmarks)
+  if (bookmarks.length === 0) return [];
+
+  // Fetch tags separately (only for selected bookmarks)
+  const bookmarkIds = bookmarks.map((b) => b.id);
+
+  const tagRows = await db
+    .select({
+      bookmarkId: bookmarkTagsTable.bookmarkId,
+      tag: tagsTable.tag,
+    })
+    .from(bookmarkTagsTable)
+    .leftJoin(tagsTable, eq(tagsTable.id, bookmarkTagsTable.tagId))
+    .where(inArray(bookmarkTagsTable.bookmarkId, bookmarkIds));
+
+  // Map tags → bookmarkId
+  const tagMap = new Map<string, string[]>();
+
+  for (const row of tagRows) {
+    if (!row.tag) continue;
+
+    if (!tagMap.has(row.bookmarkId)) {
+      tagMap.set(row.bookmarkId, []);
+    }
+
+    tagMap.get(row.bookmarkId)!.push(row.tag);
+  }
+
+  // Merge bookmarks + tags (final shape)
+  const result: TBookmarkWithTags[] = bookmarks.map((bookmark) => ({
+    ...bookmark,
+    tags: tagMap.get(bookmark.id) ?? [],
+    isFavourite: bookmark.isFavourite,
+  }));
+
+  return result;
+}
 
 
 // To "Get domains with bookmark counts" for the current user

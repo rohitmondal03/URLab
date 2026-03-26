@@ -1,16 +1,11 @@
 import { Suspense } from "react";
-import { Metadata } from "next";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { bookmarkQuery } from "@/tanstack/queries";
 import { RecentlyAddedPageClient } from "@/components/dashboard/recent/recently-added-page-client";
 import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmark-grid-skeleton";
+import { RECENTS_PAGE_METADATA } from "@/lib/metadata/dashboard";
 
-export const metadata: Metadata = {
-  title: "Recently Added",
-  description:
-    "View the links you most recently saved to URLab. Stay up to date with your latest bookmarks.",
-  robots: { index: false, follow: false },
-};
+export const metadata = RECENTS_PAGE_METADATA;
 
 export default function RecentlyAddedPage() {
   return (

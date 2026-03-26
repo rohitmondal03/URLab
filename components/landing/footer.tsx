@@ -7,16 +7,11 @@ import { GITHUB_LINK } from "@/lib/constants";
 
 
 const FOOTER_LINK = [
-  // {
-  //   title: "About",
-  //   href: "/about",
-  // target: "__self"
-  // },
-  // {
-  //   title: "Contact",
-  //   href: "/contact",
-  // target: "__self"
-  // },
+  {
+    title: "Credits",
+    href: "/credits",
+    target: "__self"
+  },
   {
     icon: <RiGithubFill />,
     title: "Github",

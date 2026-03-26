@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -35,14 +36,17 @@ type TAddBookmarkProps = {
 }
 
 export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBookmarkProps) {
-  const [url, setUrl] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [bookmarkDetails, setBookmarkDetails] = useState<{
+    url: string;
+    tags: string[];
+    isFavourite: boolean;
+  }>({ url: "", tags: [], isFavourite: false })
   const [isLoading, setLoading] = useState(false);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [metadata, setMetadata] = useState<TUrlMetadata | null>(null);
 
-  const debouncedUrl = useDebounce(url, 300);
+  const debouncedUrl = useDebounce(bookmarkDetails.url, 300);
 
   const mutation = createBookmarkMutation();
 
@@ -55,7 +59,7 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
 
       await getURLMetadata(debouncedUrl)
         .then(d => {
-          setMetadata({ ...d, url: url.trim() })
+          setMetadata({ ...d, url: bookmarkDetails.url.trim() })
           setError(null)
         })
         .catch((err) => {
@@ -72,13 +76,17 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
 
     setLoading(true);
 
-    mutation.mutate({ url: url.trim(), tags }, {
-      onSuccess: () => {
+    mutation.mutate({
+      url: bookmarkDetails.url.trim(),
+      tags: bookmarkDetails.tags,
+      isFavourite: bookmarkDetails.isFavourite
+    }, {
+      onSuccess: (data) => {
         setIsAddModalOpen(false);
-        setUrl("");
-        setTags([]);
+        setBookmarkDetails({ url: "", tags: [], isFavourite: false });
         setMetadata(null);
-        toast.success("Bookmark added successfully !!")
+        toast.success("Bookmark added successfully !!");
+        console.log(data?.isFavourite)
       },
       onError: (err) => {
         toast.error(err.message);
@@ -114,13 +122,25 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
                   id="url"
                   placeholder="https://example.com"
                   className="bg-background/50 h-10"
-                  value={url}
-                  onChange={e => setUrl(e.target.value)}
+                  value={bookmarkDetails.url}
+                  onChange={e => setBookmarkDetails(prev => ({ ...prev, url: e.target.value }))}
                   autoComplete="off"
                 />
                 <p className="text-muted-foreground text-sm">
                   Enter correct URL, then a preview window will appear below
                 </p>
+              </div>
+              <div className="flex gap-3 w-full">
+                <Label htmlFor="favourite">
+                  Do you want to mark this bookmark as favourite ?
+                </Label>
+                <Checkbox
+                  checked={bookmarkDetails.isFavourite}
+                  onCheckedChange={(value) =>
+                    setBookmarkDetails((prev) => ({ ...prev, isFavourite: value.valueOf() === "true" ? true : false }))
+                  }
+                  className="border border-zinc-400"
+                />
               </div>
               <div className="flex flex-col gap-1 w-full">
                 <Label htmlFor="tags">Tags (optional)</Label>
@@ -133,7 +153,7 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
                     const currentValue = e.target.value;
                     if (currentValue.endsWith(",")) {
                       const enteredText = currentValue.slice(0, currentValue.length - 1).trim().toLowerCase();
-                      setTags(prev => ([...prev, enteredText]));
+                      setBookmarkDetails(prev => ({ ...prev, tags: [...prev.tags, enteredText] }));
                       e.target.value = "";
                     }
                   }}
@@ -144,21 +164,22 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
                   key to add it
                 </p>
               </div>
-              {tags.length > 0 ? (
+              {bookmarkDetails.tags.length > 0 ? (
                 <div className="flex flex-col gap-1 w-full">
                   <div className="flex w-full gap-3">
                     <Label>Entered Tags:</Label>
                     <div className="flex items-center justify-start w-full gap-1 flex-1">
-                      {tags.map((tag, idx) => (
+                      {bookmarkDetails.tags.map((tag, idx) => (
                         <Badge
                           key={idx}
                           className="text-[10px] hover:scale-[1.03] transition duration-150 cursor-pointer"
                           onClick={() => {
                             const currentIdx = idx;
-                            setTags((prev) => prev
-                              .splice(0, currentIdx)
-                              .concat(prev.slice(currentIdx + 1, prev.length))
-                            )
+
+                            setBookmarkDetails((prev) => ({
+                              ...prev,
+                              tags: prev.tags.filter((_, i) => i !== currentIdx)
+                            }))
                           }}
                         >
                           {tag}
@@ -215,6 +236,6 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+    </div >
   )
 }

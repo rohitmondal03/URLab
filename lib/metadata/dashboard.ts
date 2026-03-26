@@ -44,6 +44,20 @@ export const RECENTS_PAGE_METADATA: Metadata = {
   },
 }
 
+export const FAVOURITES_PAGE_METADATA: Metadata = {
+  title: "Favourites",
+  description: "See and manage your recently added bookmarks from here.",
+
+  robots: {
+    index: true,
+    follow: true
+  },
+
+  alternates: {
+    canonical: BASE_URL + "/dashboard/favourites",
+  },
+}
+
 export const TAGS_PAGE_METADATA: Metadata = {
   title: "Tags",
   description: "Browse all your URL tags. Quickly filter and find bookmarks by topic or category.",

@@ -19,3 +19,5 @@ export const KEYBOARD_SHORTCUT_LIST = [
   { key: "p", label: "Popular" },
   { key: "g", label: "Trending" },
 ]
+
+export const TANSTACK_STALE_TIME = 100 * 60 * 5;

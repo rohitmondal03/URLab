@@ -12,7 +12,8 @@ import { BookmarkGridSkeleton } from "@/components/dashboard/(dashboard)/bookmar
 
 const BookmarkDetailDialog = dynamic(() => import("@/components/dashboard/(dashboard)/bookmark-details-dialog")
   .then(mod => mod.BookmarkDetailDialog), { ssr: false });
-const EmptyState = dynamic(() => import("./recenly-added-empty-state").then(mod => mod.EmptyState), { ssr: false });
+const EmptyState = dynamic(() => import("./recenly-added-empty-state")
+  .then(mod => mod.EmptyState), { ssr: false });
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },

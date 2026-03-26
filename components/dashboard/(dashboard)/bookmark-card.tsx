@@ -1,13 +1,15 @@
 import type { TBookmarkWithTags } from "@/types";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
-import { MoreVerticalIcon, FullscreenIcon } from "lucide-react";
+import { useMemo, useState } from "react";
+import { MoreVerticalIcon, FullscreenIcon, StarIcon, LoaderIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner"; 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
+import { updateFavouritesMutation } from "@/tanstack/mutations";
 
 const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu")
   .then(mod => mod.BookmarkCardActionsDropdownMenu));
@@ -19,6 +21,8 @@ type TBookmarkCardProps = {
 }
 
 export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps) {
+  const [isLoading, setLoading] = useState(false);
+
   const imagePreviewUrl = useMemo(() => bookmark.previewImage, [])
   const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
   const bookmarksDomain = useMemo(() => getDomainFromUrl(bookmark.url), [bookmark])
@@ -28,6 +32,29 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
       : bookmark.description,
     [bookmark.description]
   );
+
+  const mutation = updateFavouritesMutation();
+
+  // add OR remove bookmark to Favourites
+  const updateBookmarkToFavourites = () => {
+    setLoading(true);
+
+    const newFavouriteValue = !bookmark.isFavourite;
+
+    mutation.mutate({ bookmarkId: bookmark.id, newFavouriteValue }, {
+      onSuccess: () => {
+        newFavouriteValue
+          ? toast.success("Bookmark added to Favoutires")
+          : toast.error("Bookmark removed from Favourites")
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+      onSettled: () => {
+        setLoading(false);
+      }
+    })
+  }
 
   return (
     <Card className="group flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[10px_10px_10px] hover:shadow-[20px_20px_10px] hover:border-black border-zinc-500 transition-all duration-300 py-0 overflow-hidden h-full">
@@ -68,11 +95,30 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
           </div>
 
           <div className="flex items-center md:gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:text-foreground p-0"
+              aria-label="favourite"
+              onClick={updateBookmarkToFavourites}
+            >
+              {isLoading ? (
+                <LoaderIcon
+                  className="animate-spin size-4 md:size-5"
+                />
+              ) : (
+                <StarIcon
+                  className="size-4 md:size-5"
+                  fill={bookmark.isFavourite ? "#ffe433" : "#fff"}
+                  color={bookmark.isFavourite ? "#ffe433" : "#000"}
+                />
+              )}
+            </Button>
             <BookmarkCardActionsDropwdownMenu bookmark={bookmark}>
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground p-0"
+                className="hover:text-foreground p-0"
                 aria-label="options-dropdown"
                 onClick={e => e.stopPropagation()}
               >
@@ -82,14 +128,14 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
             <Button
               variant="ghost"
               size="icon-lg"
-              className="md:opacity-0 group-hover:opacity-100 transition-opacity hover:text-foreground"
+              className="hover:text-foreground"
               aria-label="open-bookmark"
               onClick={e => {
                 e.stopPropagation();
                 onOpen(bookmark);
               }}
             >
-              <FullscreenIcon className="size-4 md:size-6" />
+              <FullscreenIcon className="size-4 md:size-5" />
             </Button>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, timestamp, index } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, timestamp, index, boolean } from "drizzle-orm/pg-core";
 
 export const domainsTable = pgTable("domains", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -16,6 +16,7 @@ export const bookmarkTable = pgTable("bookmarks", {
   title: text("title").notNull(),
   description: text("description").notNull(),
   previewImage: text("preview_image").notNull(),
+  isFavourite: boolean("is_favourite").default(false).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
   index("idx_bookmarks_user_id").on(table.userId),
@@ -32,6 +33,7 @@ export const tagsTable = pgTable("tags", {
 ])
 
 export const bookmarkTagsTable = pgTable("bookmark_tags", {
+  id: uuid("id").primaryKey().defaultRandom(),
   bookmarkId: uuid("bookmark_id").notNull().references(() => bookmarkTable.id, { onDelete: "cascade" }),
   tagId: uuid("tag_id").notNull().references(() => tagsTable.id),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -47,7 +49,7 @@ export const usersTable = pgTable("users", {
   provider: text("provider").notNull(),
   avatarUrl: text("avatar_url"),
   joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("joined_at", { withTimezone: true }).$onUpdateFn(() => new Date()),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdateFn(() => new Date()),
 }, (table) => [
   index("idx_users_email").on(table.email),
 ])

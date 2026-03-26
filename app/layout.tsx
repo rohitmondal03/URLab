@@ -1,12 +1,11 @@
 import "@/styles/globals.css";
+import type { IRootLayout } from "@/types";
 import { Google_Sans } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import type { IRootLayout } from "@/types";
 import { Toaster } from "@/components/ui/sonner";
 import { SmootScroll } from "@/components/smooth-scroll";
 import { QueryProvider } from "@/providers/query-provider";
 import { LANDING_PAGE_METADATA } from "@/lib/metadata/landing";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const _googleSans = Google_Sans({
   variable: "--font-google-sans",

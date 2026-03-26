@@ -28,9 +28,7 @@ export function DashboardHeader() {
         target.tagName === "INPUT" ||
         target.tagName === "TEXTAREA" ||
         target.isContentEditable
-      ) {
-        return;
-      }
+      ) return;
 
       if (e.key === "a") {
         e.preventDefault();
