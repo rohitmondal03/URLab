@@ -24,7 +24,7 @@ export function FavouritesPageClient() {
   const [selectedBookmark, setSelectedBookmark] = useState<TBookmarkWithTags | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { data: favouriteBookmarks = [], isLoading } = useQuery(bookmarkQuery.recent({ limit: 6 }));
+  const { data: favouriteBookmarks = [], isLoading } = useQuery(bookmarkQuery.favourites());
 
   const handleOpen = (bookmark: TBookmarkWithTags) => {
     setSelectedBookmark({ ...bookmark });
