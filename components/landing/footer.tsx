@@ -10,7 +10,7 @@ const FOOTER_LINK = [
   {
     title: "Credits",
     href: "/credits",
-    target: "__self"
+    // target: "__self"
   },
   {
     icon: <RiGithubFill />,

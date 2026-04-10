@@ -12,11 +12,9 @@ import {
   ClockIcon,
   BookmarkIcon,
   LoaderIcon,
-  FolderHeartIcon
 } from "lucide-react";
 import { Kbd } from "@/components/ui/kbd";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Logo } from "@/components/shared/logo";
 import { cn } from "@/lib/utils";
 import { usersQuery } from "@/tanstack/queries";
@@ -54,10 +52,10 @@ export function DashboardSidebarContent() {
           e.preventDefault();
           router.push("/dashboard/favourites");
           break;
-        case "c":
-          e.preventDefault();
-          router.push("/dashboard/collections");
-          break;
+        // case "c":
+        //   e.preventDefault();
+        //   router.push("/dashboard/collections");
+        //   break;
         case "t":
           e.preventDefault();
           router.push("/dashboard/tags");
@@ -81,6 +79,7 @@ export function DashboardSidebarContent() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [router]);
 
+  // Navigation Items/Routes
   const NAV_ITEMS = [
     {
       title: "Navigation",
@@ -88,7 +87,7 @@ export function DashboardSidebarContent() {
         { name: "Your Bookmarks", icon: <BookmarkIcon />, path: "/dashboard", disabled: false, shortcut: "d" },
         { name: "Favourites", icon: <StarIcon />, path: "/dashboard/favourites", disabled: true, shortcut: "f" },
         { name: "Recently Added", icon: <ClockIcon />, path: "/dashboard/recent", disabled: false, shortcut: "r" },
-        { name: "Collections", icon: <FolderHeartIcon />, path: "/dashboard/collections", disabled: false, shortcut: "c" },
+        // { name: "Collections", icon: <FolderHeartIcon />, path: "/dashboard/collections", disabled: false, shortcut: "c" },
       ]
     },
     {
@@ -107,7 +106,7 @@ export function DashboardSidebarContent() {
     // }
   ]
 
-  // fetch user's data
+  // To fetch user's data
   const { data: usersData, isLoading: isAvatarLoading } = useQuery(usersQuery.default());
 
   return (
@@ -154,54 +153,6 @@ export function DashboardSidebarContent() {
           ))}
         </div>
       </div>
-
-      {/* User's profile dropdown */}
-      <UserDropdownMenu>
-        <Button
-          size={"lg"}
-          variant={"outline"}
-          className="w-7/8 h-fit mx-auto mb-4 py-4 px-1 justify-start border border-zinc-400 flex flex-col items-center gap-0 hover:bg-white"
-          disabled={isAvatarLoading}
-          aria-label="user-dropdown-menu"
-        >
-          {isAvatarLoading
-            ? <LoaderIcon className="animate-spin" />
-            : (
-              <div className="flex items-center justify-between gap-2">
-                {isAvatarLoading
-                  ? <LoaderIcon />
-                  : usersData?.avatarUrl
-                    ?
-                    <Image
-                      src={usersData?.avatarUrl as string}
-                      width={400}
-                      height={400}
-                      alt="users-profile"
-                      fetchPriority="high"
-                      className="rounded-full size-12"
-                    />
-                    :
-                    <div className="size-10 rounded-full bg-zinc-200 flex items-center justify-center">
-                      <p className="text-rose-500 text-lg">
-                        {usersData?.name.slice(0, 1).toLocaleUpperCase()}
-                      </p>
-                    </div>
-                }
-                <div className="text-left">
-                  <p className="text-sm font-semibold">
-                    {usersData?.name}
-                  </p>
-                  <p className="text-xs">
-                    {String(usersData?.email).length > 20
-                      ? usersData?.email.slice(0, 20) + "..."
-                      : usersData?.email}
-                  </p>
-                </div>
-              </div>
-            )
-          }
-        </Button>
-      </UserDropdownMenu>
     </div>
   )
 }

@@ -4,12 +4,14 @@ import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { MoreVerticalIcon, FullscreenIcon, StarIcon, LoaderIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { toast } from "sonner"; 
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
 import { updateFavouritesMutation } from "@/tanstack/mutations";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu")
   .then(mod => mod.BookmarkCardActionsDropdownMenu));
@@ -22,7 +24,6 @@ type TBookmarkCardProps = {
 
 export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps) {
   const [isLoading, setLoading] = useState(false);
-
   const imagePreviewUrl = useMemo(() => bookmark.previewImage, [])
   const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
   const bookmarksDomain = useMemo(() => getDomainFromUrl(bookmark.url), [bookmark])
@@ -32,8 +33,8 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
       : bookmark.description,
     [bookmark.description]
   );
-
   const mutation = updateFavouritesMutation();
+
 
   // add OR remove bookmark to Favourites
   const updateBookmarkToFavourites = () => {
@@ -57,9 +58,9 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
   }
 
   return (
-    <Card className="group flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[10px_10px_10px] hover:shadow-[20px_20px_10px] hover:border-black border-zinc-500 transition-all duration-300 py-0 overflow-hidden h-full">
-      {/* Preview image */}
-      <div className="relative w-full aspect-auto bg-muted overflow-hidden shrink-0 border-b-2">
+    <Card className="flex flex-col gap-0 bg-card shadow-zinc-400 shadow-[10px_10px_10px] hover:shadow-[20px_20px_10px] hover:border-black border-zinc-500 transition-all duration-300 py-0 overflow-hidden h-full">
+      {/* Preview image and buttons */}
+      <div className="group relative w-full aspect-auto bg-muted overflow-hidden shrink-0 border-b-2">
         <Image
           height={1000}
           width={1000}
@@ -68,7 +69,7 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
           alt={bookmark.url}
           fetchPriority={cardIndex < 3 ? "high" : "low"}
           priority={cardIndex < 3}
-          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+          className="w-full h-48 object-cover group-hover:scale-[1.03] transition-transform duration-500"
           placeholder="blur"
           blurDataURL={bookmark.previewImage || ""}
           onError={(e) => {
@@ -76,6 +77,51 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
             (e.currentTarget as HTMLImageElement).style.display = "none";
           }}
         />
+        <div className={cn(
+          "absolute inset-0 group-hover:opacity-100 opacity-0 size-full bg-primary/50 transition ease-out duration-300 group-hover:backdrop-blur-lg",
+          "flex items-center justify-center gap-4",
+        )}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant={isLoading ? "default" : "ghost"}
+                size="icon"
+                className="hover:bg-transparent p-0"
+                aria-label="favourite"
+                onClick={updateBookmarkToFavourites}
+              >
+                {isLoading ? (
+                  <LoaderIcon className="animate-spin size-4 md:size-5" />
+                ) : (
+                  <StarIcon
+                    className="size-4 md:size-5"
+                    fill={bookmark.isFavourite ? "#ffe433" : "#fff"}
+                    color={bookmark.isFavourite ? "#ffe433" : "#000"}
+                  />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isLoading
+                ? <LoaderIcon />
+                : bookmark.isFavourite
+                  ? "Remove from Favourites"
+                  : "Add to Favourites"
+              }
+            </TooltipContent>
+          </Tooltip>
+          <Button
+            variant="outline"
+            size="icon-lg"
+            aria-label="open-bookmark"
+            onClick={e => {
+              e.stopPropagation();
+              onOpen(bookmark);
+            }}
+          >
+            <FullscreenIcon className="size-4 md:size-5" />
+          </Button>
+        </div>
       </div>
 
       <CardContent className="flex flex-col gap-3 p-4 flex-1">
@@ -94,50 +140,17 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
             </span>
           </div>
 
-          <div className="flex items-center md:gap-2">
+          <BookmarkCardActionsDropwdownMenu bookmark={bookmark}>
             <Button
               variant="ghost"
               size="icon"
               className="hover:text-foreground p-0"
-              aria-label="favourite"
-              onClick={updateBookmarkToFavourites}
+              aria-label="options-dropdown"
+              onClick={e => e.stopPropagation()}
             >
-              {isLoading ? (
-                <LoaderIcon
-                  className="animate-spin size-4 md:size-5"
-                />
-              ) : (
-                <StarIcon
-                  className="size-4 md:size-5"
-                  fill={bookmark.isFavourite ? "#ffe433" : "#fff"}
-                  color={bookmark.isFavourite ? "#ffe433" : "#000"}
-                />
-              )}
+              <MoreVerticalIcon className="size-3 md:size-4" />
             </Button>
-            <BookmarkCardActionsDropwdownMenu bookmark={bookmark}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:text-foreground p-0"
-                aria-label="options-dropdown"
-                onClick={e => e.stopPropagation()}
-              >
-                <MoreVerticalIcon className="size-3 md:size-4" />
-              </Button>
-            </BookmarkCardActionsDropwdownMenu>
-            <Button
-              variant="ghost"
-              size="icon-lg"
-              className="hover:text-foreground"
-              aria-label="open-bookmark"
-              onClick={e => {
-                e.stopPropagation();
-                onOpen(bookmark);
-              }}
-            >
-              <FullscreenIcon className="size-4 md:size-5" />
-            </Button>
-          </div>
+          </BookmarkCardActionsDropwdownMenu>
         </div>
 
         <p className="text-xs text-muted-foreground">
@@ -168,9 +181,27 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
               </Badge>
             ))}
             {bookmark.tags.length > 3 && (
-              <Badge variant={"secondary"} className="text-[10px] px-3 py-px font-normal rounded-full border border-border/30">
-                +{bookmark.tags.length - 3}
-              </Badge>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge
+                    variant={"secondary"}
+                    className="text-[10px] px-3 py-px font-normal rounded-full border border-border/30"
+                  >
+                    +{bookmark.tags.length - 3}
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent className="flex items-center justify-between gap-3">
+                  {bookmark.tags.slice(3, bookmark.tags.length).map(tag => (
+                    <Badge
+                      key={tag}
+                      variant={"secondary"}
+                      className="text-[10px] px-3 py-px font-normal rounded-full border border-border/30"
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </TooltipContent>
+              </Tooltip>
             )}
           </div>
         ) : (

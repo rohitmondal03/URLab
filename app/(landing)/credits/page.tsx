@@ -1,18 +1,7 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { ExternalLink } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { CreditsGrid } from "@/components/credits/credits-grid";
 
-type TechCredit = {
-  name: string;
-  purpose: string;
-  docs: string;
-  website: string;
-};
-
-const TECH_STACK_CREDITS: TechCredit[] = [
+const TECH_STACK_CREDITS = [
   {
     name: "Next.js",
     purpose: "App framework and routing",
@@ -95,61 +84,18 @@ export const metadata: Metadata = {
 
 export default function CreditsPage() {
   return (
-    <section className="w-full py-12 md:py-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <section className="w-full py-12 md:py-16">
       <div className="w-full max-w-5xl mx-auto">
-        <div className="text-center mb-10 md:mb-12">
+        <div className="text-center mb-10 md:mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
             Tech Stack Credits
           </h1>
           <p className="text-muted-foreground text-base sm:text-lg max-w-3xl mx-auto">
-            URLab is built with a modern stack. Huge thanks to these projects and
-            communities.
+            URLab is built with a modern stack. Huge thanks to these projects and communities.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {TECH_STACK_CREDITS.map((item) => (
-            <Card
-              key={item.name}
-              className="border-zinc-500/30 backdrop-blur-sm bg-card/60"
-            >
-              <CardHeader>
-                <CardTitle className="text-xl">
-                  {item.name}
-                </CardTitle>
-                <CardDescription>
-                  {item.purpose}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Link
-                    href={item.docs}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={cn(
-                      buttonVariants({ variant: "secondary" })
-                    )}
-                  >
-                    Docs
-                    <ExternalLink className="size-4" />
-                  </Link>
-                  <Link
-                    href={item.website}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={cn(
-                      buttonVariants({ variant: "outline" })
-                    )}
-                  >
-                    Website
-                    <ExternalLink className="size-4" />
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <CreditsGrid credits={TECH_STACK_CREDITS} />
       </div>
     </section>
   );

@@ -3,9 +3,12 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { SearchIcon, PlusIcon, MenuIcon, KeyboardIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DashboardSidebarContent } from "./dashboard-sidebar-content";
+import { usersQuery } from "@/tanstack/queries";
 
 const SearchDialog = dynamic(() => import("./search-dialog")
   .then(mod => mod.SearchDialog), { ssr: false });
@@ -13,12 +16,16 @@ const AddBookmarkDialog = dynamic(() => import("../shared/add-bookmark-dialog")
   .then(mod => mod.AddBookmarkDialog), { ssr: false })
 const ViewShortcutDialog = dynamic(() => import("./view-shortcut-dialog")
   .then(mod => mod.ViewShortcutDialog), { ssr: false });
+const UserDropdownMenu = dynamic(() => import("./user-dropdown-menu")
+  .then(mod => mod.UserDropdownMenu), { ssr: false });
 
 export function DashboardHeader() {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isSearchModalOpen, setSearchModalOpen] = useState(false);
   const [isShortcutDialogOpen, setShortcutDialogOpen] = useState(false);
+
+  const { data: usersData } = useQuery(usersQuery.default());
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -114,6 +121,24 @@ export function DashboardHeader() {
             isOpen={isShortcutDialogOpen}
             setOpen={setShortcutDialogOpen}
           />
+
+          {/* Profile Avatar Dropdown */}
+          <UserDropdownMenu>
+            <button
+              className="shrink-0 rounded-full ring-2 ring-zinc-400 hover:ring-primary transition-all duration-200 focus:outline-none focus:ring-primary"
+              aria-label="Open user menu"
+            >
+              <Avatar size="lg">
+                <AvatarImage
+                  src={usersData?.avatarUrl ?? undefined}
+                  alt={usersData?.name ?? "User"}
+                />
+                <AvatarFallback className="bg-zinc-200 dark:bg-zinc-800 text-primary font-semibold">
+                  {usersData?.name?.slice(0, 1).toUpperCase() ?? "?"}
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          </UserDropdownMenu>
         </div>
       </header>
 

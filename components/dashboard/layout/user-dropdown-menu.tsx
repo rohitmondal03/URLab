@@ -1,15 +1,12 @@
 import dynamic from "next/dynamic";
 import { useState, type ReactNode } from "react";
-import { KeyboardIcon, LogOutIcon, SettingsIcon, UserCircle2Icon } from "lucide-react";
+import { LogOutIcon, SettingsIcon, UserCircle2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
 import { signout } from "@/lib/actions/auth.action";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
 
-const ViewShortcutDialog = dynamic(() => import("./view-shortcut-dialog")
-  .then(mod => mod.ViewShortcutDialog), { ssr: false });
 const DetailsDialog = dynamic(() => import("./details-dialog")
   .then(mod => mod.DetailsDialog), { ssr: false });
 const ProfilePicUploadDialog = dynamic(() => import('../shared/profile-pic-upload-dialog')
@@ -21,7 +18,6 @@ type TUserDropdownMenupProps = {
 
 export function UserDropdownMenu({ children }: TUserDropdownMenupProps) {
   const [isDetailsDialogOpen, setDetailsDialogOpen] = useState(false);
-  const [isShortcutDialogOpen, setShortcutDialogOpen] = useState(false);
   const [isProfilePicUploadDialogOpen, setProfilePicUploadDialogOpen] = useState(false);
 
   // To signout user
@@ -72,21 +68,6 @@ export function UserDropdownMenu({ children }: TUserDropdownMenupProps) {
           <LogOutIcon />
           Sign out
         </Button>
-
-        <Separator orientation="horizontal" />
-
-        <Button
-          variant={"secondary"}
-          className="w-full"
-          onClick={() => setShortcutDialogOpen(true)}
-        >
-          <KeyboardIcon />
-          View Shortcuts
-        </Button>
-        <ViewShortcutDialog
-          isOpen={isShortcutDialogOpen}
-          setOpen={setShortcutDialogOpen}
-        />
       </PopoverContent>
     </Popover>
   )

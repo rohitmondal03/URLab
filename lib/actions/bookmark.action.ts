@@ -68,6 +68,7 @@ export async function createBookmark(url: string, tags: string[], isFavourite: b
       description: description,
       previewImage: previewImageUrl,
       userId: currentUserId,
+      isFavourite,
     })
     .returning()
 

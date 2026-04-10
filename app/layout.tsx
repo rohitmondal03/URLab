@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "./globals.css"
 import type { IRootLayout } from "@/types";
 import { Google_Sans } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { SmootScroll } from "@/components/smooth-scroll";
 import { QueryProvider } from "@/providers/query-provider";
 import { LANDING_PAGE_METADATA } from "@/lib/metadata/landing";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const _googleSans = Google_Sans({
   variable: "--font-google-sans",
@@ -24,7 +25,9 @@ export default function RootLayout({ children }: IRootLayout) {
       <body className={`${_googleSans.className} font-sans antialiased`}>
         <QueryProvider>
           <SmootScroll>
-            {children}
+            <TooltipProvider>
+              {children}
+            </TooltipProvider>
             <Toaster position="bottom-center" richColors duration={3000} />
           </SmootScroll>
         </QueryProvider>

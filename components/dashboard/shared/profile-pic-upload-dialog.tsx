@@ -1,14 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Loader, LoaderIcon, UploadIcon, XIcon } from "lucide-react";
+import { Loader2, UploadCloudIcon, Trash2Icon, XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -24,9 +23,10 @@ import {
   FileUploadTrigger,
   type FileUploadProps,
 } from "@/components/ui/file-upload";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { deleteUsersAvatarMutation, uploadUsersAvatarMutation } from "@/tanstack/mutations";
-import Image from "next/image";
 import { usersQuery } from "@/tanstack/queries";
+import { cn } from "@/lib/utils";
 
 type TProfilePicUploadDialogProps = {
   isOpen: boolean;
@@ -39,44 +39,31 @@ export function ProfilePicUploadDialog({ isOpen, onOpenChange }: TProfilePicUplo
   const uploadAvatarMutation = uploadUsersAvatarMutation();
   const deleteAvatarMutation = deleteUsersAvatarMutation();
 
+  const { data: usersData } = useQuery(usersQuery.default());
+  const hasAvatar = React.useMemo(() => !!usersData?.avatarUrl, [usersData]);
+
   const onUpload: NonNullable<FileUploadProps["onUpload"]> = React.useCallback(
     async (files, { onProgress, onSuccess, onError }) => {
       try {
-        // Process each file individually
         const uploadPromises = files.map(async (file) => {
           try {
-            // Simulate file upload with progress
             const totalChunks = 10;
             let uploadedChunks = 0;
-
-            // Simulate chunk upload with delays
             for (let i = 0; i < totalChunks; i++) {
-              // Simulate network delay (100-300ms per chunk)
               await new Promise((resolve) =>
                 setTimeout(resolve, Math.random() * 200 + 100),
               );
-
-              // Update progress for this specific file
               uploadedChunks++;
-              const progress = (uploadedChunks / totalChunks) * 100;
-              onProgress(file, progress);
+              onProgress(file, (uploadedChunks / totalChunks) * 100);
             }
-
-            // Simulate server processing delay
             await new Promise((resolve) => setTimeout(resolve, 500));
             onSuccess(file);
           } catch (error) {
-            onError(
-              file,
-              error instanceof Error ? error : new Error("Upload failed"),
-            );
+            onError(file, error instanceof Error ? error : new Error("Upload failed"));
           }
         });
-
-        // Wait for all uploads to complete
         await Promise.all(uploadPromises);
       } catch (error) {
-        // This handles any error that might occur outside the individual upload processes
         console.error("Unexpected error during upload:", error);
       }
     },
@@ -89,134 +76,153 @@ export function ProfilePicUploadDialog({ isOpen, onOpenChange }: TProfilePicUplo
     });
   }, []);
 
-  // To call profile pic upload server action
+  // To change profile pic
   const handleUploadProfilePic = async () => {
-
     setLoading(true);
 
     uploadAvatarMutation.mutate({ file: files[0] }, {
       onError: (error) => {
-        toast.error("Error while uploading your Profile Picture", {
-          description: error.message,
-        })
+        toast.error("Error while uploading your Profile Picture", { description: error.message });
       },
       onSuccess: () => {
-        toast.success("Profile Picture uploaded successfully !!", {
-          icon: "🥳"
-        })
+        toast.success("Profile Picture uploaded successfully!", { icon: "🥳" });
+        setFiles([]);
       },
-      onSettled: () => {
-        setLoading(false);
-      }
-    })
-  }
+      onSettled: () => setLoading(false),
+    });
+  };
 
-  // To delete users profile picture
+  // To delete profile pic
   const deleteProfilePic = async () => {
     setLoading(true);
 
     deleteAvatarMutation.mutate(undefined, {
       onSuccess: () => {
-        toast.success("Profile Picture deleted successfully !!", {
-          icon: "🥳"
-        })
+        toast.success("Profile Picture removed.", { icon: "🗑️" });
       },
       onError: (error) => {
-        toast.error("Error while deleting your Profile Picture", {
-          description: error.message,
-          icon: "😢"
-        })
+        toast.error("Error while deleting your Profile Picture", { description: error.message });
       },
-      onSettled: () => {
-        setLoading(false);
-      }
-    })
-  }
-
-  // fetch user's data
-  const { data: usersData } = useQuery(usersQuery.default());
+      onSettled: () => setLoading(false),
+    });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            Manage your Profile Picture from here
-          </DialogTitle>
-        </DialogHeader>
-        <div className="flex items-center justify-center mx-auto size-32 rounded-2xl border-2">
-          {usersData?.avatarUrl ? (
-            <Image
-              src={usersData?.avatarUrl as string}
-              height={500}
-              width={500}
-              className="size-32 rounded-2xl object-cover"
-              alt="users-avatar"
+      <DialogContent className="max-w-md p-0 overflow-hidden gap-0">
+        {/* Gradient hero header */}
+        <div className="relative flex flex-col items-center gap-4 px-6 pt-8 pb-6 b border-zinc-700/50">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Manage Profile Picture</DialogTitle>
+          </DialogHeader>
+
+          {/* Large avatar preview */}
+          <Avatar className="size-36">
+            <AvatarImage
+              src={usersData?.avatarUrl ?? undefined}
+              alt={usersData?.name ?? "User"}
+              className="object-fill"
             />
-          ) : (
-            <p className="text-center text-sm text-muted-foreground">
-              No Profile pic uploaded
+            <AvatarFallback className="size-24 text-3xl font-bold bg-zinc-800 text-primary">
+              {usersData?.name?.slice(0, 1).toUpperCase() ?? "?"}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="text-center">
+            <p className="font-semibold text-base">{usersData?.name}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {hasAvatar ? "Profile picture set" : "No profile picture"}
             </p>
-          )}
+          </div>
         </div>
-        <FileUpload
-          value={files}
-          onValueChange={setFiles}
-          onUpload={onUpload}
-          onFileReject={onFileReject}
-          maxFiles={1}
-          className="w-full max-w-md"
-        >
-          <FileUploadDropzone>
-            <div className="flex flex-col items-center gap-1 text-center">
-              <div className="flex items-center justify-center rounded-full border p-2.5">
-                <UploadIcon className="size-6 text-muted-foreground" />
-              </div>
-              <p className="font-medium text-sm">
-                Drag & drop file here
-              </p>
-              <p className="text-muted-foreground text-xs">
-                Or click to browse
-              </p>
-            </div>
-            <FileUploadTrigger asChild>
-              <Button variant="outline" size="sm" className="mt-2 w-fit">
-                Browse file
-              </Button>
-            </FileUploadTrigger>
-          </FileUploadDropzone>
-          <FileUploadList>
-            {files.map((file, index) => (
-              <FileUploadItem key={index} value={file} className="flex-col">
-                <div className="flex w-full items-center gap-2">
-                  <FileUploadItemPreview />
-                  <FileUploadItemMetadata />
-                  <FileUploadItemDelete asChild>
-                    <Button variant="ghost" size="icon" className="size-7">
-                      <XIcon />
-                    </Button>
-                  </FileUploadItemDelete>
+
+        {/* Upload area */}
+        <div className="px-6 py-5 space-y-4">
+          <FileUpload
+            value={files}
+            onValueChange={setFiles}
+            onUpload={onUpload}
+            onFileReject={onFileReject}
+            maxFiles={1}
+            className="w-full"
+          >
+            <FileUploadDropzone className="border-2 border-dashed border-zinc-400 hover:border-primary transition-all duration-200 rounded-xl py-8">
+              <div className="flex flex-col items-center gap-2 text-center">
+                <div className="flex items-center justify-center size-12 rounded-full bg-primary/10 text-primary">
+                  <UploadCloudIcon className="size-6" />
                 </div>
-                <FileUploadItemProgress />
-              </FileUploadItem>
-            ))}
-          </FileUploadList>
-        </FileUpload>
-        <DialogFooter>
-          <Button
-            onClick={handleUploadProfilePic}
-            disabled={files.length === 0 || isLoading}
-          >
-            {isLoading ? <LoaderIcon className="animate-spin" /> : "Upload"}
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={deleteProfilePic}
-            disabled={isLoading}
-          >
-            {isLoading ? <LoaderIcon className="animate-spin" /> : "Delete Profile Pic"}
-          </Button>
-        </DialogFooter>
+                <div className="space-y-0.5">
+                  <p className="font-medium text-sm">
+                    Drag & drop your photo here
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    PNG, JPG, WEBP up to 5MB
+                  </p>
+                </div>
+                <FileUploadTrigger asChild>
+                  <Button variant="outline" size="sm" className="mt-1">
+                    Browse file
+                  </Button>
+                </FileUploadTrigger>
+              </div>
+            </FileUploadDropzone>
+
+            <FileUploadList>
+              {files.map((file, index) => (
+                <FileUploadItem
+                  key={index}
+                  value={file}
+                  className="flex-col mt-2 bg-zinc-900/50 rounded-lg px-3 py-2 border border-zinc-700/50"
+                >
+                  <div className="flex w-full items-center gap-2">
+                    <FileUploadItemPreview />
+                    <FileUploadItemMetadata />
+                    <FileUploadItemDelete asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-7 ml-auto"
+                      >
+                        <XIcon className="size-4" />
+                      </Button>
+                    </FileUploadItemDelete>
+                  </div>
+                  <FileUploadItemProgress />
+                </FileUploadItem>
+              ))}
+            </FileUploadList>
+          </FileUpload>
+
+          {/* Actions */}
+          <div className="flex flex-col gap-2 pt-1">
+            <Button
+              onClick={handleUploadProfilePic}
+              disabled={files.length === 0 || isLoading}
+              className="w-full gap-2"
+            >
+              {isLoading
+                ? <Loader2 className="size-4 animate-spin" />
+                : <UploadCloudIcon className="size-4" />
+              }
+              Upload Photo
+            </Button>
+
+            {hasAvatar && (
+              <Button
+                variant="outline"
+                onClick={deleteProfilePic}
+                disabled={isLoading}
+                className="text-destructive"
+              >
+                {isLoading
+                  ? <Loader2 className="size-4 animate-spin" />
+                  : <Trash2Icon className="size-4" />
+                }
+                Remove current photo
+              </Button>
+            )}
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
