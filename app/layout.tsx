@@ -25,7 +25,7 @@ export default function RootLayout({ children }: IRootLayout) {
         <QueryProvider>
           <SmootScroll>
             {children}
-            <Toaster position="top-right" richColors duration={3000} />
+            <Toaster position="bottom-center" richColors duration={3000} />
           </SmootScroll>
         </QueryProvider>
         <SpeedInsights />

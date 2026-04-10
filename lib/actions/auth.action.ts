@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { Provider as OAuthProvider } from "@supabase/supabase-js";
 import { createClient } from "../supabase/server"
-import { BASE_URL } from "../constants";
+import { AVATAR_BUCKET_NAME, BASE_URL } from "../constants";
 import { db } from "@/drizzle";
 import { usersTable } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -66,34 +66,39 @@ export const signout = async () => {
 
 // get current user
 export const getCurrentUser = async () => {
-  const { error, data } = await (await createClient()).auth.getUser();
+  const supabase = await createClient();
+
+  const { error, data: usersData } = await supabase.auth.getUser();
+
+  // user's avatar path
+  const [{ avatarPath }] = await db
+    .select({ avatarPath: usersTable.avatarPath })
+    .from(usersTable)
+    .where(eq(usersTable.userId, usersData.user?.id as string))
+    .limit(1);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  const user = data.user;
+  let avatarUrl: string | null = null;
+
+  if (avatarPath) {
+    const urlData = supabase
+      .storage
+      .from(AVATAR_BUCKET_NAME)
+      .getPublicUrl(avatarPath);
+
+    avatarUrl = urlData.data.publicUrl;
+  }
+
+  const user = usersData.user;
 
   return {
     userId: user.id,
     name: String(user.user_metadata.name || user.user_metadata.full_name),
     email: String(user.email),
     provider: String(user.app_metadata.provider),
+    avatarUrl,
   }
-}
-
-// update user's details
-export const updateUserDetails = async (name: string, email: string) => {
-  const { error, data } = await (await createClient()).auth.updateUser({
-    data: {
-      name: name.trim(),
-      email: email.trim(),
-    }
-  })
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  revalidatePath("/dashboard", "page");
 }

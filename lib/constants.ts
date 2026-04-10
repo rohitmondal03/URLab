@@ -5,7 +5,7 @@ export const BASE_URL = process.env.NODE_ENV === "development"
 export const GITHUB_LINK = "https://github.com/rohitmondal03/urlab"
 
 export const DEFAULT_ERROR_MESSAGE = "Something went wrong. Please try again later.";
-export const DEFAULT_METADATA_ERROR_MESSAGE = "Error fetching data from URL or you might've entered wrong URL"
+export const DEFAULT_METADATA_ERROR_MESSAGE = "Error fetching data from URL or you might've entered wrong URL";
 
 export const KEYBOARD_SHORTCUT_LIST = [
   { key: "a", label: "Add Bookmark" },
@@ -20,4 +20,6 @@ export const KEYBOARD_SHORTCUT_LIST = [
   { key: "g", label: "Trending" },
 ]
 
-export const TANSTACK_STALE_TIME = 100 * 60 * 5;
+export const TANSTACK_STALE_TIME = 1000 * 60 * 5; // 5 minutes
+
+export const AVATAR_BUCKET_NAME = "avatars";

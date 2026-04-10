@@ -4,5 +4,6 @@ export const queryKeys = {
   recentBookmarks: ["bookmarks", "recent"],
   tags: ["tags"],
   domains: ["domains"],
-  favourites: ["bookmarks", "favourites"]
+  favourites: ["bookmarks", "favourites"],
+  user: ["user"]
 }

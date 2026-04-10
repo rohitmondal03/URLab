@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createBookmark, deleteBookmark, editBookmark, updateBookmarkToFavourites } from "@/lib/actions/bookmark.action";
+import { deleteAvatar, updateUserDetails, uploadUsersAvatar } from "@/lib/actions/users.action";
 import { queryKeys } from "./query-keys";
 
 export const createBookmarkMutation = () => {
@@ -69,6 +70,39 @@ export const updateFavouritesMutation = () => {
         queryClient.invalidateQueries({ queryKey: queryKeys.recentBookmarks }),
         queryClient.invalidateQueries({ queryKey: queryKeys.favourites }),
       ])
+    }
+  })
+}
+
+export const uploadUsersAvatarMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ file }: { file: File }) => uploadUsersAvatar(file),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.user });
+    }
+  })
+}
+
+export const deleteUsersAvatarMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => deleteAvatar(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.user })
+    }
+  })
+}
+
+export const editUsersDetailsMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ name, email }: { name: string, email: string }) => updateUserDetails(name, email),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.user })
     }
   })
 }

@@ -47,7 +47,7 @@ export const usersTable = pgTable("users", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   provider: text("provider").notNull(),
-  avatarUrl: text("avatar_url"),
+  avatarPath: text("avatar_path"),
   joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdateFn(() => new Date()),
 }, (table) => [

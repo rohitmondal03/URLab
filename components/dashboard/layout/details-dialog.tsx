@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { getCurrentUser } from "@/lib/actions/auth.action";
-import { updateUserDetails } from "@/lib/actions/auth.action";
+import { editUsersDetailsMutation } from "@/tanstack/mutations";
 
 type TEditDetailsDialogProps = {
   isOpen: boolean;
@@ -29,6 +29,7 @@ export function DetailsDialog({ isOpen, setOpen }: TEditDetailsDialogProps) {
     email: string;
     provider: string;
   }>();
+  const mutation = editUsersDetailsMutation();
 
   useEffect(() => {
     (async () => {
@@ -39,6 +40,8 @@ export function DetailsDialog({ isOpen, setOpen }: TEditDetailsDialogProps) {
     })()
   }, [])
 
+
+  // To edit user's details
   const editUser = async (e: SubmitEvent) => {
     e.preventDefault();
 
@@ -49,16 +52,17 @@ export function DetailsDialog({ isOpen, setOpen }: TEditDetailsDialogProps) {
 
     setLoading(true);
 
-    await updateUserDetails(user.name, user.email)
-      .then(() => {
-        toast.success("Updated successfully !!")
-      })
-      .catch((error: any) => {
-        toast.error((error as Error).message)
-      })
-      .finally(() => {
+    mutation.mutate({ name: user.name, email: user.email }, {
+      onSuccess: () => {
+        toast.success("Profile Updated successfully !!")
+      },
+      onError: (error) => {
+        toast.error(error.message)
+      },
+      onSettled: () => {
         setLoading(false);
-      })
+      }
+    })
   }
 
   return (
@@ -112,9 +116,7 @@ export function DetailsDialog({ isOpen, setOpen }: TEditDetailsDialogProps) {
             </div>
             <DialogFooter>
               <Button disabled={isLoading} type="submit">
-                {isLoading
-                  ? <LoaderIcon className="animate-spin" />
-                  : "Save"}
+                {isLoading ? <LoaderIcon className="animate-spin" /> : "Save"}
               </Button>
             </DialogFooter>
           </form>

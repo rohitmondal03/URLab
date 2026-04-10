@@ -57,6 +57,13 @@
       "when": 1774263663532,
       "tag": "0007_alter_bookmarks_users_and_bookmarks_tags_table",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1775661654788,
+      "tag": "0008_alter_users_table",
+      "breakpoints": true
     }
   ]
 }

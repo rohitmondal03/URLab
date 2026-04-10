@@ -100,11 +100,11 @@ export function DashboardHeader() {
           <Button
             variant={"secondary"}
             onClick={() => setShortcutDialogOpen(true)}
-            className="gap-x-2 px-3 sm:px-4 shrink-0 hidden sm:flex"
+            className="gap-x-3 px-3 sm:px-4 shrink-0 hidden sm:flex"
           >
             <KeyboardIcon className="size-4 sm:size-5" />
             <span className="hidden lg:inline">View Shortcuts</span>
-            <Kbd className="hidden lg:inline-flex bg-zinc-300 dark:bg-zinc-800 ml-2">K</Kbd>
+            <Kbd className="hidden lg:inline-flex">K</Kbd>
           </Button>
           <AddBookmarkDialog
             isAddModalOpen={isAddModalOpen}
@@ -123,10 +123,7 @@ export function DashboardHeader() {
           className="fixed inset-0 z-50 md:hidden bg-background/80 backdrop-blur-sm"
           onClick={() => setMobileMenuOpen(false)}
         >
-          <div
-            className="w-64 h-full shadow-2xl relative"
-            onClick={e => e.stopPropagation()}
-          >
+          <div className="w-64 h-full shadow-2xl relative">
             <DashboardSidebarContent />
           </div>
         </div>

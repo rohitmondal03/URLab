@@ -3,35 +3,30 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   StarIcon,
   TagIcon,
   GlobeIcon,
   ClockIcon,
-  StarsIcon,
-  TrendingUpIcon,
   BookmarkIcon,
   LoaderIcon,
+  FolderHeartIcon
 } from "lucide-react";
 import { Kbd } from "@/components/ui/kbd";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Logo } from "@/components/shared/logo";
 import { cn } from "@/lib/utils";
-import { getCurrentUser } from "@/lib/actions/auth.action";
+import { usersQuery } from "@/tanstack/queries";
+import Image from "next/image";
 
 const UserDropdownMenu = dynamic(() => import("./user-dropdown-menu")
   .then(mod => mod.UserDropdownMenu), { ssr: false });
 
 export function DashboardSidebarContent() {
   const pathname = usePathname();
-
-  const [isLoading, setLoading] = useState(false);
-  const [user, setUser] = useState<{
-    name: string,
-    email: string
-  }>();
-
   const router = useRouter();
 
   useEffect(() => {
@@ -57,7 +52,11 @@ export function DashboardSidebarContent() {
           break;
         case "f":
           e.preventDefault();
-          router.push("/dashboard/favorites");
+          router.push("/dashboard/favourites");
+          break;
+        case "c":
+          e.preventDefault();
+          router.push("/dashboard/collections");
           break;
         case "t":
           e.preventDefault();
@@ -82,15 +81,6 @@ export function DashboardSidebarContent() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [router]);
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const { name, email } = await getCurrentUser();
-      setUser({ name, email });
-      setLoading(false);
-    })()
-  }, [])
-
   const NAV_ITEMS = [
     {
       title: "Navigation",
@@ -98,6 +88,7 @@ export function DashboardSidebarContent() {
         { name: "Your Bookmarks", icon: <BookmarkIcon />, path: "/dashboard", disabled: false, shortcut: "d" },
         { name: "Favourites", icon: <StarIcon />, path: "/dashboard/favourites", disabled: true, shortcut: "f" },
         { name: "Recently Added", icon: <ClockIcon />, path: "/dashboard/recent", disabled: false, shortcut: "r" },
+        { name: "Collections", icon: <FolderHeartIcon />, path: "/dashboard/collections", disabled: false, shortcut: "c" },
       ]
     },
     {
@@ -115,6 +106,9 @@ export function DashboardSidebarContent() {
     //   ]
     // }
   ]
+
+  // fetch user's data
+  const { data: usersData, isLoading: isAvatarLoading } = useQuery(usersQuery.default());
 
   return (
     <div className="flex flex-col items-stretch justify-between h-full bg-sidebar backdrop-blur-sm border-r border-zinc-400">
@@ -148,7 +142,9 @@ export function DashboardSidebarContent() {
                         {link.name}
                       </div>
                       {link.shortcut && (
-                        <Kbd className="uppercase hidden md:inline-flex bg-background">{link.shortcut}</Kbd>
+                        <Kbd className="uppercase hidden md:inline-flex bg-background">
+                          {link.shortcut}
+                        </Kbd>
                       )}
                     </Link>
                   )
@@ -163,22 +159,45 @@ export function DashboardSidebarContent() {
       <UserDropdownMenu>
         <Button
           size={"lg"}
-          variant={"secondary"}
-          className="w-7/8 h-fit mx-auto mb-4 py-3 justify-start border border-zinc-400 flex flex-col items-center gap-0"
-          disabled={isLoading}
+          variant={"outline"}
+          className="w-7/8 h-fit mx-auto mb-4 py-4 px-1 justify-start border border-zinc-400 flex flex-col items-center gap-0 hover:bg-white"
+          disabled={isAvatarLoading}
           aria-label="user-dropdown-menu"
         >
-          {isLoading
+          {isAvatarLoading
             ? <LoaderIcon className="animate-spin" />
             : (
-              <>
-                <p className="text-base font-medium">
-                  {user?.name}
-                </p>
-                <p className="text-xs text-black/70 truncate">
-                  {user?.email}
-                </p>
-              </>
+              <div className="flex items-center justify-between gap-2">
+                {isAvatarLoading
+                  ? <LoaderIcon />
+                  : usersData?.avatarUrl
+                    ?
+                    <Image
+                      src={usersData?.avatarUrl as string}
+                      width={400}
+                      height={400}
+                      alt="users-profile"
+                      fetchPriority="high"
+                      className="rounded-full size-12"
+                    />
+                    :
+                    <div className="size-10 rounded-full bg-zinc-200 flex items-center justify-center">
+                      <p className="text-rose-500 text-lg">
+                        {usersData?.name.slice(0, 1).toLocaleUpperCase()}
+                      </p>
+                    </div>
+                }
+                <div className="text-left">
+                  <p className="text-sm font-semibold">
+                    {usersData?.name}
+                  </p>
+                  <p className="text-xs">
+                    {String(usersData?.email).length > 20
+                      ? usersData?.email.slice(0, 20) + "..."
+                      : usersData?.email}
+                  </p>
+                </div>
+              </div>
             )
           }
         </Button>

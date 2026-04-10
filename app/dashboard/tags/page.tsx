@@ -1,7 +1,5 @@
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-import { tagsQuery } from "@/tanstack/queries";
-import TagsPageClient from "@/components/dashboard/tags/tags-page-client";
 import { Suspense } from "react";
+import TagsPageClient from "@/components/dashboard/tags/tags-page-client";
 import { TagsPageSkeleton } from "@/components/dashboard/tags/tags-page-skeleton";
 
 export default function TagsPage() {
@@ -18,20 +16,8 @@ export default function TagsPage() {
       </div>
 
       <Suspense fallback={<TagsPageSkeleton />}>
-        <TagsDataLoader />
+        <TagsPageClient />
       </Suspense>
     </div>
-  );
-}
-
-async function TagsDataLoader() {
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery(tagsQuery.default());
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <TagsPageClient />
-    </HydrationBoundary>
   );
 }

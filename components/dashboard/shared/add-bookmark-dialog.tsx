@@ -136,9 +136,7 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
                 </Label>
                 <Checkbox
                   checked={bookmarkDetails.isFavourite}
-                  onCheckedChange={(value) =>
-                    setBookmarkDetails((prev) => ({ ...prev, isFavourite: value.valueOf() === "true" ? true : false }))
-                  }
+                  onCheckedChange={(value: boolean) => setBookmarkDetails((prev) => ({ ...prev, isFavourite: value }))}
                   className="border border-zinc-400"
                 />
               </div>

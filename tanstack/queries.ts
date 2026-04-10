@@ -6,6 +6,8 @@ import {
 } from "@/lib/actions/bookmark.action";
 import { TANSTACK_STALE_TIME } from "@/lib/constants";
 import { queryKeys } from "./query-keys";
+import { getCurrentUser } from "@/lib/actions/auth.action";
+// import { getUsersAvatar } from "@/lib/actions/users.action";
 
 export const bookmarkQuery = {
   all: () => ({
@@ -41,6 +43,15 @@ export const domainsQuery = {
   default: () => ({
     queryKey: queryKeys.domains,
     queryFn: () => getDomainsWithBookmarkCounts(),
+    refetchOnWindowFocus: true,
+    staleTime: TANSTACK_STALE_TIME
+  })
+}
+
+export const usersQuery = {
+  default: () => ({
+    queryKey: queryKeys.user,
+    queryFn: () => getCurrentUser(),
     refetchOnWindowFocus: true,
     staleTime: TANSTACK_STALE_TIME
   })
