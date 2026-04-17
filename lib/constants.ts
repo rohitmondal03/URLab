@@ -12,7 +12,7 @@ export const KEYBOARD_SHORTCUT_LIST = [
   { key: "/", label: "Search Bookmark" },
   { key: "k", label: "View Shortcuts" },
   { key: "d", label: "Dashboard" },
-  { key: "r", label: "Recently Added" },
+  { key: "a", label: "Recently Added" },
   { key: "f", label: "Favourites" },
   { key: "t", label: "Tags" },
   { key: "o", label: "Domains" },

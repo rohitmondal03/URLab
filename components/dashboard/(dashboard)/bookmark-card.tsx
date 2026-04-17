@@ -2,7 +2,7 @@ import type { TBookmarkWithTags } from "@/types";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
-import { MoreVerticalIcon, FullscreenIcon, StarIcon, LoaderIcon } from "lucide-react";
+import { MoreVerticalIcon, FullscreenIcon, StarIcon, LoaderIcon, QrCodeIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -12,9 +12,12 @@ import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/li
 import { updateFavouritesMutation } from "@/tanstack/mutations";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+// import QRCodeStyled from "@/components/shared/qr-code-styled";
 
 const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu")
   .then(mod => mod.BookmarkCardActionsDropdownMenu));
+const BookmarkQRCodeDialog = dynamic(() => import("../shared/bookmark-qr-code-dialog")
+  .then(mod => mod.BookmarkQRCodeDialog));
 
 type TBookmarkCardProps = {
   bookmark: TBookmarkWithTags;
@@ -24,6 +27,8 @@ type TBookmarkCardProps = {
 
 export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps) {
   const [isLoading, setLoading] = useState(false);
+  const [isQRCodeDialogOpen, setQRCodeDialogOpen] = useState(false);
+
   const imagePreviewUrl = useMemo(() => bookmark.previewImage, [])
   const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
   const bookmarksDomain = useMemo(() => getDomainFromUrl(bookmark.url), [bookmark])
@@ -33,6 +38,7 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
       : bookmark.description,
     [bookmark.description]
   );
+
   const mutation = updateFavouritesMutation();
 
 
@@ -103,13 +109,33 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
             </TooltipTrigger>
             <TooltipContent>
               {isLoading
-                ? <LoaderIcon />
+                ? <LoaderIcon className="animate-spin size-2" />
                 : bookmark.isFavourite
                   ? "Remove from Favourites"
                   : "Add to Favourites"
               }
             </TooltipContent>
           </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon-lg"
+                aria-label="bookmark-qr-code"
+                onClick={() => setQRCodeDialogOpen(true)}
+              >
+                <QrCodeIcon className="size-4 md:size-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Show QR for this bookmark
+            </TooltipContent>
+          </Tooltip>
+          <BookmarkQRCodeDialog
+            isOpen={isQRCodeDialogOpen}
+            setOpen={setQRCodeDialogOpen}
+            bookmark={bookmark}
+          />
           <Button
             variant="outline"
             size="icon-lg"

@@ -3,8 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
-import { useMemo } from "react";
-import { CopyIcon, ArrowUpRightIcon, ExternalLinkIcon, MoreVertical } from "lucide-react";
+import { useMemo, useState } from "react";
+import { CopyIcon, ArrowUpRightIcon, ExternalLinkIcon, MoreVertical, QrCodeIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils";
 
 const BookmarkCardActionsDropdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu")
   .then(mod => mod.BookmarkCardActionsDropdownMenu), { ssr: false });
+const QRCodeDialog = dynamic(() => import("../shared/bookmark-qr-code-dialog")
+  .then(mod => mod.BookmarkQRCodeDialog), { ssr: false });
 
 type TBookmarkDetailDialogProps = {
   bookmark: TBookmarkWithTags | null;
@@ -27,6 +29,8 @@ export function BookmarkDetailDialog({
   onOpenChange,
 }: TBookmarkDetailDialogProps) {
   if (!bookmark) return null;
+
+  const [isQRCodeDialogOpen, setQRCodeDialogOpen] = useState(false);
 
   const bookmarksFaviconURL = useMemo(() => getFaviconFromURL(bookmark.url), [bookmark.url]);
 
@@ -120,8 +124,8 @@ export function BookmarkDetailDialog({
           {/* Action buttons */}
           <div className="flex items-center gap-2 pt-1">
             <Link
-              href={bookmark.url.startsWith("https://") 
-                ? bookmark.url 
+              href={bookmark.url.startsWith("https://")
+                ? bookmark.url
                 : `https://${bookmark.url}`
               }
               target="_blank"
@@ -149,6 +153,19 @@ export function BookmarkDetailDialog({
             >
               <CopyIcon className="size-4" />
             </Button>
+            <Button
+              variant="default"
+              size="icon"
+              className="shadow-sm"
+              onClick={(prev) => setQRCodeDialogOpen(!prev)}
+            >
+              <QrCodeIcon />
+            </Button>
+            <QRCodeDialog
+              bookmark={bookmark}
+              isOpen={isQRCodeDialogOpen}
+              setOpen={setQRCodeDialogOpen}
+            />
           </div>
         </div>
       </DialogContent>

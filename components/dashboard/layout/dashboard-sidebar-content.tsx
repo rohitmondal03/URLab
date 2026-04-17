@@ -44,7 +44,7 @@ export function DashboardSidebarContent() {
           e.preventDefault();
           router.push("/dashboard");
           break;
-        case "r":
+        case "m":
           e.preventDefault();
           router.push("/dashboard/recent");
           break;
@@ -52,10 +52,6 @@ export function DashboardSidebarContent() {
           e.preventDefault();
           router.push("/dashboard/favourites");
           break;
-        // case "c":
-        //   e.preventDefault();
-        //   router.push("/dashboard/collections");
-        //   break;
         case "t":
           e.preventDefault();
           router.push("/dashboard/tags");
@@ -86,7 +82,7 @@ export function DashboardSidebarContent() {
       items: [
         { name: "Your Bookmarks", icon: <BookmarkIcon />, path: "/dashboard", disabled: false, shortcut: "d" },
         { name: "Favourites", icon: <StarIcon />, path: "/dashboard/favourites", disabled: true, shortcut: "f" },
-        { name: "Recently Added", icon: <ClockIcon />, path: "/dashboard/recent", disabled: false, shortcut: "r" },
+        { name: "Recently Added", icon: <ClockIcon />, path: "/dashboard/recent", disabled: false, shortcut: "m" },
         // { name: "Collections", icon: <FolderHeartIcon />, path: "/dashboard/collections", disabled: false, shortcut: "c" },
       ]
     },
