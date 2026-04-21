@@ -13,9 +13,9 @@ type TBookmarkQRCodeDialog = {
 export function BookmarkQRCodeDialog({ isOpen, setOpen, bookmark }: TBookmarkQRCodeDialog) {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="w-108">
         <DialogHeader>
-          <DialogTitle className="mr-8">
+          <DialogTitle className="mr-8 leading-snug">
             {bookmark.title}
             <span className="text-muted-foreground">'s QR Code</span>
           </DialogTitle>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
-import { CopyIcon, ArrowUpRightIcon, ExternalLinkIcon, MoreVertical, QrCodeIcon } from "lucide-react";
+import { CopyIcon, ArrowUpRightIcon, ExternalLinkIcon, MoreVertical, QrCodeIcon, StarIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -92,6 +92,19 @@ export function BookmarkDetailDialog({
                   <MoreVertical />
                 </Button>
               </BookmarkCardActionsDropdownMenu>
+              <Button
+                variant="secondary"
+                size="icon-lg"
+                className="shadow-sm"
+                onClick={() => setQRCodeDialogOpen(true)}
+              >
+                <QrCodeIcon />
+              </Button>
+              <QRCodeDialog
+                bookmark={bookmark}
+                isOpen={isQRCodeDialogOpen}
+                setOpen={setQRCodeDialogOpen}
+              />
             </div>
 
             <p className="text-sm">
@@ -108,8 +121,6 @@ export function BookmarkDetailDialog({
             {bookmark.description}
           </p>
 
-          <Separator className="bg-zinc-300" />
-
           {/* Tags */}
           {bookmark.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -121,27 +132,24 @@ export function BookmarkDetailDialog({
             </div>
           )}
 
+          <Separator className="bg-zinc-300" />
+
           {/* Action buttons */}
-          <div className="flex items-center gap-2 pt-1">
-            <Link
-              href={bookmark.url.startsWith("https://")
-                ? bookmark.url
-                : `https://${bookmark.url}`
-              }
-              target="_blank"
-              rel="noreferrer"
-              className={cn(
-                "flex-1 shadow-sm gap-2",
-                buttonVariants({ variant: "secondary" })
-              )}
-            >
-              <ArrowUpRightIcon className="size-4" />
-              Open Link
-            </Link>
+          <div className="space-y-3">
             <Button
-              variant="default"
-              size="icon"
-              className="shadow-sm"
+              variant={"default"}
+              // size={"icon"}
+              className="shadow-sm w-full"
+            >
+              <StarIcon
+                fill={bookmark.isFavourite ? "#ffe433" : "#fff"}
+                color={bookmark.isFavourite ? "#ffe433" : "#000"}
+              />
+              {bookmark.isFavourite ? "Remove from Favourites" : "Add to Favourites"}
+            </Button>
+            <Button
+              variant={"secondary"}
+              className="shadow-sm  w-full"
               onClick={() => {
                 try {
                   navigator.clipboard.writeText(bookmark.url)
@@ -152,20 +160,8 @@ export function BookmarkDetailDialog({
               }}
             >
               <CopyIcon className="size-4" />
+              Copy Link
             </Button>
-            <Button
-              variant="default"
-              size="icon"
-              className="shadow-sm"
-              onClick={(prev) => setQRCodeDialogOpen(!prev)}
-            >
-              <QrCodeIcon />
-            </Button>
-            <QRCodeDialog
-              bookmark={bookmark}
-              isOpen={isQRCodeDialogOpen}
-              setOpen={setQRCodeDialogOpen}
-            />
           </div>
         </div>
       </DialogContent>

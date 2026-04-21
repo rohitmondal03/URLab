@@ -26,7 +26,7 @@ export async function createBookmark(url: string, tags: string[], isFavourite: b
 
   if (existingBookmarkWithSameURL) {
     if (existingBookmarkWithSameURL.userId === currentUserId) {
-      throw new Error("You've already added this URL as bookmark.")
+      return { error: "You've already added this URL as bookmark." };
     }
 
     await db
@@ -99,7 +99,7 @@ export const deleteBookmark = async (bookmarkId: string) => {
     .limit(1);
 
   if (currentUserId !== userId) {
-    throw new Error("Only users uploaded this bookmark can DELETE it !!")
+    return { error: "Only users uploaded this bookmark can DELETE it !!" };
   }
 
   await db
@@ -124,7 +124,7 @@ export const editBookmark = async (bookmarkId: string, bookmarkTitle: string, bo
         eq(bookmarkTable.userId, userId),
       ))
   } catch (error: any) {
-    throw new Error(error.message || DEFAULT_ERROR_MESSAGE);
+    return { error: error.message || DEFAULT_ERROR_MESSAGE };
   }
 }
 
@@ -140,11 +140,11 @@ export const updateBookmarkToFavourites = async (bookmarkId: string, newFavourit
     .limit(1);
 
   if (!bookmark) {
-    throw new Error("Bookmark not found !!");
+    return { error: "Bookmark not found !!" };
   }
 
   if (bookmark.userId !== userId) {
-    throw new Error("Only user who uploaded this bookmark can add it to favourites !!")
+    return { error: "Only user who uploaded this bookmark can add it to favourites !!" };
   }
 
   await db

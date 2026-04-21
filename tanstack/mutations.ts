@@ -9,7 +9,7 @@ export const createBookmarkMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       url,
       tags,
       isFavourite
@@ -17,7 +17,13 @@ export const createBookmarkMutation = () => {
       url: string,
       tags: string[],
       isFavourite: boolean
-    }) => createBookmark(url.trim(), tags, isFavourite),
+    }) => {
+      const res = await createBookmark(url.trim(), tags, isFavourite);
+      if (res && 'error' in res && typeof res.error === 'string') {
+        throw new Error(res.error);
+      }
+      return res;
+    },
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks }),
@@ -33,7 +39,13 @@ export const deleteBookmarkMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ bookmarkId }: { bookmarkId: string }) => deleteBookmark(bookmarkId),
+    mutationFn: async ({ bookmarkId }: { bookmarkId: string }) => {
+      const res = await deleteBookmark(bookmarkId);
+      if (res && 'error' in res && typeof res.error === 'string') {
+        throw new Error(res.error);
+      }
+      return res;
+    },
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks }),
@@ -49,7 +61,13 @@ export const editBookmarkMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ bookmarkId, bookmarkTitle, bookmarkDescription }: { bookmarkId: string, bookmarkTitle: string, bookmarkDescription: string }) => editBookmark(bookmarkId, bookmarkTitle, bookmarkDescription),
+    mutationFn: async ({ bookmarkId, bookmarkTitle, bookmarkDescription }: { bookmarkId: string, bookmarkTitle: string, bookmarkDescription: string }) => {
+      const res = await editBookmark(bookmarkId, bookmarkTitle, bookmarkDescription);
+      if (res && 'error' in res && typeof res.error === 'string') {
+        throw new Error(res.error);
+      }
+      return res;
+    },
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks }),
@@ -63,7 +81,13 @@ export const updateFavouritesMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ bookmarkId, newFavouriteValue }: { bookmarkId: string, newFavouriteValue: boolean }) => updateBookmarkToFavourites(bookmarkId, newFavouriteValue),
+    mutationFn: async ({ bookmarkId, newFavouriteValue }: { bookmarkId: string, newFavouriteValue: boolean }) => {
+      const res = await updateBookmarkToFavourites(bookmarkId, newFavouriteValue);
+      if (res && 'error' in res && typeof res.error === 'string') {
+        throw new Error(res.error);
+      }
+      return res;
+    },
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.bookmarks }),

@@ -81,12 +81,11 @@ export function AddBookmarkDialog({ isAddModalOpen, setIsAddModalOpen }: TAddBoo
       tags: bookmarkDetails.tags,
       isFavourite: bookmarkDetails.isFavourite
     }, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         setIsAddModalOpen(false);
         setBookmarkDetails({ url: "", tags: [], isFavourite: false });
         setMetadata(null);
         toast.success("Bookmark added successfully !!");
-        console.log(data?.isFavourite)
       },
       onError: (err) => {
         toast.error(err.message);

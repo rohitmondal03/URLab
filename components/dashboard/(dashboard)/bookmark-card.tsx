@@ -2,17 +2,22 @@ import type { TBookmarkWithTags } from "@/types";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
-import { MoreVerticalIcon, FullscreenIcon, StarIcon, LoaderIcon, QrCodeIcon } from "lucide-react";
+import {
+  MoreVerticalIcon,
+  FullscreenIcon,
+  StarIcon,
+  LoaderIcon,
+  QrCodeIcon,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
-import { updateFavouritesMutation } from "@/tanstack/mutations";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { formattedDateWithTime, getDomainFromUrl, getFaviconFromURL } from "@/lib/helper";
 import { cn } from "@/lib/utils";
-// import QRCodeStyled from "@/components/shared/qr-code-styled";
+import { updateFavouritesMutation } from "@/tanstack/mutations";
 
 const BookmarkCardActionsDropwdownMenu = dynamic(() => import("./bookmark-card-actions-dropdown-menu")
   .then(mod => mod.BookmarkCardActionsDropdownMenu));
@@ -97,7 +102,7 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
                 onClick={updateBookmarkToFavourites}
               >
                 {isLoading ? (
-                  <LoaderIcon className="animate-spin size-4 md:size-5" />
+                  <LoaderIcon className="animate-spin size-2 md:size-3" />
                 ) : (
                   <StarIcon
                     className="size-4 md:size-5"
@@ -168,7 +173,7 @@ export function BookmarkCard({ bookmark, onOpen, cardIndex }: TBookmarkCardProps
 
           <BookmarkCardActionsDropwdownMenu bookmark={bookmark}>
             <Button
-              variant="ghost"
+              variant="secondary"
               size="icon"
               className="hover:text-foreground p-0"
               aria-label="options-dropdown"

@@ -14,6 +14,4 @@ const nextConfig: NextConfig = {
   }
 };
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')();
-
-module.exports = withBundleAnalyzer(nextConfig)
+export default nextConfig;
